@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "research-hub-8afa2"
+  },
+  "targets": {
+    "research-hub-8afa2": {
+      "hosting": {
+        "research-hub": [
+          "research-hub-8afa2"
+        ]
+      }
+    }
+  }
+}
