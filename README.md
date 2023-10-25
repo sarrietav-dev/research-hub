@@ -36,6 +36,7 @@ Initialize the firebase project and select only the emulators. The emulators we'
 firebase init
 ```
 
+<<<<<<< Updated upstream
 Start the emulators
 
 ```bash
@@ -59,3 +60,8 @@ npm run test
 ## Contributing
 
 Please fork this project, then submit a pull request.
+=======
+## Externals
+
+Trying pull request
+>>>>>>> Stashed changes
