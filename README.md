@@ -1,28 +1,61 @@
-# ResearchHub
+# research-hub
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.7.
+A software project that streamlines data submission and visualization for college research groups and administrators.
 
-## Development server
+[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Run Locally
 
-## Code scaffolding
+Clone your fork of the project
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+git clone https://link-to-your-fork research-hub
+```
 
-## Build
+Go to the project directory
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+cd research-hub
+```
 
-## Running unit tests
+Install dependencies
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+npm install
+```
 
-## Running end-to-end tests
+Install the `firebase-tools`
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+npm i -g firebase-tools
+```
 
-## Further help
+Initialize the firebase project and select only the emulators. The emulators we're using are Auth, Storage, Hosting and Functions.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```bash
+firebase init
+```
 
+Start the emulators
+
+```bash
+firebase emulators:start
+```
+
+Start the server
+
+```bash
+npm run start
+```
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+npm run test
+```
+
+## Contributing
+
+Please fork this project, then submit a pull request.
