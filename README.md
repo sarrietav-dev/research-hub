@@ -1,27 +1,66 @@
-# ResearchHub
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.7.
+# research-hub
 
-## Development server
+A software project that streamlines data submission and visualization for college research groups and administrators.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
+[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+## Run Locally
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Clone your fork of the project
 
-## Running unit tests
+```bash
+  git clone https://link-to-your-fork research-hub
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Go to the project directory
 
-## Running end-to-end tests
+```bash
+  cd research-hub
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Install dependencies
 
-## Further help
+```bash
+  npm install
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Install the `firebase-tools`
+
+```bash
+  npm i -g firebase-tools
+```
+
+Initialize the firebase project and select only the emulators. The emulators we're using are Auth, Storage, Hosting and Functions.
+
+```bash
+  firebase init
+```
+
+Start the emulators
+
+```bash
+  firebase emulators:start
+```
+
+Start the server
+
+```bash
+  npm run start
+```
+
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+  npm run test
+```
+
+
+## Contributing
+
+Please fork this project, then submit a pull request.
