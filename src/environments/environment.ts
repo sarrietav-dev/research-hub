@@ -1,5 +1,8 @@
 export const environment = {
   production: true,
+  supabaseKey:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnb2p3b2d1emZnZW5keXR0ZWduIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTgyMDc0MzEsImV4cCI6MjAxMzc4MzQzMX0.ZCfui1YBGK4bQuZNJ-sALvGCOOUNP6gkQwU0q_L-pAU',
+  subapaseUrl: 'https://sgojwoguzfgendyttegn.supabase.co',
   firebase: {
     projectId: 'research-hub-8afa2',
     appId: '1:10333519454:web:0c147296d9950f53d97ecf',
