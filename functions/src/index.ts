@@ -12,7 +12,6 @@ import { setGlobalOptions } from "firebase-functions/v2/options";
 import { Storage } from "@google-cloud/storage";
 import { read } from "xlsx";
 import * as ExcelTools from "./excel-tools";
-import { initializeApp } from "firebase-admin/app";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../types";
 
@@ -24,7 +23,6 @@ setGlobalOptions({ maxInstances: 10 });
 export const onFileUpload = onObjectFinalized(
   "research-hub-8afa2",
   async (event) => {
-    initializeApp();
     const fileBucket = event.bucket;
     const filePath = event.data.name;
     const contentType = event.data.contentType;
@@ -116,9 +114,9 @@ export const onFileUpload = onObjectFinalized(
 
     const leadersPromise = client.from("leaders").insert({
       name: excelData.leaderInfo.name,
-      seed_group_fk: seedGroupId,
+      seed_groups_fk: seedGroupId,
       email: excelData.leaderInfo.email,
-      phone: excelData.leaderInfo.phone,
+      phone: excelData.leaderInfo.phone.toString(),
     });
 
     const finishedWorksPromise = client.from("finished_works").insert(
