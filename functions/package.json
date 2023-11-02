@@ -17,6 +17,7 @@
   "dependencies": {
     "@angular/material": "^16.2.9",
     "@google-cloud/storage": "^7.5.0",
+    "@supabase/supabase-js": "^2.38.4",
     "firebase-admin": "^11.8.0",
     "firebase-functions": "^4.3.1",
     "xlsx": "^0.18.5"

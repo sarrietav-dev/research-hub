@@ -75,7 +75,7 @@ interface Member {
   yearOfEntry: string;
   program: string;
   body: string;
-  funtions: string;
+  functions: string;
 }
 
 export function getMembers(ws: XLSX.WorkSheet): Member[] {
@@ -112,7 +112,7 @@ export function getMembers(ws: XLSX.WorkSheet): Member[] {
     yearOfEntry: member["Año de vinculación"].toString(),
     program: member.Programa,
     body: member.Estamento,
-    funtions: member.Funciones,
+    functions: member.Funciones,
   }));
 
   return mappedData;
