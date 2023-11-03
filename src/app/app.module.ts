@@ -9,18 +9,23 @@ import { provideAuth } from '@angular/fire/auth';
 import { provideStorage } from '@angular/fire/storage';
 import { connectAuth, connectStorage } from 'src/config/firebase-config';
 import { UploadExcelComponent } from './upload-excel/upload-excel.component';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatButtonModule} from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import { NgxMatFileInputModule } from '@angular-material-components/file-input';
+
+
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, UploadExcelComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    UploadExcelComponent,
     MatIconModule,
     MatDividerModule,
     MatButtonModule,
+    MatInputModule,
+    NgxMatFileInputModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(connectAuth),
     provideStorage(connectStorage),
