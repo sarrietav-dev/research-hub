@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { GraphViewerComponent } from 'graph-viewer/graph-viewer.component';
+import { GraphViewerComponent } from 'src/app/graph-viewer/graph-viewer.component';
 
 const routes: Routes = [
   {

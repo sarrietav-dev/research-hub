@@ -10,7 +10,7 @@ import { provideStorage } from '@angular/fire/storage';
 import { connectAuth, connectStorage } from 'src/config/firebase-config';
 
 import { ChartModule } from 'angular-highcharts';
-import { GraphViewerComponent } from 'graph-viewer/graph-viewer.component';
+import { GraphViewerComponent } from 'src/app/graph-viewer/graph-viewer.component';
 
 @NgModule({
   declarations: [AppComponent, GraphViewerComponent],
