@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@angular/core';
-import { SupabaseClient, createClient } from '@supabase/supabase-js';
+import { SupabaseClient } from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
+import type { Database } from '../../supabase';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SupabaseService extends SupabaseClient {
+export class SupabaseService extends SupabaseClient<Database> {
   constructor(
     @Inject(environment.subapaseUrl) url: string,
     @Inject(environment.supabaseKey) key: string
