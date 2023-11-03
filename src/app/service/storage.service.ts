@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { SupabaseClient, createClient } from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
 
@@ -10,12 +11,7 @@ export class DataService {
   private info = 'NO-ME-SE-EL-NOMBRE-DE-LA-TABLA'; 
   public data: any[] = [];
 
-  constructor() {
-    this.supabase = createClient(
-      environment.firebase.authDomain,
-      environment.firebase.apiKey
-    );
-
+  constructor(private router: Router, private supabase: SupabaseService) { 
     this.loadData();
   }
 

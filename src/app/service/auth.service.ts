@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
+import { SupabaseService, SupabaseClient, User } from '@supabase/supabase-js';
 import { BehaviorSubject } from 'rxjs';
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,20 +11,15 @@ export class AuthService {
   private _currentUser: BehaviorSubject<Boolean | User | any> =
     new BehaviorSubject(null);
 
-  constructor(private router: Router) {
-    this.supabase = createClient(
-      environment.firebase.authDomain,
-      environment.firebase.apiKey
-    )
+  constructor(private router: Router, private supabase: SupabaseService) { 
+   const user = this.supabase.auth.getUser();
 
-  const user = this.supabase.auth.getUser();
-
-  if (user){
+   if (user){
     this._currentUser.next(user);
-  }
-  else {
+   }
+   else {
     this._currentUser.next(false);
-  }
+   }
 
     this.supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN'){
