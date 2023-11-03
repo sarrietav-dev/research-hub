@@ -9,14 +9,18 @@ import { provideAuth } from '@angular/fire/auth';
 import { provideStorage } from '@angular/fire/storage';
 import { connectAuth, connectStorage } from 'src/config/firebase-config';
 
+import { ChartModule } from 'angular-highcharts';
+import { GraphViewerComponent } from 'src/app/graph-viewer/graph-viewer.component';
+
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, GraphViewerComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(connectAuth),
     provideStorage(connectStorage),
+    ChartModule
   ],
   providers: [],
   bootstrap: [AppComponent],
