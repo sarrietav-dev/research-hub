@@ -1,61 +1,52 @@
 # research-hub
 
-A software project that streamlines data submission and visualization for college research groups and administrators.
+This template should help get you started developing with Vue 3 in Vite.
 
-[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+## Recommended IDE Setup
 
-## Run Locally
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
-Clone your fork of the project
+## Type Support for `.vue` Imports in TS
 
-```bash
-git clone https://link-to-your-fork research-hub
-```
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
 
-Go to the project directory
+If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
 
-```bash
-cd research-hub
-```
+1. Disable the built-in TypeScript Extension
+    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
+    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
-Install dependencies
+## Customize configuration
 
-```bash
+See [Vite Configuration Reference](https://vitejs.dev/config/).
+
+## Project Setup
+
+```sh
 npm install
 ```
 
-Install the `firebase-tools`
+### Compile and Hot-Reload for Development
 
-```bash
-npm i -g firebase-tools
+```sh
+npm run dev
 ```
 
-Initialize the firebase project and select only the emulators. The emulators we're using are Auth, Storage, Hosting and Functions.
+### Type-Check, Compile and Minify for Production
 
-```bash
-firebase init
+```sh
+npm run build
 ```
 
-Start the emulators
+### Run Unit Tests with [Vitest](https://vitest.dev/)
 
-```bash
-firebase emulators:start
+```sh
+npm run test:unit
 ```
 
-Start the server
+### Lint with [ESLint](https://eslint.org/)
 
-```bash
-npm run start
+```sh
+npm run lint
 ```
-
-## Running Tests
-
-To run tests, run the following command
-
-```bash
-npm run test
-```
-
-## Contributing
-
-Please fork this project, then submit a pull request.
