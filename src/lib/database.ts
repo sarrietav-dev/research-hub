@@ -18,3 +18,19 @@ export async function getSeedGroupsByProgram() {
   const seedGroupsByProgram = groupBy(data, 'program')
   return seedGroupsByProgram
 }
+
+export async function getSeedGroup(name: string) {
+  const { data, error } = await supabase.from('student_info').select().eq('name', name).single()
+  if (error) {
+    throw error
+  }
+  return data
+}
+
+export async function getStudentInfo(name: string) {
+  const { data, error } = await supabase.from('student_info').select('*').eq('name', name)
+  if (error) {
+    throw error
+  }
+  return data
+}
