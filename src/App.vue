@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import UploadFile from './components/UploadFile.vue';
 </script>
 
 <template>
@@ -9,9 +8,7 @@ import UploadFile from './components/UploadFile.vue';
       <v-btn variant="tonal" prepend-icon="mdi-login">Login</v-btn>
     </v-app-bar>
     <v-main>
-      <v-container>
-        <UploadFile></UploadFile>
-      </v-container>
+      <router-view />
     </v-main>
   </v-app>
 </template>
