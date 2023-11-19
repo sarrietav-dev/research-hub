@@ -1,5 +1,7 @@
 <script setup>
 import UploadFile from './components/UploadFile.vue';
+import ListProgram from './components/ListProgram.vue';
+
 </script>
 
 <template>
@@ -10,6 +12,7 @@ import UploadFile from './components/UploadFile.vue';
     </v-app-bar>
     <v-main>
       <v-container>
+        <ListProgram></ListProgram>
         <UploadFile></UploadFile>
       </v-container>
     </v-main>
