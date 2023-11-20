@@ -1,13 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-
+import GroupView from '../views/GroupView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: GroupView
     },
     {
       path: '/about',
@@ -21,8 +20,12 @@ const router = createRouter({
       path: '/upload',
       name: 'upload',
       component: () => import('../views/UploadView.vue')
+    },
+    {
+      path: '/seed_groups/:seed_group',
+      name: 'seed_groups',
+      component: () => import('../views/SeedView.vue')
     }
   ]
 })
-
 export default router

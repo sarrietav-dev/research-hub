@@ -1,20 +1,19 @@
-<script setup>
-import UploadFile from './components/UploadFile.vue';
-import ListProgram from './components/ListProgram.vue';
-
-</script>
 
 <template>
-  <v-app>
+  
+  <v-app> 
     <v-app-bar> 
-      <v-app-bar-title>Research Hub</v-app-bar-title>
+      <v-app-bar-title>
+        <v-btn variant="plain" to="/">Research Hub</v-btn>
+      </v-app-bar-title>
       <v-btn variant="tonal" prepend-icon="mdi-login">Login</v-btn>
     </v-app-bar>
-    <v-main>
+      <v-main >
+      
       <v-container>
-        <ListProgram></ListProgram>
-        <UploadFile></UploadFile>
+        <router-view></router-view>
       </v-container>
-    </v-main>
+      
+      </v-main>
   </v-app>
 </template>
