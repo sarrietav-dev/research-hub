@@ -8,9 +8,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './controllers/auth/auth.controller';
 
 @Module({
-  providers: [AuthService, UserService, CryptoService],
+  providers: [AuthService, UserService, CryptoService, PrismaService],
   imports: [
-    PrismaService,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
