@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '@/auth/services/auth/auth.service';
 import { CryptoService } from '@/auth/services/crypto/crypto.service';
 import { UserService } from '@/auth/services/user/user.service';
@@ -51,6 +51,26 @@ describe('AuthController', () => {
         .expect(201)
         .expect((res) => {
           expect(res.body).toHaveProperty('accessToken');
+        });
+    });
+
+    it('should return a 401 error', async () => {
+      const email = 'test@test.com';
+      const password = 'password';
+
+      jest
+        .spyOn(service, 'signIn')
+        .mockRejectedValue(new UnauthorizedException());
+
+      await request(app.getHttpServer())
+        .post('/api/auth/sign-in')
+        .send({ email, password })
+        .expect(401)
+        .expect((res) => {
+          expect(res.body).toStrictEqual({
+            statusCode: 401,
+            message: 'Unauthorized',
+          });
         });
     });
   });
