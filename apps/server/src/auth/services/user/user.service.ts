@@ -24,7 +24,7 @@ export class UserService {
     return user;
   }
 
-  async createUser(
+  async create(
     email: string,
     password: string,
     name: string,
