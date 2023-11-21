@@ -1,0 +1,141 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SeedGroup {
+  id                 Int                  @id @default(autoincrement())
+  name               String
+  acronym            String?
+  ResearchGroup      ResearchGroup        @relation(fields: [researchGroupId], references: [id])
+  researchGroupId    Int                  @map("research_group_id")
+  researchLines      String[]             @map("research_lines")
+  description        String
+  Events             Event[]
+  MembershipRecord   MembershipRecord[]
+  CoResearcherRecord CoResearcherRecord[]
+  LeaderRecord       LeaderRecord[]
+
+  @@map("seed_groups")
+}
+
+model LeaderRecord {
+  id          Int        @id @default(autoincrement())
+  SeedGroup   SeedGroup? @relation(fields: [seedGroupId], references: [id])
+  seedGroupId Int?       @map("seed_group_id")
+  Leader      Leader?    @relation(fields: [leaderId], references: [id])
+  leaderId    Int?       @map("leader_id")
+
+  @@map("leader_record")
+}
+
+model Leader {
+  id           Int            @id @default(autoincrement())
+  name         String
+  email        String         @unique
+  phone        String         @unique
+  LeaderRecord LeaderRecord[]
+
+  @@map("leaders")
+}
+
+model CoResearcherRecord {
+  id             Int           @id @default(autoincrement())
+  SeedGroup      SeedGroup?    @relation(fields: [seedGroupId], references: [id])
+  seedGroupId    Int?          @map("seed_group_id")
+  CoResearcher   CoResearcher? @relation(fields: [coResearcherId], references: [id])
+  coResearcherId Int?          @map("co_researcher_id")
+
+  @@map("co_researcher_record")
+}
+
+model CoResearcher {
+  id                 Int                  @id @default(autoincrement())
+  name               String
+  email              String               @unique
+  phone              String               @unique
+  program            Program              @relation(fields: [programId], references: [id])
+  programId          Int                  @map("program_id")
+  CoResearcherRecord CoResearcherRecord[]
+
+  @@map("co_researchers")
+}
+
+model MembershipRecord {
+  id              Int        @id @default(autoincrement())
+  SeedGroup       SeedGroup? @relation(fields: [seedGroupId], references: [id])
+  seedGroupId     Int?       @map("seed_group_id")
+  Member          Member?    @relation(fields: [memberId], references: [id])
+  memberId        Int?       @map("member_id")
+  period          String
+  affiliationDate DateTime   @map("affiliation_date")
+  functions       String[]
+  isActive        Boolean    @default(true) @map("is_active")
+  role            Role
+
+  @@map("membership_record")
+}
+
+model Member {
+  id                Int                @id @default(autoincrement())
+  name              String
+  identityCard      String             @unique @map("identity_card")
+  institutionalCode String             @unique @map("institutional_code")
+  email             String             @unique
+  MembershipRecord  MembershipRecord[]
+
+  @@map("members")
+}
+
+model Program {
+  id            Int            @id @default(autoincrement())
+  name          String
+  coResearchers CoResearcher[]
+
+  @@map("programs")
+}
+
+enum Role {
+  Student
+  Professor
+}
+
+model ResearchGroup {
+  id        Int         @id @default(autoincrement())
+  name      String
+  SeedGroup SeedGroup[]
+
+  @@map("research_groups")
+}
+
+model Event {
+  id          Int       @id @default(autoincrement())
+  description String
+  date        DateTime
+  type        EventType
+  SeedGroup   SeedGroup @relation(fields: [seedGroupId], references: [id])
+  seedGroupId Int       @map("seed_group_id")
+
+  @@map("events")
+}
+
+enum EventType {
+  Local
+  International
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  name     String
+
+  @@map("users")
+}
