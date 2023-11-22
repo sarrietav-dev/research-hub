@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { User } from '@/auth/domain/User';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CryptoService } from '../crypto/crypto.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UserService {
@@ -24,21 +25,27 @@ export class UserService {
     return user;
   }
 
-  async create(
-    email: string,
-    password: string,
-    name: string,
-  ): Promise<User> {
+  async create(email: string, password: string, name: string): Promise<User> {
     password = await this.crypto.hash(password);
 
-    const user = await this.prisma.user.create({
-      data: {
-        email,
-        password,
-        name,
-      },
-    });
-
-    return user;
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          email,
+          password,
+          name,
+        },
+      });
+      return user;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ConflictException({
+            error: 'Conflict',
+            message: 'Email already exists',
+          });
+        }
+      }
+    }
   }
 }
