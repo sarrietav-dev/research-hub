@@ -50,7 +50,7 @@ export class UserService {
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          this.logger.error(`Email already exists: ${email}`);
+          this.logger.debug(`Email already exists: ${email}`);
           throw new ConflictException({
             error: 'Conflict',
             message: 'Email already exists',

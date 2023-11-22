@@ -33,6 +33,8 @@ export class AuthService {
 
     const payload = { id: user.id };
 
+    this.logger.debug(`User ${user.id} authenticated`);
+
     return {
       accessToken: this.jwtService.sign(payload),
     };
