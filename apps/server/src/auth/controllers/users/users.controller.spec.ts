@@ -36,6 +36,8 @@ describe('UsersController', () => {
       ],
     }).compile();
 
+    module.useLogger(false);
+
     controller = module.get<UsersController>(UsersController);
     service = module.get<UserService>(UserService);
 

@@ -19,7 +19,7 @@ export class UserService {
   private readonly logger = new Logger(UserService.name);
 
   async getUserByEmail(email: string): Promise<User | null> {
-    this.logger.log(`getUserByEmail: ${email}`);
+    this.logger.debug(`Getting user with email ${email}`);
 
     const user = await this.prisma.user.findUnique({
       where: {
@@ -45,7 +45,7 @@ export class UserService {
           name,
         },
       });
-      this.logger.log(`User created with email ${user.id}`);
+      this.logger.debug(`User created with email ${user.id}`);
       return user;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {

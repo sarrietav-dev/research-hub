@@ -25,6 +25,8 @@ describe('AuthController', () => {
       ],
     }).compile();
 
+    module.useLogger(false);
+
     controller = module.get<AuthController>(AuthController);
     service = module.get<AuthService>(AuthService);
 

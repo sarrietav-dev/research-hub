@@ -9,6 +9,8 @@ describe('CryptoService', () => {
       providers: [CryptoService],
     }).compile();
 
+    module.useLogger(false);
+
     service = module.get<CryptoService>(CryptoService);
   });
 

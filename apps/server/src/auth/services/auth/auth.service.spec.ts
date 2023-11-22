@@ -24,6 +24,8 @@ describe('AuthService', () => {
       ],
     }).compile();
 
+    module.useLogger(false);
+
     service = module.get<AuthService>(AuthService);
     userService = module.get<UserService>(UserService);
     jwtService = module.get<JwtService>(JwtService);
