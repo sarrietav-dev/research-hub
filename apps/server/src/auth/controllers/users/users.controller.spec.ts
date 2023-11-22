@@ -76,6 +76,25 @@ describe('UsersController', () => {
       it('should return a 400 error when the email is invalid', async () => {
         const inputUser = {
           email: 'test',
+          password: '8',
+          name: '',
+        };
+
+        await request(app.getHttpServer())
+          .post('/api/users')
+          .send(inputUser)
+          .expect(400)
+          .expect((res) => {
+            expect(res.body).toHaveProperty('error');
+            expect(res.body.message).toHaveProperty('email');
+            expect(res.body.message).toHaveProperty('password');
+            expect(res.body.message).toHaveProperty('name');
+          });
+      });
+
+      it('should return a 400 error when the email is invalid', async () => {
+        const inputUser = {
+          email: 'test',
           password: '12345678',
           name: 'test',
         };
