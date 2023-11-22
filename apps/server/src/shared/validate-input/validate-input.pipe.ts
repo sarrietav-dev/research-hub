@@ -13,11 +13,14 @@ export class ValidateInputPipe<T extends ZodRawShape> implements PipeTransform {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   transform(value: any, metadata: ArgumentMetadata) {
     try {
-      this.schema.parse(value);
+      return this.schema.parse(value);
     } catch (error) {
       if (error instanceof ZodError) {
         const formattedError = error.flatten().fieldErrors;
-        throw new BadRequestException(formattedError);
+        throw new BadRequestException({
+          error: 'Invalid Input',
+          message: formattedError,
+        });
       } else {
         throw error;
       }

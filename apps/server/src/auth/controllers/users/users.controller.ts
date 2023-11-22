@@ -1,6 +1,7 @@
 import { UserService } from '@/auth/services/user/user.service';
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { z } from 'zod';
+import { ValidateInputPipe } from '@/shared/validate-input/validate-input.pipe';
+import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common';
+import { createUserSchema, CreateUserDto } from './schemas';
 
 @Controller('/api/users')
 export class UsersController {
@@ -8,16 +9,13 @@ export class UsersController {
 
   @Post()
   @HttpCode(201)
-  async create(@Body() { email, password, name }: CreateUserDto) {
+  @UsePipes(new ValidateInputPipe(createUserSchema))
+  async create(@Body() { email, name, password }: CreateUserDto) {
     const user = await this.userService.create(email, password, name);
-    return user;
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    };
   }
 }
-
-const createUserSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  name: z.string().min(2),
-});
-
-type CreateUserDto = z.infer<typeof createUserSchema>;
