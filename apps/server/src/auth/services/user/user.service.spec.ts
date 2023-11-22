@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CryptoService } from '../crypto/crypto.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ConflictException } from '@nestjs/common';
 
 describe('UserService', () => {
   let service: UserService;
@@ -12,6 +14,8 @@ describe('UserService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [UserService, PrismaService, CryptoService],
     }).compile();
+
+    module.useLogger(false);
 
     service = module.get<UserService>(UserService);
     prismaService = module.get<PrismaService>(PrismaService);
@@ -71,6 +75,22 @@ describe('UserService', () => {
       );
 
       expect(createdUser).toEqual(expectedUser);
+    });
+
+    it('should throw a ConflictException if the email already exist', async () => {
+      jest.spyOn(prismaService.user, 'create').mockImplementation(() => {
+        throw new PrismaClientKnownRequestError('', {
+          code: 'P2002',
+          clientVersion: '',
+        });
+      });
+
+      try {
+        await service.create('', '', '');
+      } catch (error) {
+        expect(error).toBeDefined();
+        expect(error).toBeInstanceOf(ConflictException);
+      }
     });
   });
 });
