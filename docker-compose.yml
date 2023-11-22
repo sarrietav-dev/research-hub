@@ -3,6 +3,8 @@ version: '3.8'
 services:
   server:
     build: apps/server
+    depends_on:
+      - db
     ports:
       - 3000:3000
   db:
