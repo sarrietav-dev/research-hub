@@ -1,4 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { User } from '@/auth/domain/User';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CryptoService } from '../crypto/crypto.service';
@@ -11,7 +16,11 @@ export class UserService {
     private crypto: CryptoService,
   ) {}
 
+  private readonly logger = new Logger(UserService.name);
+
   async getUserByEmail(email: string): Promise<User | null> {
+    this.logger.log(`getUserByEmail: ${email}`);
+
     const user = await this.prisma.user.findUnique({
       where: {
         email,
@@ -36,16 +45,23 @@ export class UserService {
           name,
         },
       });
+      this.logger.log(`User created with email ${user.id}`);
       return user;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
+          this.logger.error(`Email already exists: ${email}`);
           throw new ConflictException({
             error: 'Conflict',
             message: 'Email already exists',
           });
         }
       }
+      this.logger.error(error);
+      throw new InternalServerErrorException({
+        error: 'Internal Server Error',
+        message: 'Something went wrong',
+      });
     }
   }
 }
