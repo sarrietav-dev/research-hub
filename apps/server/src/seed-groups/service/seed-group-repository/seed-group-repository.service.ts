@@ -85,4 +85,17 @@ export class SeedGroupRepositoryService {
 
     return data;
   }
+
+  async getProjectsBySeedGroupId(seedGroupId: number) {
+    const data = await this.prisma.seedGroup.findUnique({
+      where: {
+        id: seedGroupId,
+      },
+      include: {
+        projects: { include: { certifyingOrganization: true, products: true } },
+      },
+    });
+
+    return data.projects;
+  }
 }
