@@ -13,9 +13,16 @@ describe('AuthController', () => {
   let service: AuthService;
   let app: INestApplication;
 
+  const mockPrismaService = jest.mock('@/prisma/prisma.service');
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, UserService, PrismaService, CryptoService],
+      providers: [
+        AuthService,
+        UserService,
+        { provide: PrismaService, useValue: mockPrismaService },
+        CryptoService,
+      ],
       controllers: [AuthController],
       imports: [
         JwtModule.register({
