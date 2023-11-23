@@ -12,7 +12,7 @@ export const getMembersAtPeriodData: Awaited<
     period: '2023-1',
     seedGroupId: 1,
     role: 'Student',
-    Member: {
+    member: {
       id: 1,
       name: 'Member 1',
       email: '',
@@ -29,7 +29,7 @@ export const getMembersAtPeriodData: Awaited<
     period: '2023-1',
     seedGroupId: 1,
     role: 'Professor',
-    Member: {
+    member: {
       id: 2,
       name: 'Member 2',
       email: '',
@@ -46,7 +46,7 @@ export const getMembersAtPeriodData: Awaited<
     period: '2022-1',
     seedGroupId: 1,
     role: 'Student',
-    Member: {
+    member: {
       id: 3,
       name: 'Member 3',
       email: '',
@@ -63,7 +63,7 @@ export const getMembersAtPeriodData: Awaited<
     period: '2022-1',
     seedGroupId: 1,
     role: 'Student',
-    Member: {
+    member: {
       id: 4,
       name: 'Member 4',
       email: '',
@@ -80,7 +80,7 @@ export const getMembersAtPeriodData: Awaited<
     period: '2022-1',
     seedGroupId: 2,
     role: 'Student',
-    Member: {
+    member: {
       id: 5,
       name: 'Member 5',
       email: '',
@@ -97,7 +97,7 @@ export const getMembersAtPeriodData: Awaited<
     period: '2022-1',
     seedGroupId: 2,
     role: 'Student',
-    Member: {
+    member: {
       id: 6,
       name: 'Member 6',
       email: '',
@@ -121,7 +121,7 @@ export const getLatestMembersData: Awaited<
     period: '2023-1',
     seedGroupId: 1,
     role: 'Student',
-    Member: {
+    member: {
       id: 1,
       name: 'Member 1',
       email: '',
@@ -138,7 +138,7 @@ export const getLatestMembersData: Awaited<
     period: '2023-1',
     seedGroupId: 1,
     role: 'Professor',
-    Member: {
+    member: {
       id: 2,
       name: 'Member 2',
       email: '',
@@ -155,7 +155,7 @@ export const getLatestMembersData: Awaited<
     period: '2023-1',
     seedGroupId: 1,
     role: 'Student',
-    Member: {
+    member: {
       id: 3,
       name: 'Member 3',
       email: '',
