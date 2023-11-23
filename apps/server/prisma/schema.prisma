@@ -24,7 +24,7 @@ model SeedGroup {
   LeaderRecord       LeaderRecord[]
   program            Program              @relation(fields: [programId], references: [id])
   programId          Int                  @map("program_id")
-  Product            Product[]
+  Projects           Project[]
 
   @@map("seed_groups")
 }
@@ -146,12 +146,15 @@ model Project {
   CertifyingOrganization   CertifyingOrganization @relation(fields: [certifyingOrganizationId], references: [id])
   certifyingOrganizationId Int                    @map("certifying_organization_id")
   approvedAmount           Float                  @map("approved_amount")
-  products                 String[]
+  products                 Product[]
   members                  Member[]
+  SeedGroup                SeedGroup              @relation(fields: [seedGroupId], references: [id])
+  seedGroupId              Int
 }
 
 enum ProjectStatus {
   Finished
+  InProgress
 }
 
 model CertifyingOrganization {
@@ -166,8 +169,8 @@ model Product {
   description String
   type        ProductType
   date        DateTime
-  SeedGroup   SeedGroup   @relation(fields: [seedGroupId], references: [id])
-  seedGroupId Int         @map("seed_group_id")
+  Project     Project?    @relation(fields: [projectId], references: [id])
+  projectId   Int?
 }
 
 enum ProductType {
