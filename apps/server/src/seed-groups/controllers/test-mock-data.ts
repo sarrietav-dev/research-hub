@@ -162,3 +162,62 @@ export const getMembersData: Awaited<
     },
   },
 ];
+
+export const getSeedGroupsData: Awaited<
+  ReturnType<typeof SeedGroupService.prototype.getSeedGroups>
+> = [
+  {
+    id: 1,
+    name: 'Seed Group 1',
+    programId: 1,
+    acronym: 'SG1',
+    description: 'Seed Group 1 Description',
+    researchGroupId: 1,
+    researchLines: ['Seed Group 1 Research Line 1'],
+  },
+  {
+    id: 2,
+    name: 'Seed Group 2',
+    programId: 1,
+    acronym: 'SG2',
+    description: 'Seed Group 2 Description',
+    researchGroupId: 2,
+    researchLines: ['Seed Group 2 Research Line 1'],
+  },
+  {
+    id: 3,
+    name: 'Seed Group 3',
+    programId: 2,
+    acronym: 'SG3',
+    description: 'Seed Group 3 Description',
+    researchGroupId: 3,
+    researchLines: ['Seed Group 3 Research Line 1'],
+  },
+  {
+    id: 4,
+    name: 'Seed Group 4',
+    programId: 2,
+    acronym: 'SG4',
+    description: 'Seed Group 4 Description',
+    researchGroupId: 4,
+    researchLines: ['Seed Group 4 Research Line 1'],
+  },
+  {
+    id: 5,
+    name: 'Seed Group 5',
+    programId: 3,
+    acronym: 'SG5',
+    description: 'Seed Group 5 Description',
+    researchGroupId: 5,
+    researchLines: ['Seed Group 5 Research Line 1'],
+  },
+  {
+    id: 6,
+    name: 'Seed Group 6',
+    programId: 3,
+    acronym: 'SG6',
+    description: 'Seed Group 6 Description',
+    researchGroupId: 6,
+    researchLines: ['Seed Group 6 Research Line 1'],
+  },
+];

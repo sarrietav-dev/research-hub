@@ -41,62 +41,7 @@ describe('SeedGroupsController', () => {
   });
 
   describe('getSeedGroups', () => {
-    const seedGroups = [
-      {
-        id: 1,
-        name: 'Seed Group 1',
-        programId: 1,
-        acronym: 'SG1',
-        description: 'Seed Group 1 Description',
-        researchGroupId: 1,
-        researchLines: ['Seed Group 1 Research Line 1'],
-      },
-      {
-        id: 2,
-        name: 'Seed Group 2',
-        programId: 1,
-        acronym: 'SG2',
-        description: 'Seed Group 2 Description',
-        researchGroupId: 2,
-        researchLines: ['Seed Group 2 Research Line 1'],
-      },
-      {
-        id: 3,
-        name: 'Seed Group 3',
-        programId: 2,
-        acronym: 'SG3',
-        description: 'Seed Group 3 Description',
-        researchGroupId: 3,
-        researchLines: ['Seed Group 3 Research Line 1'],
-      },
-      {
-        id: 4,
-        name: 'Seed Group 4',
-        programId: 2,
-        acronym: 'SG4',
-        description: 'Seed Group 4 Description',
-        researchGroupId: 4,
-        researchLines: ['Seed Group 4 Research Line 1'],
-      },
-      {
-        id: 5,
-        name: 'Seed Group 5',
-        programId: 3,
-        acronym: 'SG5',
-        description: 'Seed Group 5 Description',
-        researchGroupId: 5,
-        researchLines: ['Seed Group 5 Research Line 1'],
-      },
-      {
-        id: 6,
-        name: 'Seed Group 6',
-        programId: 3,
-        acronym: 'SG6',
-        description: 'Seed Group 6 Description',
-        researchGroupId: 6,
-        researchLines: ['Seed Group 6 Research Line 1'],
-      },
-    ];
+    const seedGroups = mockData.getSeedGroupsData;
 
     beforeEach(() => {
       jest.spyOn(service, 'getSeedGroups').mockResolvedValue(seedGroups);
@@ -292,42 +237,11 @@ describe('SeedGroupsController', () => {
         .query({ period: '2023-1' })
         .expect(200);
 
-      expect(results.body).toEqual([
-        {
-          affiliationDate: expect.any(String),
-          functions: ['', '', ''],
-          id: 1,
-          isActive: true,
-          memberId: 1,
-          period: '2023-1',
-          seedGroupId: 1,
-          role: 'Student',
-          Member: {
-            id: 1,
-            name: 'Member 1',
-            email: '',
-            identityCard: '',
-            institutionalCode: '',
-          },
-        },
-        {
-          affiliationDate: expect.any(String),
-          functions: ['', '', ''],
-          id: 2,
-          isActive: true,
-          memberId: 2,
-          period: '2023-1',
-          seedGroupId: 1,
-          role: 'Professor',
-          Member: {
-            id: 2,
-            name: 'Member 2',
-            email: '',
-            identityCard: '',
-            institutionalCode: '',
-          },
-        },
-      ]);
+      expect(results.body).toEqual(
+        mockData.getMembersAtPeriodData
+          .slice(0, 2)
+          .map((data) => ({ ...data, affiliationDate: expect.any(String) })),
+      );
     });
 
     it('should return empty array', async () => {
