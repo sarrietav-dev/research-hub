@@ -16,4 +16,14 @@ export class SeedGroupService {
   async getSeedGroups() {
     return await this.seedGroupRepository.getSeedGroups();
   }
+
+  async getLatestMembers(seedGroupId: number) {
+    if (!(await this.seedGroupRepository.doesSeedGroupExist(seedGroupId))) {
+      return null;
+    }
+
+    return await this.seedGroupRepository.getLatestMembersBySeedGroupId(
+      seedGroupId,
+    );
+  }
 }

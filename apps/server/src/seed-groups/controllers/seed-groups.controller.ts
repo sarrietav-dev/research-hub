@@ -53,4 +53,27 @@ export class SeedGroupsController {
       return await this.seedGroupService.getSeedGroups();
     }
   }
+
+  @Get(':id/members')
+  async getLatestMembers(@Param('id') id: string) {
+    if (isNaN(+id)) {
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'id must be a number',
+        error: 'Bad Request',
+      });
+    }
+
+    const members = await this.seedGroupService.getLatestMembers(Number(id));
+
+    if (!members) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: 'Seed Group not found',
+        error: 'Not Found',
+      });
+    }
+
+    return members;
+  }
 }

@@ -104,4 +104,84 @@ describe('SeedGroupService', () => {
       expect(await service.getSeedGroupById(1)).toBeNull();
     });
   });
+
+  describe('getLatestMembers', () => {
+    it('should return latest members', async () => {
+      jest.spyOn(repository, 'doesSeedGroupExist').mockResolvedValue(true);
+
+      jest
+        .spyOn(repository, 'getLatestMembersBySeedGroupId')
+        .mockResolvedValueOnce([
+          {
+            affiliationDate: new Date(),
+            functions: ['', '', ''],
+            id: 1,
+            isActive: true,
+            memberId: 1,
+            period: '2023-1',
+            seedGroupId: 1,
+            role: 'Student',
+            Member: {
+              id: 1,
+              name: 'Member 1',
+              email: '',
+              identityCard: '',
+              institutionalCode: '',
+            },
+          },
+          {
+            affiliationDate: new Date(),
+            functions: ['', '', ''],
+            id: 2,
+            isActive: true,
+            memberId: 2,
+            period: '2023-1',
+            seedGroupId: 1,
+            role: 'Professor',
+            Member: {
+              id: 2,
+              name: 'Member 2',
+              email: '',
+              identityCard: '',
+              institutionalCode: '',
+            },
+          },
+          {
+            affiliationDate: new Date(),
+            functions: ['', '', ''],
+            id: 3,
+            isActive: true,
+            memberId: 3,
+            period: '2023-1',
+            seedGroupId: 1,
+            role: 'Student',
+            Member: {
+              id: 3,
+              name: 'Member 3',
+              email: '',
+              identityCard: '',
+              institutionalCode: '',
+            },
+          },
+        ]);
+
+      expect((await service.getLatestMembers(1)).length).toBe(3);
+    });
+
+    it('should return empty array', async () => {
+      jest.spyOn(repository, 'doesSeedGroupExist').mockResolvedValue(true);
+
+      jest
+        .spyOn(repository, 'getLatestMembersBySeedGroupId')
+        .mockResolvedValueOnce([]);
+
+      expect(await service.getLatestMembers(1)).toEqual([]);
+    });
+
+    it('should return null', async () => {
+      jest.spyOn(repository, 'doesSeedGroupExist').mockResolvedValue(false);
+
+      expect(await service.getLatestMembers(1)).toBeNull();
+    });
+  });
 });
