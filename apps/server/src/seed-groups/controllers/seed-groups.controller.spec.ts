@@ -150,6 +150,19 @@ describe('SeedGroupsController', () => {
 
       expect(results.body).toEqual([]);
     });
+
+    it('should return 400 error', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups')
+        .query({ programId: 'test' })
+        .expect(400);
+
+      expect(results.body).toEqual({
+        statusCode: 400,
+        message: 'programId must be a number',
+        error: 'Bad Request',
+      });
+    });
   });
 
   afterAll(async () => {
