@@ -6,6 +6,10 @@ export class SeedGroupService {
   constructor(private seedGroupRepository: SeedGroupRepositoryService) {}
 
   async getSeedGroupsByProgram(programId: number) {
-    return this.seedGroupRepository.getSeedGroupsByProgramId(programId);
+    return await this.seedGroupRepository.getSeedGroupsByProgramId(programId);
+  }
+
+  async getSeedGroups() {
+    return await this.seedGroupRepository.getSeedGroups();
   }
 }

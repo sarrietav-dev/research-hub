@@ -6,10 +6,14 @@ export class SeedGroupRepositoryService {
   constructor(private prisma: PrismaService) {}
 
   async getSeedGroupsByProgramId(programId: number) {
-    return this.prisma.seedGroup.findMany({
+    return await this.prisma.seedGroup.findMany({
       where: {
         programId,
       },
     });
+  }
+
+  async getSeedGroups() {
+    return await this.prisma.seedGroup.findMany();
   }
 }
