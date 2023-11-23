@@ -57,7 +57,20 @@ describe('SeedGroupsController', () => {
         .get('/api/seed-groups')
         .expect(200);
 
-      expect(results.body).toEqual(seedGroups);
+      expect(results.body).toEqual(
+        seedGroups.map((seedGroup) => ({
+          ...seedGroup,
+          projects: seedGroup.projects.map((project) => ({
+            ...project,
+            startDate: expect.any(String),
+            endDate: expect.any(String),
+            products: project.products.map((product) => ({
+              ...product,
+              date: expect.any(String),
+            })),
+          })),
+        })),
+      );
     });
 
     it('should return seed groups by program', async () => {
@@ -66,26 +79,20 @@ describe('SeedGroupsController', () => {
         .query({ programId: 1 })
         .expect(200);
 
-      expect(results.body).toEqual([
-        {
-          id: 1,
-          name: 'Seed Group 1',
-          programId: 1,
-          acronym: 'SG1',
-          description: 'Seed Group 1 Description',
-          researchGroupId: 1,
-          researchLines: ['Seed Group 1 Research Line 1'],
-        },
-        {
-          id: 2,
-          name: 'Seed Group 2',
-          programId: 1,
-          acronym: 'SG2',
-          description: 'Seed Group 2 Description',
-          researchGroupId: 2,
-          researchLines: ['Seed Group 2 Research Line 1'],
-        },
-      ]);
+      expect(results.body).toEqual(
+        seedGroups.slice(0, 2).map((seedGroup) => ({
+          ...seedGroup,
+          projects: seedGroup.projects.map((project) => ({
+            ...project,
+            startDate: expect.any(String),
+            endDate: expect.any(String),
+            products: project.products.map((product) => ({
+              ...product,
+              date: expect.any(String),
+            })),
+          })),
+        })),
+      );
     });
 
     it('should return empty array', async () => {
@@ -112,7 +119,7 @@ describe('SeedGroupsController', () => {
   });
 
   describe('getSeedGroupById', () => {
-    const seedGroup = {
+    const seedGroup: Awaited<ReturnType<typeof service.getSeedGroupById>> = {
       id: 1,
       name: 'Seed Group 1',
       programId: 1,
@@ -120,6 +127,32 @@ describe('SeedGroupsController', () => {
       description: 'Seed Group 1 Description',
       researchGroupId: 1,
       researchLines: ['Seed Group 1 Research Line 1'],
+      projects: [
+        {
+          id: 1,
+          name: 'Project 1',
+          approvedAmount: 1000,
+          startDate: new Date(),
+          endDate: new Date(),
+          certifyingOrganizationId: 1,
+          type: 'Finished',
+          seedGroupId: 1,
+          certifyingOrganization: {
+            id: 1,
+            name: 'Certifying Organization 1',
+          },
+          products: [
+            {
+              id: 1,
+              name: 'Product 1',
+              description: 'Product 1 Description',
+              projectId: 1,
+              date: new Date(),
+              type: 'Article',
+            },
+          ],
+        },
+      ],
     };
 
     beforeEach(() => {
@@ -131,7 +164,18 @@ describe('SeedGroupsController', () => {
         .get('/api/seed-groups/1')
         .expect(200);
 
-      expect(results.body).toEqual(seedGroup);
+      expect(results.body).toEqual({
+        ...seedGroup,
+        projects: seedGroup.projects.map((project) => ({
+          ...project,
+          startDate: expect.any(String),
+          endDate: expect.any(String),
+          products: project.products.map((product) => ({
+            ...product,
+            date: expect.any(String),
+          })),
+        })),
+      });
     });
 
     it('should return 404 error', async () => {

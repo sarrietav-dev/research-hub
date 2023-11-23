@@ -37,4 +37,12 @@ export class SeedGroupService {
       period,
     );
   }
+
+  async getProjects(seedGroupId: number) {
+    if (!(await this.seedGroupRepository.doesSeedGroupExist(seedGroupId))) {
+      return null;
+    }
+
+    return await this.seedGroupRepository.getProjectsBySeedGroupId(seedGroupId);
+  }
 }

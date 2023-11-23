@@ -10,6 +10,9 @@ export class SeedGroupRepositoryService {
       where: {
         id,
       },
+      include: {
+        projects: { include: { certifyingOrganization: true, products: true } },
+      },
     });
   }
 
@@ -41,7 +44,7 @@ export class SeedGroupRepositoryService {
         period: await this.getLatestYearRegisteredBySeedGroupId(seedGroupId),
       },
       include: {
-        Member: true,
+        member: true,
       },
     });
 
@@ -62,7 +65,11 @@ export class SeedGroupRepositoryService {
   }
 
   async getSeedGroups() {
-    return await this.prisma.seedGroup.findMany();
+    return await this.prisma.seedGroup.findMany({
+      include: {
+        projects: { include: { certifyingOrganization: true, products: true } },
+      },
+    });
   }
 
   async getMembersAtPeriod(seedGroupId: number, period: string) {
@@ -72,10 +79,23 @@ export class SeedGroupRepositoryService {
         period,
       },
       include: {
-        Member: true,
+        member: true,
       },
     });
 
     return data;
+  }
+
+  async getProjectsBySeedGroupId(seedGroupId: number) {
+    const data = await this.prisma.seedGroup.findUnique({
+      where: {
+        id: seedGroupId,
+      },
+      include: {
+        projects: { include: { certifyingOrganization: true, products: true } },
+      },
+    });
+
+    return data.projects;
   }
 }
