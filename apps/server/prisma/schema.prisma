@@ -22,6 +22,8 @@ model SeedGroup {
   MembershipRecord   MembershipRecord[]
   CoResearcherRecord CoResearcherRecord[]
   LeaderRecord       LeaderRecord[]
+  program            Program              @relation(fields: [programId], references: [id])
+  programId          Int                  @map("program_id")
 
   @@map("seed_groups")
 }
@@ -98,6 +100,7 @@ model Program {
   id            Int            @id @default(autoincrement())
   name          String
   coResearchers CoResearcher[]
+  SeedGroups    SeedGroup[]
 
   @@map("programs")
 }
