@@ -16,12 +16,17 @@ describe('UsersController', () => {
   let service: UserService;
   let app: INestApplication;
 
+  const mockPrismaService = jest.mock('@/prisma/prisma.service');
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         UserService,
-        PrismaService,
+        {
+          provide: PrismaService,
+          useValue: mockPrismaService,
+        },
         CryptoService,
         ValidateInputPipe,
         ZodObject,
