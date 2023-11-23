@@ -11,71 +11,71 @@ datasource db {
 }
 
 model SeedGroup {
-  id                 Int                  @id @default(autoincrement())
-  name               String
-  acronym            String?
-  ResearchGroup      ResearchGroup        @relation(fields: [researchGroupId], references: [id])
-  researchGroupId    Int                  @map("research_group_id")
-  researchLines      String[]             @map("research_lines")
-  description        String
-  Events             Event[]
-  MembershipRecord   MembershipRecord[]
-  CoResearcherRecord CoResearcherRecord[]
-  LeaderRecord       LeaderRecord[]
-  program            Program              @relation(fields: [programId], references: [id])
-  programId          Int                  @map("program_id")
-  Projects           Project[]
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  acronym             String?
+  researchGroup       ResearchGroup        @relation(fields: [researchGroupId], references: [id])
+  researchGroupId     Int                  @map("research_group_id")
+  researchLines       String[]             @map("research_lines")
+  description         String
+  events              Event[]
+  membershipRecords   MembershipRecord[]
+  coResearcherRecords CoResearcherRecord[]
+  leaderRecords       LeaderRecord[]
+  program             Program              @relation(fields: [programId], references: [id])
+  programId           Int                  @map("program_id")
+  projects            Project[]
 
   @@map("seed_groups")
 }
 
 model LeaderRecord {
   id          Int        @id @default(autoincrement())
-  SeedGroup   SeedGroup? @relation(fields: [seedGroupId], references: [id])
+  seedGroup   SeedGroup? @relation(fields: [seedGroupId], references: [id])
   seedGroupId Int?       @map("seed_group_id")
-  Leader      Leader?    @relation(fields: [leaderId], references: [id])
+  leader      Leader?    @relation(fields: [leaderId], references: [id])
   leaderId    Int?       @map("leader_id")
 
   @@map("leader_record")
 }
 
 model Leader {
-  id           Int            @id @default(autoincrement())
-  name         String
-  email        String         @unique
-  phone        String         @unique
-  LeaderRecord LeaderRecord[]
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  phone         String         @unique
+  leaderRecords LeaderRecord[]
 
   @@map("leaders")
 }
 
 model CoResearcherRecord {
   id             Int           @id @default(autoincrement())
-  SeedGroup      SeedGroup?    @relation(fields: [seedGroupId], references: [id])
+  seedGroup      SeedGroup?    @relation(fields: [seedGroupId], references: [id])
   seedGroupId    Int?          @map("seed_group_id")
-  CoResearcher   CoResearcher? @relation(fields: [coResearcherId], references: [id])
+  coResearcher   CoResearcher? @relation(fields: [coResearcherId], references: [id])
   coResearcherId Int?          @map("co_researcher_id")
 
   @@map("co_researcher_record")
 }
 
 model CoResearcher {
-  id                 Int                  @id @default(autoincrement())
-  name               String
-  email              String               @unique
-  phone              String               @unique
-  program            Program              @relation(fields: [programId], references: [id])
-  programId          Int                  @map("program_id")
-  CoResearcherRecord CoResearcherRecord[]
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  email               String               @unique
+  phone               String               @unique
+  program             Program              @relation(fields: [programId], references: [id])
+  programId           Int                  @map("program_id")
+  coResearcherRecords CoResearcherRecord[]
 
   @@map("co_researchers")
 }
 
 model MembershipRecord {
   id              Int        @id @default(autoincrement())
-  SeedGroup       SeedGroup? @relation(fields: [seedGroupId], references: [id])
+  seedGroup       SeedGroup? @relation(fields: [seedGroupId], references: [id])
   seedGroupId     Int?       @map("seed_group_id")
-  Member          Member?    @relation(fields: [memberId], references: [id])
+  member          Member?    @relation(fields: [memberId], references: [id])
   memberId        Int?       @map("member_id")
   period          String
   affiliationDate DateTime   @map("affiliation_date")
@@ -92,9 +92,8 @@ model Member {
   identityCard      String             @unique @map("identity_card")
   institutionalCode String             @unique @map("institutional_code")
   email             String             @unique
-  MembershipRecord  MembershipRecord[]
-  Project           Project?           @relation(fields: [projectId], references: [id])
-  projectId         Int?
+  membershipRecords MembershipRecord[]
+  projects          Project[]
 
   @@map("members")
 }
@@ -103,7 +102,7 @@ model Program {
   id            Int            @id @default(autoincrement())
   name          String
   coResearchers CoResearcher[]
-  SeedGroups    SeedGroup[]
+  seedGroups    SeedGroup[]
 
   @@map("programs")
 }
@@ -114,9 +113,9 @@ enum Role {
 }
 
 model ResearchGroup {
-  id        Int         @id @default(autoincrement())
-  name      String
-  SeedGroup SeedGroup[]
+  id         Int         @id @default(autoincrement())
+  name       String
+  seedGroups SeedGroup[]
 
   @@map("research_groups")
 }
@@ -126,7 +125,7 @@ model Event {
   description String
   date        DateTime
   type        EventType
-  SeedGroup   SeedGroup @relation(fields: [seedGroupId], references: [id])
+  seedGroup   SeedGroup @relation(fields: [seedGroupId], references: [id])
   seedGroupId Int       @map("seed_group_id")
 
   @@map("events")
@@ -143,12 +142,12 @@ model Project {
   type                     ProjectStatus
   startDate                DateTime               @map("start_date")
   endDate                  DateTime?              @map("end_date")
-  CertifyingOrganization   CertifyingOrganization @relation(fields: [certifyingOrganizationId], references: [id])
+  certifyingOrganization   CertifyingOrganization @relation(fields: [certifyingOrganizationId], references: [id])
   certifyingOrganizationId Int                    @map("certifying_organization_id")
   approvedAmount           Float                  @map("approved_amount")
   products                 Product[]
   members                  Member[]
-  SeedGroup                SeedGroup              @relation(fields: [seedGroupId], references: [id])
+  seedGroup                SeedGroup              @relation(fields: [seedGroupId], references: [id])
   seedGroupId              Int
 }
 
@@ -158,9 +157,9 @@ enum ProjectStatus {
 }
 
 model CertifyingOrganization {
-  id      Int       @id @default(autoincrement())
-  name    String
-  Project Project[]
+  id       Int       @id @default(autoincrement())
+  name     String
+  projects Project[]
 }
 
 model Product {
@@ -169,7 +168,7 @@ model Product {
   description String
   type        ProductType
   date        DateTime
-  Project     Project?    @relation(fields: [projectId], references: [id])
+  project     Project?    @relation(fields: [projectId], references: [id])
   projectId   Int?
 }
 
