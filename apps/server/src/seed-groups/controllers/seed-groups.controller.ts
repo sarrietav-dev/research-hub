@@ -55,13 +55,30 @@ export class SeedGroupsController {
   }
 
   @Get(':id/members')
-  async getLatestMembers(@Param('id') id: string) {
+  async getMembers(@Param('id') id: string, @Query('period') period?: string) {
     if (isNaN(+id)) {
       throw new BadRequestException({
         statusCode: 400,
         message: 'id must be a number',
         error: 'Bad Request',
       });
+    }
+
+    if (period) {
+      if (!/^\d{4}-\d$/.test(period)) {
+        throw new BadRequestException({
+          statusCode: 400,
+          message: 'period must be in the format YYYY-X',
+          error: 'Bad Request',
+        });
+      }
+
+      const members = await this.seedGroupService.getMembersAtPeriod(
+        Number(id),
+        period,
+      );
+
+      return members;
     }
 
     const members = await this.seedGroupService.getLatestMembers(Number(id));

@@ -64,4 +64,18 @@ export class SeedGroupRepositoryService {
   async getSeedGroups() {
     return await this.prisma.seedGroup.findMany();
   }
+
+  async getMembersAtPeriod(seedGroupId: number, period: string) {
+    const data = await this.prisma.membershipRecord.findMany({
+      where: {
+        seedGroupId,
+        period,
+      },
+      include: {
+        Member: true,
+      },
+    });
+
+    return data;
+  }
 }

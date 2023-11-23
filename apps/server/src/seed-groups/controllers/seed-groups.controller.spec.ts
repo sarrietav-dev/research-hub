@@ -4,6 +4,7 @@ import { SeedGroupService } from '../service/seed-group/seed-group.service';
 import { SeedGroupRepositoryService } from '../service/seed-group-repository/seed-group-repository.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import * as request from 'supertest';
+import * as mockData from './test-mock-data';
 import { INestApplication } from '@nestjs/common';
 
 describe('SeedGroupsController', () => {
@@ -215,66 +216,80 @@ describe('SeedGroupsController', () => {
     });
   });
 
-  describe('getLatestMembers', () => {
+  describe('getMembers', () => {
     beforeEach(() => {
-      jest.spyOn(service, 'getLatestMembers').mockResolvedValue([
-        {
-          affiliationDate: new Date(),
-          functions: ['', '', ''],
-          id: 1,
-          isActive: true,
-          memberId: 1,
-          period: '2023-1',
-          seedGroupId: 1,
-          role: 'Student',
-          Member: {
-            id: 1,
-            name: 'Member 1',
-            email: '',
-            identityCard: '',
-            institutionalCode: '',
-          },
-        },
-        {
-          affiliationDate: new Date(),
-          functions: ['', '', ''],
-          id: 2,
-          isActive: true,
-          memberId: 2,
-          period: '2023-1',
-          seedGroupId: 1,
-          role: 'Professor',
-          Member: {
-            id: 2,
-            name: 'Member 2',
-            email: '',
-            identityCard: '',
-            institutionalCode: '',
-          },
-        },
-        {
-          affiliationDate: new Date(),
-          functions: ['', '', ''],
-          id: 3,
-          isActive: true,
-          memberId: 3,
-          period: '2023-1',
-          seedGroupId: 1,
-          role: 'Student',
-          Member: {
-            id: 3,
-            name: 'Member 3',
-            email: '',
-            identityCard: '',
-            institutionalCode: '',
-          },
-        },
-      ]);
+      jest
+        .spyOn(service, 'getLatestMembers')
+        .mockResolvedValue(mockData.getMembersData);
     });
 
     it('should return latest members', async () => {
       const results = await request(app.getHttpServer())
         .get('/api/seed-groups/1/members')
+        .expect(200);
+
+      expect(results.body).toEqual(
+        mockData.getMembersData.map((data) => ({
+          ...data,
+          affiliationDate: expect.any(String),
+        })),
+      );
+    });
+
+    it('should return 400 error', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/test/members')
+        .expect(400);
+
+      expect(results.body).toEqual({
+        statusCode: 400,
+        message: 'id must be a number',
+        error: 'Bad Request',
+      });
+    });
+
+    it('should return 404 error', async () => {
+      jest.spyOn(service, 'getLatestMembers').mockResolvedValue(null);
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/members')
+        .expect(404);
+
+      expect(results.body).toEqual({
+        statusCode: 404,
+        message: 'Seed Group not found',
+        error: 'Not Found',
+      });
+    });
+
+    it('should return empty array', async () => {
+      jest.spyOn(service, 'getLatestMembers').mockResolvedValue([]);
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/members')
+        .expect(200);
+
+      expect(results.body).toEqual([]);
+    });
+  });
+
+  describe('getMembersAtPeriod', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(service, 'getMembersAtPeriod')
+        .mockImplementation(async (seedGroupId: number, period: string) => {
+          const data = mockData.getMembersAtPeriodData;
+          return data.filter(
+            (member) =>
+              member.period === period && member.seedGroupId == seedGroupId,
+          );
+        });
+    });
+
+    it('should return members at period', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/members')
+        .query({ period: '2023-1' })
         .expect(200);
 
       expect(results.body).toEqual([
@@ -312,49 +327,28 @@ describe('SeedGroupsController', () => {
             institutionalCode: '',
           },
         },
-        {
-          affiliationDate: expect.any(String),
-          functions: ['', '', ''],
-          id: 3,
-          isActive: true,
-          memberId: 3,
-          period: '2023-1',
-          seedGroupId: 1,
-          role: 'Student',
-          Member: {
-            id: 3,
-            name: 'Member 3',
-            email: '',
-            identityCard: '',
-            institutionalCode: '',
-          },
-        },
       ]);
+    });
+
+    it('should return empty array', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/members')
+        .query({ period: '2022-2' })
+        .expect(200);
+
+      expect(results.body).toEqual([]);
     });
 
     it('should return 400 error', async () => {
       const results = await request(app.getHttpServer())
-        .get('/api/seed-groups/test/members')
+        .get('/api/seed-groups/1/members')
+        .query({ period: 'test' })
         .expect(400);
 
       expect(results.body).toEqual({
         statusCode: 400,
-        message: 'id must be a number',
+        message: 'period must be in the format YYYY-X',
         error: 'Bad Request',
-      });
-    });
-
-    it('should return 404 error', async () => {
-      jest.spyOn(service, 'getLatestMembers').mockResolvedValue(null);
-
-      const results = await request(app.getHttpServer())
-        .get('/api/seed-groups/1/members')
-        .expect(404);
-
-      expect(results.body).toEqual({
-        statusCode: 404,
-        message: 'Seed Group not found',
-        error: 'Not Found',
       });
     });
   });

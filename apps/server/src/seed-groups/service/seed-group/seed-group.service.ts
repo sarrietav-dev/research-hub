@@ -26,4 +26,15 @@ export class SeedGroupService {
       seedGroupId,
     );
   }
+
+  async getMembersAtPeriod(seedGroupId: number, period: string) {
+    if (!(await this.seedGroupRepository.doesSeedGroupExist(seedGroupId))) {
+      return null;
+    }
+
+    return await this.seedGroupRepository.getMembersAtPeriod(
+      seedGroupId,
+      period,
+    );
+  }
 }
