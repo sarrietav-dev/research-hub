@@ -1,17 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { ProgramRepositoryService } from '../program-repository/program-repository.service';
+import { Program } from '@/programs/domain/Program';
 
 @Injectable()
 export class ProgramService {
   constructor(private programRepository: ProgramRepositoryService) {}
 
-  getPrograms() {}
+  async getPrograms(): Promise<Program[]> {
+    return this.programRepository.getPrograms();
+  }
 
-  getOneProgram() {}
+  async getProgramById(id: number): Promise<Program | null> {
+    return this.programRepository.getProgramById(id);
+  }
 
-  createProgram() {}
+  async createProgram(name: string) {
+    return await this.programRepository.createProgram(name);
+  }
 
-  updateProgram() {}
+  async updateProgram(id: number, newName: string) {
+    return await this.programRepository.updateProgram(id, newName);
+  }
 
-  deleteProgram() {}
+  async deleteProgram(id: number) {
+    return await this.programRepository.deleteProgram(id);
+  }
 }
