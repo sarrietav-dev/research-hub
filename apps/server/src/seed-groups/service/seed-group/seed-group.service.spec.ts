@@ -78,4 +78,30 @@ describe('SeedGroupService', () => {
       expect(await service.getSeedGroupsByProgram(1)).toEqual([]);
     });
   });
+
+  describe('getSeedGroupById', () => {
+    it('should return seed group', async () => {
+      const seedGroup = {
+        id: 1,
+        name: 'Seed Group 1',
+        programId: 1,
+        acronym: 'SG1',
+        description: 'Seed Group 1 Description',
+        researchGroupId: 1,
+        researchLines: ['Seed Group 1 Research Line 1'],
+      };
+
+      jest
+        .spyOn(repository, 'getSeedGroupById')
+        .mockResolvedValueOnce(seedGroup);
+
+      expect(await service.getSeedGroupById(1)).toEqual(seedGroup);
+    });
+
+    it('should return null', async () => {
+      jest.spyOn(repository, 'getSeedGroupById').mockResolvedValueOnce(null);
+
+      expect(await service.getSeedGroupById(1)).toBeNull();
+    });
+  });
 });
