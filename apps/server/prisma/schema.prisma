@@ -24,6 +24,7 @@ model SeedGroup {
   LeaderRecord       LeaderRecord[]
   program            Program              @relation(fields: [programId], references: [id])
   programId          Int                  @map("program_id")
+  Product            Product[]
 
   @@map("seed_groups")
 }
@@ -92,6 +93,8 @@ model Member {
   institutionalCode String             @unique @map("institutional_code")
   email             String             @unique
   MembershipRecord  MembershipRecord[]
+  Project           Project?           @relation(fields: [projectId], references: [id])
+  projectId         Int?
 
   @@map("members")
 }
@@ -132,6 +135,47 @@ model Event {
 enum EventType {
   Local
   International
+}
+
+model Project {
+  id                       Int                    @id @default(autoincrement())
+  name                     String
+  type                     ProjectStatus
+  startDate                DateTime               @map("start_date")
+  endDate                  DateTime?              @map("end_date")
+  CertifyingOrganization   CertifyingOrganization @relation(fields: [certifyingOrganizationId], references: [id])
+  certifyingOrganizationId Int                    @map("certifying_organization_id")
+  approvedAmount           Float                  @map("approved_amount")
+  products                 String[]
+  members                  Member[]
+}
+
+enum ProjectStatus {
+  Finished
+}
+
+model CertifyingOrganization {
+  id      Int       @id @default(autoincrement())
+  name    String
+  Project Project[]
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String
+  type        ProductType
+  date        DateTime
+  SeedGroup   SeedGroup   @relation(fields: [seedGroupId], references: [id])
+  seedGroupId Int         @map("seed_group_id")
+}
+
+enum ProductType {
+  Article
+  Thesis
+  Report
+  Poster
+  Other
 }
 
 model User {
