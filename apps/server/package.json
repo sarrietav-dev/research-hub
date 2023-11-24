@@ -5,6 +5,9 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "prisma": {
+    "seed": "ts-node ./prisma/seeder.ts"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -19,7 +22,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:generate": "prisma generate",
-    "prisma:migrate:dev": "dotenv -e .env.dev prisma migrate dev --name init",
+    "prisma:migrate:dev": "dotenv -e .env.dev prisma migrate dev",
     "prisma:migrate:prod": "dotenv -e .env prisma migrate deploy"
   },
   "dependencies": {
