@@ -25,6 +25,7 @@ model SeedGroup {
   program             Program              @relation(fields: [programId], references: [id])
   programId           Int                  @map("program_id")
   projects            Project[]
+  creationDate        DateTime             @map("creation_date")
 
   @@map("seed_groups")
 }
@@ -123,7 +124,8 @@ model ResearchGroup {
 model Event {
   id          Int       @id @default(autoincrement())
   description String
-  date        DateTime
+  startDate   DateTime?
+  endDate     DateTime?
   type        EventType
   seedGroup   SeedGroup @relation(fields: [seedGroupId], references: [id])
   seedGroupId Int       @map("seed_group_id")
