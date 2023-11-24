@@ -10,7 +10,7 @@
     </v-app-bar>
       <v-main >
       <v-container>
-        <StudentList></StudentList>
+        <router-view></router-view>
       </v-container>
       
       </v-main>
