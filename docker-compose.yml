@@ -16,7 +16,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: research-hub
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./apps/server/db_data:/var/lib/postgresql/data
   pg_admin:
     image: dpage/pgadmin4
     ports:
@@ -24,5 +24,3 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: db@db.com
       PGADMIN_DEFAULT_PASSWORD: admin
-volumes:
-  postgres_data:
