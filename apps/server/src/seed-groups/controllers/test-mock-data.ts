@@ -383,3 +383,157 @@ export const getSeedGroupsData: Awaited<
     ],
   },
 ];
+
+export const getProjectsData: Awaited<
+  ReturnType<typeof SeedGroupService.prototype.getProjects>
+> = [
+  {
+    id: 1,
+    name: 'Project 1',
+    approvedAmount: 1000,
+    startDate: new Date(),
+    endDate: new Date(),
+    certifyingOrganizationId: 1,
+    type: 'Finished',
+    seedGroupId: 1,
+    certifyingOrganization: {
+      id: 1,
+      name: 'Certifying Organization 1',
+    },
+    products: [
+      {
+        id: 1,
+        name: 'Product 1',
+        description: 'Product 1 Description',
+        projectId: 1,
+        date: new Date(),
+        type: 'Article',
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Project 2',
+    approvedAmount: 2000,
+    startDate: new Date(),
+    endDate: new Date(),
+    certifyingOrganizationId: 2,
+    type: 'Finished',
+    seedGroupId: 2,
+    certifyingOrganization: {
+      id: 2,
+      name: 'Certifying Organization 2',
+    },
+    products: [
+      {
+        id: 2,
+        name: 'Product 2',
+        description: 'Product 2 Description',
+        projectId: 2,
+        date: new Date(),
+        type: 'Article',
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Project 3',
+    approvedAmount: 3000,
+    startDate: new Date(),
+    endDate: new Date(),
+    certifyingOrganizationId: 3,
+    type: 'Finished',
+    seedGroupId: 3,
+    certifyingOrganization: {
+      id: 3,
+      name: 'Certifying Organization 3',
+    },
+    products: [
+      {
+        id: 3,
+        name: 'Product 3',
+        description: 'Product 3 Description',
+        projectId: 3,
+        date: new Date(),
+        type: 'Article',
+      },
+    ],
+  },
+  {
+    id: 4,
+    name: 'Project 4',
+    approvedAmount: 4000,
+    startDate: new Date(),
+    endDate: new Date(),
+    certifyingOrganizationId: 4,
+    type: 'Finished',
+    seedGroupId: 4,
+    certifyingOrganization: {
+      id: 4,
+      name: 'Certifying Organization 4',
+    },
+    products: [
+      {
+        id: 4,
+        name: 'Product 4',
+        description: 'Product 4 Description',
+        projectId: 4,
+        date: new Date(),
+        type: 'Article',
+      },
+    ],
+  },
+];
+
+export const getEventsData: Awaited<
+  ReturnType<typeof SeedGroupService.prototype.getEvents>
+> = [
+  {
+    id: 1,
+    description: 'Event 1',
+    startDate: new Date(),
+    endDate: new Date(),
+    seedGroupId: 1,
+    type: 'Local',
+  },
+  {
+    id: 2,
+    description: 'Event 2',
+    startDate: new Date(),
+    endDate: new Date(),
+    seedGroupId: 2,
+    type: 'Local',
+  },
+  {
+    id: 3,
+    description: 'Event 3',
+    startDate: new Date(),
+    endDate: new Date(),
+    seedGroupId: 3,
+    type: 'Local',
+  },
+  {
+    id: 4,
+    description: 'Event 4',
+    startDate: new Date(),
+    endDate: new Date(),
+    seedGroupId: 4,
+    type: 'Local',
+  },
+  {
+    id: 5,
+    description: 'Event 5',
+    startDate: new Date(),
+    endDate: new Date(),
+    seedGroupId: 5,
+    type: 'Local',
+  },
+  {
+    id: 6,
+    description: 'Event 6',
+    startDate: new Date(),
+    endDate: new Date(),
+    seedGroupId: 6,
+    type: 'Local',
+  },
+];

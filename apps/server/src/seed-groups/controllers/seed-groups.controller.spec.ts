@@ -6,6 +6,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import * as request from 'supertest';
 import * as mockData from './test-mock-data';
 import { INestApplication } from '@nestjs/common';
+import { $Enums } from '@prisma/client';
 
 describe('SeedGroupsController', () => {
   let controller: SeedGroupsController;
@@ -60,6 +61,7 @@ describe('SeedGroupsController', () => {
       expect(results.body).toEqual(
         seedGroups.map((seedGroup) => ({
           ...seedGroup,
+          creationDate: expect.any(String),
           projects: seedGroup.projects.map((project) => ({
             ...project,
             startDate: expect.any(String),
@@ -82,6 +84,7 @@ describe('SeedGroupsController', () => {
       expect(results.body).toEqual(
         seedGroups.slice(0, 2).map((seedGroup) => ({
           ...seedGroup,
+          creationDate: expect.any(String),
           projects: seedGroup.projects.map((project) => ({
             ...project,
             startDate: expect.any(String),
@@ -112,7 +115,7 @@ describe('SeedGroupsController', () => {
 
       expect(results.body).toEqual({
         statusCode: 400,
-        message: 'programId must be a number',
+        message: 'id must be a number',
         error: 'Bad Request',
       });
     });
@@ -124,6 +127,7 @@ describe('SeedGroupsController', () => {
       name: 'Seed Group 1',
       programId: 1,
       acronym: 'SG1',
+      creationDate: new Date(),
       description: 'Seed Group 1 Description',
       researchGroupId: 1,
       researchLines: ['Seed Group 1 Research Line 1'],
@@ -166,6 +170,7 @@ describe('SeedGroupsController', () => {
 
       expect(results.body).toEqual({
         ...seedGroup,
+        creationDate: expect.any(String),
         projects: seedGroup.projects.map((project) => ({
           ...project,
           startDate: expect.any(String),
@@ -306,6 +311,163 @@ describe('SeedGroupsController', () => {
       expect(results.body).toEqual({
         statusCode: 400,
         message: 'period must be in the format YYYY-X',
+        error: 'Bad Request',
+      });
+    });
+  });
+
+  describe('getProjects', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(service, 'getProjects')
+        .mockResolvedValue(mockData.getProjectsData);
+    });
+
+    it('should return projects', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/projects')
+        .expect(200);
+
+      expect(results.body).toEqual(
+        mockData.getProjectsData.map((project) => ({
+          ...project,
+          startDate: expect.any(String),
+          endDate: expect.any(String),
+          products: project.products.map((product) => ({
+            ...product,
+            date: expect.any(String),
+          })),
+        })),
+      );
+    });
+
+    it('should return 400 error', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/test/projects')
+        .expect(400);
+
+      expect(results.body).toEqual({
+        statusCode: 400,
+        message: 'id must be a number',
+        error: 'Bad Request',
+      });
+    });
+
+    it('should return 404 error', async () => {
+      jest.spyOn(service, 'getProjects').mockResolvedValue(null);
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/projects')
+        .expect(404);
+
+      expect(results.body).toEqual({
+        statusCode: 404,
+        message: 'Seed Group not found',
+        error: 'Not Found',
+      });
+    });
+
+    it('should return empty array', async () => {
+      jest.spyOn(service, 'getProjects').mockResolvedValue([]);
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/projects')
+        .expect(200);
+
+      expect(results.body).toEqual([]);
+    });
+  });
+
+  describe('getEvents', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(service, 'getEvents')
+        .mockResolvedValue(mockData.getEventsData);
+    });
+
+    it('should return events', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/events')
+        .expect(200);
+
+      expect(results.body).toEqual(
+        mockData.getEventsData.map((event) => ({
+          ...event,
+          startDate: expect.any(String),
+          endDate: expect.any(String),
+        })),
+      );
+    });
+
+    it('should return 400 error', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/test/events')
+        .expect(400);
+
+      expect(results.body).toEqual({
+        statusCode: 400,
+        message: 'id must be a number',
+        error: 'Bad Request',
+      });
+    });
+
+    it('should return 404 error', async () => {
+      jest.spyOn(service, 'getEvents').mockResolvedValue(null);
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/events')
+        .expect(404);
+
+      expect(results.body).toEqual({
+        statusCode: 404,
+        message: 'Seed Group not found',
+        error: 'Not Found',
+      });
+    });
+
+    it('should return empty array', async () => {
+      jest.spyOn(service, 'getEvents').mockResolvedValue([]);
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/events')
+        .expect(200);
+
+      expect(results.body).toEqual([]);
+    });
+
+    it('should return events by type', async () => {
+      jest
+        .spyOn(service, 'getEventsByType')
+        .mockImplementation(async (id, type) => {
+          const data = mockData.getEventsData;
+          return data.filter((event) => event.type === type && event.id == id);
+        });
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/events')
+        .query({ type: 'Local' })
+        .expect(200);
+
+      expect(results.body).toEqual(
+        mockData.getEventsData.slice(0, 1).map((event) => ({
+          ...event,
+          startDate: expect.any(String),
+          endDate: expect.any(String),
+        })),
+      );
+    });
+
+    it('should return 400 error', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/events')
+        .query({ type: 'test' })
+        .expect(400);
+
+      expect(results.body).toEqual({
+        statusCode: 400,
+        message: `type must be one of ${Object.values($Enums.EventType).join(
+          ', ',
+        )}`,
         error: 'Bad Request',
       });
     });

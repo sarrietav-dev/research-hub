@@ -7,6 +7,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { SeedGroupService } from '../service/seed-group/seed-group.service';
+import { $Enums } from '@prisma/client';
 @Controller('/api/seed-groups')
 export class SeedGroupsController {
   constructor(private seedGroupService: SeedGroupService) {}
@@ -87,6 +88,50 @@ export class SeedGroupsController {
     }
 
     return projects;
+  }
+
+  @Get(':id/events')
+  async getEvents(
+    @Param('id') idParam: string,
+    @Query('type') type?: $Enums.EventType,
+  ) {
+    const id = this.validateIdParam(idParam);
+
+    if (type) {
+      if (!Object.values($Enums.EventType).includes(type)) {
+        throw new BadRequestException({
+          statusCode: 400,
+          message: `type must be one of ${Object.values($Enums.EventType).join(
+            ', ',
+          )}`,
+          error: 'Bad Request',
+        });
+      }
+
+      const events = await this.seedGroupService.getEventsByType(id, type);
+
+      if (!events) {
+        throw new NotFoundException({
+          statusCode: 404,
+          message: 'Seed Group not found',
+          error: 'Not Found',
+        });
+      }
+
+      return events;
+    }
+
+    const events = await this.seedGroupService.getEvents(id);
+
+    if (!events) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: 'Seed Group not found',
+        error: 'Not Found',
+      });
+    }
+
+    return events;
   }
 
   private validateIdParam(id: string) {
