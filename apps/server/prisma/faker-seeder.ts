@@ -116,7 +116,8 @@ function generateEvent(
         'Local',
       ]),
       description: faker.lorem.paragraph(),
-      date: faker.date.past(),
+      startDate: faker.date.past(),
+      endDate: faker.date.future(),
     });
   }
   return events;
@@ -224,6 +225,7 @@ async function main() {
       name: faker.company.name(),
       description: faker.lorem.paragraph(),
       acronym: faker.lorem.word(),
+      creationDate: new Date(),
       leaderRecords: {
         create: {
           leader: {

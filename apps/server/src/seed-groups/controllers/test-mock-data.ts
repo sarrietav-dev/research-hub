@@ -174,6 +174,7 @@ export const getSeedGroupsData: Awaited<
     description: 'Seed Group 1 Description',
     researchGroupId: 1,
     researchLines: ['Seed Group 1 Research Line 1'],
+    creationDate: new Date(),
     projects: [
       {
         id: 1,
@@ -209,6 +210,7 @@ export const getSeedGroupsData: Awaited<
     description: 'Seed Group 2 Description',
     researchGroupId: 2,
     researchLines: ['Seed Group 2 Research Line 1'],
+    creationDate: new Date(),
     projects: [
       {
         id: 2,
@@ -244,6 +246,7 @@ export const getSeedGroupsData: Awaited<
     description: 'Seed Group 3 Description',
     researchGroupId: 3,
     researchLines: ['Seed Group 3 Research Line 1'],
+    creationDate: new Date(),
     projects: [
       {
         id: 3,
@@ -279,6 +282,7 @@ export const getSeedGroupsData: Awaited<
     description: 'Seed Group 4 Description',
     researchGroupId: 4,
     researchLines: ['Seed Group 4 Research Line 1'],
+    creationDate: new Date(),
     projects: [
       {
         id: 4,
@@ -314,6 +318,7 @@ export const getSeedGroupsData: Awaited<
     description: 'Seed Group 5 Description',
     researchGroupId: 5,
     researchLines: ['Seed Group 5 Research Line 1'],
+    creationDate: new Date(),
     projects: [
       {
         id: 5,
@@ -349,6 +354,7 @@ export const getSeedGroupsData: Awaited<
     description: 'Seed Group 6 Description',
     researchGroupId: 6,
     researchLines: ['Seed Group 6 Research Line 1'],
+    creationDate: new Date(),
     projects: [
       {
         id: 6,

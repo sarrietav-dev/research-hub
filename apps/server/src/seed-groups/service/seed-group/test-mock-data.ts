@@ -178,6 +178,7 @@ export const getSeedGroupsByProgramData: Awaited<
     description: 'Seed Group 1 Description',
     researchGroupId: 1,
     researchLines: ['Seed Group 1 Research Line 1'],
+    creationDate: new Date(),
   },
   {
     id: 2,
@@ -187,6 +188,7 @@ export const getSeedGroupsByProgramData: Awaited<
     description: 'Seed Group 2 Description',
     researchGroupId: 2,
     researchLines: ['Seed Group 2 Research Line 1'],
+    creationDate: new Date(),
   },
   {
     id: 3,
@@ -196,5 +198,6 @@ export const getSeedGroupsByProgramData: Awaited<
     description: 'Seed Group 3 Description',
     researchGroupId: 3,
     researchLines: ['Seed Group 3 Research Line 1'],
+    creationDate: new Date(),
   },
 ];
