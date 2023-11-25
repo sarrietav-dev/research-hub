@@ -23,7 +23,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "dotenv -e .env.dev prisma migrate dev",
-    "prisma:migrate:prod": "dotenv -e .env prisma migrate deploy"
+    "prisma:migrate:prod": "dotenv -e .env prisma migrate deploy",
+    "prisma:seed": "dotenv -e .env.dev prisma db seed"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
