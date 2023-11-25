@@ -60,6 +60,7 @@ describe('SeedGroupsController', () => {
       expect(results.body).toEqual(
         seedGroups.map((seedGroup) => ({
           ...seedGroup,
+          creationDate: expect.any(String),
           projects: seedGroup.projects.map((project) => ({
             ...project,
             startDate: expect.any(String),
@@ -82,6 +83,7 @@ describe('SeedGroupsController', () => {
       expect(results.body).toEqual(
         seedGroups.slice(0, 2).map((seedGroup) => ({
           ...seedGroup,
+          creationDate: expect.any(String),
           projects: seedGroup.projects.map((project) => ({
             ...project,
             startDate: expect.any(String),
@@ -112,7 +114,7 @@ describe('SeedGroupsController', () => {
 
       expect(results.body).toEqual({
         statusCode: 400,
-        message: 'programId must be a number',
+        message: 'id must be a number',
         error: 'Bad Request',
       });
     });
@@ -124,6 +126,7 @@ describe('SeedGroupsController', () => {
       name: 'Seed Group 1',
       programId: 1,
       acronym: 'SG1',
+      creationDate: new Date(),
       description: 'Seed Group 1 Description',
       researchGroupId: 1,
       researchLines: ['Seed Group 1 Research Line 1'],
@@ -166,6 +169,7 @@ describe('SeedGroupsController', () => {
 
       expect(results.body).toEqual({
         ...seedGroup,
+        creationDate: expect.any(String),
         projects: seedGroup.projects.map((project) => ({
           ...project,
           startDate: expect.any(String),

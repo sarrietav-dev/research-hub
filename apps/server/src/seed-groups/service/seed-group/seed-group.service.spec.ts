@@ -63,6 +63,7 @@ describe('SeedGroupService', () => {
           description: 'Seed Group 1 Description',
           researchGroupId: 1,
           researchLines: ['Seed Group 1 Research Line 1'],
+          creationDate: new Date(),
           projects: [
             {
               id: 1,
