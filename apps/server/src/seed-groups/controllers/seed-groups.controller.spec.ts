@@ -315,6 +315,126 @@ describe('SeedGroupsController', () => {
     });
   });
 
+  describe('getProjects', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(service, 'getProjects')
+        .mockResolvedValue(mockData.getProjectsData);
+    });
+
+    it('should return projects', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/projects')
+        .expect(200);
+
+      expect(results.body).toEqual(
+        mockData.getProjectsData.map((project) => ({
+          ...project,
+          startDate: expect.any(String),
+          endDate: expect.any(String),
+          products: project.products.map((product) => ({
+            ...product,
+            date: expect.any(String),
+          })),
+        })),
+      );
+    });
+
+    it('should return 400 error', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/test/projects')
+        .expect(400);
+
+      expect(results.body).toEqual({
+        statusCode: 400,
+        message: 'id must be a number',
+        error: 'Bad Request',
+      });
+    });
+
+    it('should return 404 error', async () => {
+      jest.spyOn(service, 'getProjects').mockResolvedValue(null);
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/projects')
+        .expect(404);
+
+      expect(results.body).toEqual({
+        statusCode: 404,
+        message: 'Seed Group not found',
+        error: 'Not Found',
+      });
+    });
+
+    it('should return empty array', async () => {
+      jest.spyOn(service, 'getProjects').mockResolvedValue([]);
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/projects')
+        .expect(200);
+
+      expect(results.body).toEqual([]);
+    });
+  });
+
+  describe('getEvents', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(service, 'getEvents')
+        .mockResolvedValue(mockData.getEventsData);
+    });
+
+    it('should return events', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/events')
+        .expect(200);
+
+      expect(results.body).toEqual(
+        mockData.getEventsData.map((event) => ({
+          ...event,
+          startDate: expect.any(String),
+          endDate: expect.any(String),
+        })),
+      );
+    });
+
+    it('should return 400 error', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/test/events')
+        .expect(400);
+
+      expect(results.body).toEqual({
+        statusCode: 400,
+        message: 'id must be a number',
+        error: 'Bad Request',
+      });
+    });
+
+    it('should return 404 error', async () => {
+      jest.spyOn(service, 'getEvents').mockResolvedValue(null);
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/events')
+        .expect(404);
+
+      expect(results.body).toEqual({
+        statusCode: 404,
+        message: 'Seed Group not found',
+        error: 'Not Found',
+      });
+    });
+
+    it('should return empty array', async () => {
+      jest.spyOn(service, 'getEvents').mockResolvedValue([]);
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/events')
+        .expect(200);
+
+      expect(results.body).toEqual([]);
+    });
+  });
+
   afterAll(async () => {
     await app.close();
   });

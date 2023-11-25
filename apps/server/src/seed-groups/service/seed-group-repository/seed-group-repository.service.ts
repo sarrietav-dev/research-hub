@@ -98,4 +98,12 @@ export class SeedGroupRepositoryService {
 
     return data.projects;
   }
+
+  async getEventsBySeedGroupId(seedGroupId: number) {
+    return await this.prisma.event.findMany({
+      where: {
+        seedGroupId,
+      },
+    });
+  }
 }

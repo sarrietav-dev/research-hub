@@ -45,4 +45,12 @@ export class SeedGroupService {
 
     return await this.seedGroupRepository.getProjectsBySeedGroupId(seedGroupId);
   }
+
+  async getEvents(seedGroupId: number) {
+    if (!(await this.seedGroupRepository.doesSeedGroupExist(seedGroupId))) {
+      return null;
+    }
+
+    return await this.seedGroupRepository.getEventsBySeedGroupId(seedGroupId);
+  }
 }

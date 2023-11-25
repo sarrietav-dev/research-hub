@@ -89,6 +89,23 @@ export class SeedGroupsController {
     return projects;
   }
 
+  @Get(':id/events')
+  async getEvents(@Param('id') idParam: string) {
+    const id = this.validateIdParam(idParam);
+
+    const events = await this.seedGroupService.getEvents(id);
+
+    if (!events) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: 'Seed Group not found',
+        error: 'Not Found',
+      });
+    }
+
+    return events;
+  }
+
   private validateIdParam(id: string) {
     if (isNaN(+id)) {
       throw new BadRequestException({
