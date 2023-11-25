@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "prisma": {
-    "seed": "ts-node ./prisma/seeder.ts"
+    "seed": "ts-node ./prisma/nanoworld-seeder.ts"
   },
   "scripts": {
     "build": "nest build",
