@@ -5,6 +5,12 @@ import { Injectable } from '@nestjs/common';
 export class MemberRepositoryService {
   constructor(private prisma: PrismaService) {}
 
+  async getMemberById(id: number) {
+    return await this.prisma.member.findUnique({
+      where: { id },
+    });
+  }
+
   async getMembersSeedGroups(memberId: number) {
     return await this.prisma.membershipRecord.findMany({
       where: { memberId },
