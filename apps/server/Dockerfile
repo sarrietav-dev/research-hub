@@ -14,7 +14,9 @@ RUN npm run build
 FROM node:18-alpine3.14 as runner
 WORKDIR /app
 ENV NODE_ENV production
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/dist/src ./
+# COPY --from=builder /app/.env .
+COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules ./node_modules
 EXPOSE 3000
-CMD ["node", "dist/main"]
+CMD ["node", "main"]
