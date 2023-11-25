@@ -167,4 +167,60 @@ describe('SeedGroupService', () => {
       expect(await service.getMembersAtPeriod(1, '2023-1')).toBeNull();
     });
   });
+
+  describe('getProjects', () => {
+    it('should return projects', async () => {
+      jest.spyOn(repository, 'doesSeedGroupExist').mockResolvedValue(true);
+
+      jest
+        .spyOn(repository, 'getProjectsBySeedGroupId')
+        .mockResolvedValueOnce(mockData.getProjectsData);
+
+      expect(await service.getProjects(1)).toEqual(mockData.getProjectsData);
+    });
+
+    it('should return empty array', async () => {
+      jest.spyOn(repository, 'doesSeedGroupExist').mockResolvedValue(true);
+
+      jest
+        .spyOn(repository, 'getProjectsBySeedGroupId')
+        .mockResolvedValueOnce([]);
+
+      expect(await service.getProjects(1)).toEqual([]);
+    });
+
+    it('should return null', async () => {
+      jest.spyOn(repository, 'doesSeedGroupExist').mockResolvedValue(false);
+
+      expect(await service.getProjects(1)).toBeNull();
+    });
+  });
+
+  describe('getEvents', () => {
+    it('should return events', async () => {
+      jest.spyOn(repository, 'doesSeedGroupExist').mockResolvedValue(true);
+
+      jest
+        .spyOn(repository, 'getEventsBySeedGroupId')
+        .mockResolvedValueOnce(mockData.getEventsData);
+
+      expect(await service.getEvents(1)).toEqual(mockData.getEventsData);
+    });
+
+    it('should return empty array', async () => {
+      jest.spyOn(repository, 'doesSeedGroupExist').mockResolvedValue(true);
+
+      jest
+        .spyOn(repository, 'getEventsBySeedGroupId')
+        .mockResolvedValueOnce([]);
+
+      expect(await service.getEvents(1)).toEqual([]);
+    });
+
+    it('should return null', async () => {
+      jest.spyOn(repository, 'doesSeedGroupExist').mockResolvedValue(false);
+
+      expect(await service.getEvents(1)).toBeNull();
+    });
+  });
 });

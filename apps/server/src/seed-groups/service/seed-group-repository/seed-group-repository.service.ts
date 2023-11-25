@@ -1,5 +1,6 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
+import { $Enums } from '@prisma/client';
 
 @Injectable()
 export class SeedGroupRepositoryService {
@@ -102,6 +103,15 @@ export class SeedGroupRepositoryService {
   async getEventsBySeedGroupId(seedGroupId: number) {
     return await this.prisma.event.findMany({
       where: {
+        seedGroupId,
+      },
+    });
+  }
+
+  async getEventsByType(seedGroupId: number, type: $Enums.EventType) {
+    return await this.prisma.event.findMany({
+      where: {
+        type,
         seedGroupId,
       },
     });

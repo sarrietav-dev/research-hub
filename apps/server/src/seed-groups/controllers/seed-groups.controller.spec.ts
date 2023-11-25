@@ -6,6 +6,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import * as request from 'supertest';
 import * as mockData from './test-mock-data';
 import { INestApplication } from '@nestjs/common';
+import { $Enums } from '@prisma/client';
 
 describe('SeedGroupsController', () => {
   let controller: SeedGroupsController;
@@ -432,6 +433,43 @@ describe('SeedGroupsController', () => {
         .expect(200);
 
       expect(results.body).toEqual([]);
+    });
+
+    it('should return events by type', async () => {
+      jest
+        .spyOn(service, 'getEventsByType')
+        .mockImplementation(async (id, type) => {
+          const data = mockData.getEventsData;
+          return data.filter((event) => event.type === type && event.id == id);
+        });
+
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/events')
+        .query({ type: 'Local' })
+        .expect(200);
+
+      expect(results.body).toEqual(
+        mockData.getEventsData.slice(0, 1).map((event) => ({
+          ...event,
+          startDate: expect.any(String),
+          endDate: expect.any(String),
+        })),
+      );
+    });
+
+    it('should return 400 error', async () => {
+      const results = await request(app.getHttpServer())
+        .get('/api/seed-groups/1/events')
+        .query({ type: 'test' })
+        .expect(400);
+
+      expect(results.body).toEqual({
+        statusCode: 400,
+        message: `type must be one of ${Object.values($Enums.EventType).join(
+          ', ',
+        )}`,
+        error: 'Bad Request',
+      });
     });
   });
 
