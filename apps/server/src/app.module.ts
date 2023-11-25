@@ -4,9 +4,10 @@ import { PrismaService } from './prisma/prisma.service';
 import { SharedModule } from './shared/shared.module';
 import { ProgramsModule } from './programs/programs.module';
 import { SeedGroupsModule } from './seed-groups/seed-groups.module';
+import { MembersModule } from './members/members.module';
 
 @Module({
-  imports: [AuthModule, SharedModule, ProgramsModule, SeedGroupsModule],
+  imports: [AuthModule, SharedModule, ProgramsModule, SeedGroupsModule, MembersModule],
   providers: [PrismaService],
   exports: [PrismaService],
 })
