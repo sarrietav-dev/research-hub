@@ -1,39 +1,41 @@
-<template>
-  <v-container>
-    <v-expansion-panels>
-      <v-expansion-panel v-for="(seedGroups, program) in seedGroupsByProgram" :key="program">
-        <v-expansion-panel-title>
-          {{ program }}
-        </v-expansion-panel-title>
-        <v-expansion-panel-text>
-          <v-list>
-            <v-list-item @click = "onClick(group.seed_group)" v-for="group in seedGroups" :key="group.seed_group" :title="group.seed_group">
-            </v-list-item>
-          </v-list>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
-  </v-container>
-</template>
+<script>
+import axios from 'axios';
+export default {
+  data() {
+    return {
+      dataListPrograms: [],
+      dataListSeeds: []
+    };
+  },
+  mounted() {
+    axios.get('http://localhost:3000/api/programs')
+      .then(response => {
+        this.dataListPrograms = response.data
+          console.log(this.dataListPrograms)
+        })
+      .catch(error => {
+        console.log(error);
+      });
 
-<script setup lang="ts">
-// Importa la función desde donde esté definida
-import { ref } from 'vue';
-import { getSeedGroupsByProgram } from '../lib/database.ts';
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-
-const seedGroupsByProgram = ref()
-
-onMounted(async () => {
-  seedGroupsByProgram.value = await getSeedGroupsByProgram()
-})
-
-const router=useRouter()
-
-function onClick(name: string){
-  router.push({ path: `/seed_groups/${name}`})
-}
+    axios.get('http://localhost:3000/api/seed-groups')
+    .then(response => {
+      this.dataListSeeds = response.data
+      console.log(this.dataListSeeds)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+  }
+};
 </script>
-
-  
+<template>
+  <v-expansion-panels>
+    <v-expansion-panel v-for="item in dataListPrograms" :key="item">
+      <v-expansion-panel-title>{{ item.name }}</v-expansion-panel-title>
+      <v-expansion-panel-text>
+        <v-list v-if="dataListSeeds.programId == dataListPrograms.id " :items="dataListSeeds" item-title="name" item-value="name">
+        </v-list>
+      </v-expansion-panel-text>
+    </v-expansion-panel>
+  </v-expansion-panels>
+</template>
