@@ -26,10 +26,20 @@ export class MembersController {
 
     if (seedGroupId) {
       const seedGroupIdNumber = this.validateIdParam(seedGroupId);
-      return await this.service.getMemberSeedGroupHistoryRecord(
+      const record = await this.service.getMemberSeedGroupHistoryRecord(
         idNumber,
         seedGroupIdNumber,
       );
+
+      if (record.length === 0) {
+        throw new BadRequestException({
+          statusCode: 404,
+          message: 'No records found',
+          error: 'Not found',
+        });
+      }
+
+      return record;
     }
 
     return await this.service.getMembersSeedGroups(idNumber);
