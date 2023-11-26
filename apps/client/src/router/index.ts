@@ -30,6 +30,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/form_group',
+      name: 'form_group',
+      component: () => import('../views/FormGroupView.vue')
     }
   ]
 })

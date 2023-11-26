@@ -58,8 +58,4 @@
     onMounted(async () => {
         seedGroup.value = await getSeedGroup(seedname as string)
     })
-
-    
-
-    
 </script>
