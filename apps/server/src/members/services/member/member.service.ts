@@ -12,4 +12,8 @@ export class MemberService {
   async getMembersSeedGroups(id: number) {
     return await this.repo.getMembersSeedGroups(id);
   }
+
+  async getMemberSeedGroupHistoryRecord(id: number, seedGroupId: number) {
+    return await this.repo.getMemberSeedGroupHistoryRecord(id, seedGroupId);
+  }
 }

@@ -1,4 +1,10 @@
-import { BadRequestException, Controller, Get, Param } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { MemberService } from '../services/member/member.service';
 
 @Controller('api/members')
@@ -12,8 +18,20 @@ export class MembersController {
   }
 
   @Get(':id/seed-groups')
-  async getMembersSeedGroups(@Param('id') id: string) {
+  async getMembersSeedGroups(
+    @Param('id') id: string,
+    @Query('seedGroupId') seedGroupId: string,
+  ) {
     const idNumber = this.validateIdParam(id);
+
+    if (seedGroupId) {
+      const seedGroupIdNumber = this.validateIdParam(seedGroupId);
+      return await this.service.getMemberSeedGroupHistoryRecord(
+        idNumber,
+        seedGroupIdNumber,
+      );
+    }
+
     return await this.service.getMembersSeedGroups(idNumber);
   }
 

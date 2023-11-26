@@ -28,4 +28,24 @@ export class MemberRepositoryService {
       },
     });
   }
+  async getMemberSeedGroupHistoryRecord(id: number, seedGroupId: number) {
+    return await this.prisma.membershipRecord.findMany({
+      where: {
+        memberId: id,
+        seedGroupId,
+      },
+      select: {
+        affiliationDate: true,
+        functions: true,
+        period: true,
+        role: true,
+        seedGroup: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }
 }
