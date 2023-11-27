@@ -25,6 +25,11 @@ const router = createRouter({
       path: '/seed_groups/:seed_group',
       name: 'seed_groups',
       component: () => import('../views/SeedView.vue')
+    },
+    {
+      path: '/student_list',
+      name: 'student_list',
+      component: () => import('../views/StudentListView.vue')
     }
   ]
 })

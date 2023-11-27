@@ -31,59 +31,6 @@
         return {
           search: '',
           items: [
-            {
-                year: '2020-1',
-                name: 'Ricardo Andrés Solano Pizarro',
-                code: '1961910009',
-                estate: 'Estudiante',
-                program: 'Doctorado en Ingeniería',
-                state: 'Yes',
-                email: 'rsolanop@unicartagena.edu.co ',
-                function: 'Auxilires investigación(proyectos financiados)' 
-            },
-            {
-                year: '2023-1',
-                name: 'Udualdo Herrera García',
-                code: '1962010007',
-                estate: 'Estudiante',
-                program: 'Doctorado en Ingeniería',
-                state: 'Yes',
-                email: 'uherrerag@unicartagena.edu.co',
-                function: 'Auxilires investigación(proyectos financiados)	' 
-
-            },
-            {
-                year: '2020-2',
-                name: 'Víctor Fernando del río prens',
-                code: '0231810026',
-                estate: 'Estudiante',
-                program: 'Ingeniería Química',
-                state: 'Yes',
-                email: 'Areinemerc@unicartagena.edu.co',
-                function: 'Trabajos grado(tesis)	' 
-
-            },
-            {
-                year: '2021-1',
-                name: 'Mario José Barrios Pacheco',
-                code: '0231810037',
-                estate: 'Estudiante',
-                program: 'Ingeniería Química',
-                state: 'Yes',
-                email: 'shelenap@unicartagena.edu.co',
-                function: 'Trabajos grado(tesis)	' 
-
-            },
-            {
-                year: '2022-1',
-                name: 'Jonathan Lozano Morelo',
-                code: '0231720034',
-                estate: 'Estudiante',
-                program: 'Ingeniería Química',
-                state: 'Yes',
-                email: 'jmonterrozar@unicartagena.edu.co',
-                function: 'Trabajos grado(tesis)' 
-            },
           ],
         }
       },
