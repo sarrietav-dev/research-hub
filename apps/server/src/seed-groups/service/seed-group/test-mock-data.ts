@@ -216,6 +216,20 @@ export const getProjectsData: Awaited<
     certifyingOrganizationId: 1,
     type: 'Finished',
     seedGroupId: 1,
+    members: [
+      {
+        id: 1,
+        name: 'Member 1',
+      },
+      {
+        id: 2,
+        name: 'Member 2',
+      },
+      {
+        id: 3,
+        name: 'Member 3',
+      },
+    ],
     certifyingOrganization: {
       id: 1,
       name: 'Certifying Organization 1',
@@ -240,6 +254,20 @@ export const getProjectsData: Awaited<
     certifyingOrganizationId: 2,
     type: 'Finished',
     seedGroupId: 2,
+    members: [
+      {
+        id: 1,
+        name: 'Member 1',
+      },
+      {
+        id: 2,
+        name: 'Member 2',
+      },
+      {
+        id: 3,
+        name: 'Member 3',
+      },
+    ],
     certifyingOrganization: {
       id: 2,
       name: 'Certifying Organization 2',
@@ -264,6 +292,20 @@ export const getProjectsData: Awaited<
     certifyingOrganizationId: 3,
     type: 'Finished',
     seedGroupId: 3,
+    members: [
+      {
+        id: 1,
+        name: 'Member 1',
+      },
+      {
+        id: 2,
+        name: 'Member 2',
+      },
+      {
+        id: 3,
+        name: 'Member 3',
+      },
+    ],
     certifyingOrganization: {
       id: 3,
       name: 'Certifying Organization 3',
@@ -288,6 +330,20 @@ export const getProjectsData: Awaited<
     certifyingOrganizationId: 4,
     type: 'Finished',
     seedGroupId: 4,
+    members: [
+      {
+        id: 1,
+        name: 'Member 1',
+      },
+      {
+        id: 2,
+        name: 'Member 2',
+      },
+      {
+        id: 3,
+        name: 'Member 3',
+      },
+    ],
     certifyingOrganization: {
       id: 4,
       name: 'Certifying Organization 4',
