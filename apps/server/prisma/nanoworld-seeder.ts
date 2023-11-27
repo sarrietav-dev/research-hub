@@ -3,6 +3,46 @@ import { Prisma, PrismaClient } from '@prisma/client';
 
 const prismaClient = new PrismaClient();
 
+async function createPrograms() {
+  return await Promise.all([
+    prismaClient.program.create({
+      data: {
+        name: 'Ingeniería de Alimentos',
+      },
+    }),
+    prismaClient.program.create({
+      data: {
+        name: 'Ingeniería Ambiental',
+      },
+    }),
+    prismaClient.program.create({
+      data: {
+        name: 'Ingeniería Industrial',
+      },
+    }),
+    prismaClient.program.create({
+      data: {
+        name: 'Ingeniería de Sistemas',
+      },
+    }),
+    prismaClient.program.create({
+      data: {
+        name: 'Ingeniería Civil',
+      },
+    }),
+    prismaClient.program.create({
+      data: {
+        name: 'Ingeniería Electrónica',
+      },
+    }),
+    prismaClient.program.create({
+      data: {
+        name: 'Ingeniería Mecánica',
+      },
+    }),
+  ]);
+}
+
 async function main() {
   const { id: idCO } = await prismaClient.certifyingOrganization.create({
     data: { name: 'Universidad de Cartagena' },
@@ -100,6 +140,8 @@ async function main() {
       },
     }),
   ]);
+
+  await createPrograms();
 
   const program = await prismaClient.program.create({
     data: {
