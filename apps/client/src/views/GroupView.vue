@@ -26,7 +26,6 @@ onMounted(async () => {
   }
 
 })
-
 </script>
 <template>
   <v-expansion-panels>
@@ -35,7 +34,6 @@ onMounted(async () => {
       <v-expansion-panel-text>
         <v-list v-if="dataListSeeds.programId == dataListPrograms.id">
           <v-list-item @click = "onClick(seed.name, seed.id)" v-for="seed in dataListSeeds" :key="seed" :title="seed.name" :value="seed.name">
-
           </v-list-item>
         </v-list>
       </v-expansion-panel-text>
