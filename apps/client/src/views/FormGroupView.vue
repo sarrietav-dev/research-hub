@@ -1,61 +1,73 @@
 <template>
-    <main>
-      <div class="login">
-        <h1>Login</h1>
-        <div class="groups">
-            <div class="new_group_old_group">
-                <label for="new_group_old_group">Desea usar un grupo de investigación que ya existe:</label>
-                <label><input type="radio" id="old_group" name="new_group_old_group">Si</label>
-                <label><input type="radio" id="new_group" name="new_group_old_group">No</label>
-            </div>
-            <div class="new_group">
-                <label for="new_group">Grupo de Investigación:</label>
-                <input type="text" name="new_group">
-            </div>
-            <div class="new_seed_g_old_seed_g">
-                <label for="new_seed_g_old_seed_g">Desea usar un semillero de investigación que ya existe:</label>
-                <label><input type="radio" id="old_seed_g" name="new_seed_g_old_seed_g">Si</label>
-                <label><input type="radio" id="new_seed_g" name="new_seed_g_old_seed_g">No</label>
-            </div>
-            <div class="new_seed_group">
-                <label for="new_seed_group">Semillero de Investigación:</label>
-                <input type="text" name="new_seed_group" >
-            </div>
-        </div>
-        <div class="new_student_old_student">
-                <label for="new_student_old_student">Desea usar un semillero de investigación que ya existe:</label>
-                <label><input type="radio" id="old_seed_g" name="new_student_old_student">Si</label>
-                <label><input type="radio" id="new_seed_g" name="new_student_old_student">No</label>
-            </div>
-        <div class="new_student_info">
-            <div class="student_name">
-                <label for="student_name">Nombre del estudiante:</label>
-                <input type="text" name="student_name" >
-            </div>
-            <div class="student_program">
-                <label for="student_program">Programa del estudiante:</label>
-                <input type="text" name="student_program" >
-            </div>
-            <div class="student_email">
-                <label for="student_email">Email del estudiante:</label>
-                <input type="email" name="student_email" >
-            </div>
-        </div>
-        <button>Send</button>
-      </div>
-    </main>
+    <v-sheet width="300" class="mx-auto">
+      <v-form ref="form" class="pa-4"> 
+        <v-radio-group v-model="nuevoGroup" class="mb-4">
+          <v-select
+            v-model="nuevoGroup"
+            :items="['Si', 'No']"
+            label="Crear un nuevo grupo de investigación"
+          ></v-select>
+        </v-radio-group>
+         
+        <v-text-field
+          v-if="nuevoGroup === 'Si'"
+          v-model="group"
+          label="Nuevo Grupo de Investigación"
+          required
+        ></v-text-field>
+  
+        <v-select
+          v-if="nuevoGroup === 'No'"
+          v-model="selectedGroup"
+          :items="existingGroups"
+          label="Selecciona un Grupo Existente"
+          class="h-auto"
+          required
+        ></v-select>      
+        
+        <v-radio-group v-model="nuevoSeedGroup" class="mb-4">
+          <v-select
+            v-model="nuevoSeedGroup"
+            :items="['Si', 'No']"
+            label="Crear un nuevo semillero"
+            class="h-auto"
+          ></v-select>
+        </v-radio-group>
+         
+        <v-text-field
+          v-if="nuevoSeedGroup === 'Si'"
+          v-model="seedGroup"
+          label="Nuevo Semillero de Investigación"
+          class="h-auto"
+          required
+        ></v-text-field>
+  
+        <v-select
+          v-if="nuevoSeedGroup === 'No'"
+          v-model="selectedSeedGroup"
+          :items="existingSeedGroups"
+          label="Selecciona un Semillero Existente"
+          class="h-auto"
+          required
+        ></v-select>      
+      </v-form>
+    </v-sheet>
   </template>
-
-<style>
-.new_group_old_group .new_group .new_seed_g_old_seed_g .new_seed_g {
-    display: none;
-}
-
-#new_group:checked + .new_group {
-    display: block;
-}
-
-#new_seed_g:checked + .new_seed_g {
-    display: block;
-}
-</style>
+  
+  <script lang="ts">
+  export default {
+    data() {
+      return {
+        nuevoGroup: 'no', 
+        nuevoSeedGroup: 'no',
+        group: "", 
+        seedGroup: "",
+        selectedGroup: null,
+        selectedSeedGroup: null, 
+        existingGroups: ["Grupo 1", "Grupo 2", "Grupo 3"],
+        existingSeedGroups: ["Semillero 1", "Semillero 2", "Semillero 3"] 
+      };
+    },
+    // Otros métodos y opciones de componente
+  };
+  </script>

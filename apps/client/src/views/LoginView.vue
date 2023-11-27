@@ -27,6 +27,7 @@
 </template>
 
 <script lang="ts">
+import router from '@/router';
 import { group } from 'console';
   export default{
     name:'Login',
@@ -41,6 +42,7 @@ import { group } from 'console';
         //for (i in range (group.length) ){  
           if(this.user === "admin@unicartagena.edu.co" && this.passw === "abc"){
             alert('Entraste yei')
+            router.push({ path: '/logged_in' })
           }
           else {
             alert('Error, Usuario o contraseña incorrecto')

@@ -32,6 +32,11 @@ const router = createRouter({
       component: () => import('../views/LoginView.vue')
     },
     {
+      path: '/logged_in',
+      name: 'logged_in',
+      component: () => import('../views/LoggedInView.vue')
+    },
+    {
       path: '/form_group',
       name: 'form_group',
       component: () => import('../views/FormGroupView.vue')
