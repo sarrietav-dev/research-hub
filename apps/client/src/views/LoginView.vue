@@ -1,60 +1,30 @@
 <template>
-  <main>
-    <div class="login">
-      <h1 class="text-center">Login</h1><br>
-      <div class="user">
-        <label for="user">Email:</label>
-        <input type="email" name="user" v-model="user">
-      </div>
-      <div class="password">
-        <label>Password:</label>
-        <input type="password" name="passw" v-model="passw">
-      </div>
-      <button @click="login">Send</button>
-    </div>
-  </main>
+      <v-row justify-sm="center">
+        <v-col sm="10" md="4" class="mt-15 mb-15">
+          <v-card class="login p-4 pa-4" elevation="6">
+            <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Login</v-card-title>
+            <v-form @submit.prevent="login">
+              <v-text-field
+                v-model="user"
+                label="Email"
+                outlined
+                required
+                class="mb-4"
+              ></v-text-field>
+              <v-text-field
+                v-model="passw"
+                label="Password"
+                type="password"
+                outlined
+                required
+                class="mb-4"
+              ></v-text-field>
+              <v-btn block color="primary" dark class="mb-4" rounded @click="login">Send</v-btn>
+            </v-form>
+          </v-card>
+        </v-col>
+      </v-row>
 </template>
-
-<style>
- .login{
-  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
-  border-radius: 20px;
-  padding: 20px;
-  position: absolute;
-  align-content: center;
-  height: 390px;
-  width: 320px;
-  transform: translate(140%, 15%)
- }
-
- input{
-  margin: 5px 2px 15px 0px;
-  padding-left: 12px;
-  width: 100%;
-  min-height: 2.5em;
-  background-color: #ffffff;
-  border: 1px solid #bdbdbd;
-  border-radius: 5px;
-  color: #000000;
- }
-
- button {
-    display: block;
-    width: 60%;
-    margin: 1em auto;
-    height: 2em;
-    font-size: 1.1rem;
-    background: #3271a5;
-    border-radius: 20px;
-    border: none;
-    color: white;
-    min-width: 280px;
-  }
-
- label {
-  padding-bottom: 2px;
- }
-</style>
 
 <script lang="ts">
 import { group } from 'console';
