@@ -1,16 +1,27 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
   NotFoundException,
   Param,
+  Post,
   Query,
+  UsePipes,
 } from '@nestjs/common';
 import { SeedGroupService } from '../service/seed-group/seed-group.service';
 import { $Enums } from '@prisma/client';
+import { CreateSeedGroupDto, createSeedGroupSchema } from './schemas';
+import { ValidateInputPipe } from '@/shared/validate-input/validate-input.pipe';
 @Controller('/api/seed-groups')
 export class SeedGroupsController {
   constructor(private seedGroupService: SeedGroupService) {}
+
+  @Post()
+  @UsePipes(new ValidateInputPipe(createSeedGroupSchema))
+  async createSeedGroup(@Body() seedGroup: CreateSeedGroupDto) {
+    return await this.seedGroupService.createSeedGroup(seedGroup);
+  }
 
   @Get(':id')
   async getSeedGroupById(@Param('id') id: string) {

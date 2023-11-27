@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SeedGroupRepositoryService } from '../seed-group-repository/seed-group-repository.service';
 import { $Enums } from '@prisma/client';
+import { CreateSeedGroupDto } from '@/seed-groups/controllers/schemas';
 
 @Injectable()
 export class SeedGroupService {
@@ -64,5 +65,9 @@ export class SeedGroupService {
       seedGroupId,
       eventType,
     );
+  }
+
+  async createSeedGroup(seedGroup: CreateSeedGroupDto) {
+    return await this.seedGroupRepository.createSeedGroup(seedGroup);
   }
 }

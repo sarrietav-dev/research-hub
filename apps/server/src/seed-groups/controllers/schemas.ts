@@ -12,6 +12,7 @@ export const createSeedGroupSchema = z.object({
   researchLines: z.string().array(),
   creationDate: z.date(),
   programId: ZodId,
+  period: z.string().regex(/^\d{4}-\d$/),
   members: z.array(
     z.discriminatedUnion('type', [
       z.object({
@@ -20,8 +21,19 @@ export const createSeedGroupSchema = z.object({
         identityCard: z.string(),
         institutionalCode: z.string(),
         email: z.string().email(),
+        affiliationDate: z.date(),
+        functions: z.string().array(),
+        isActive: z.boolean(),
+        role: z.enum(['Student', 'Professor']),
       }),
-      z.object({ type: ConnectLiteral, id: ZodId }),
+      z.object({
+        type: ConnectLiteral,
+        affiliationDate: z.date(),
+        functions: z.string().array(),
+        isActive: z.boolean(),
+        role: z.enum(['Student', 'Professor']),
+        memberId: ZodId,
+      }),
     ]),
   ),
   leader: z.discriminatedUnion('type', [
