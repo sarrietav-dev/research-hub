@@ -156,14 +156,14 @@ model CertifyingOrganization {
 }
 
 model Product {
-  id             Int         @id @default(autoincrement())
-  name           String
-  description    String
-  type           ProductType @relation(fields: [productTypeId], references: [id])
-  date           DateTime
-  project        Project?    @relation(fields: [projectId], references: [id])
-  projectId      Int?
-  productTypeId Int @map("productTypesId")
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String
+  type          ProductType @relation(fields: [productTypeId], references: [id])
+  date          DateTime
+  project       Project?    @relation(fields: [projectId], references: [id])
+  projectId     Int?
+  productTypeId Int         @map("productTypesId")
 }
 
 model ProductType {
@@ -176,12 +176,12 @@ model ProductType {
 }
 
 model User {
-  id                 Int    @id @default(autoincrement())
-  email              String @unique
+  id                 Int     @id @default(autoincrement())
+  email              String  @unique
   password           String
   name               String
-  associatedPerson   Person @relation(fields: [associatedPersonId], references: [id])
-  associatedPersonId Int    @map("associated_person_id")
+  associatedPersonId Int?    @map("associated_person_id")
+  associatedPerson   Person? @relation(fields: [associatedPersonId], references: [id])
 
   @@map("users")
 }

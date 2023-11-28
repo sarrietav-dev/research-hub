@@ -196,7 +196,7 @@ export class SeedGroupRepositoryService {
         leaderRecords: {
           create: {
             period: seedGroup.period,
-            leaderId: seedGroup.leader.id,
+            leaderId: seedGroup.leaderId,
           },
         },
         events: {
