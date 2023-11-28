@@ -124,80 +124,61 @@ export class SeedGroupRepositoryService {
     });
   }
 
-  async createSeedGroup(seedGroup: Required<CreateSeedGroupDto>) {
-    return await this.prisma.seedGroup.create({
+  async createSeedGroup(seedGroup: CreateSeedGroupDto) {
+    const { id } = await this.prisma.seedGroup.create({
       data: {
         program: {
           connect: {
             id: seedGroup.programId,
           },
         },
-        leaderRecords:
-          seedGroup.leader.type === 'create'
-            ? {
-                create: {
-                  leader: {
-                    create: {
-                      name: seedGroup.leader.name,
-                      email: seedGroup.leader.email,
-                      phone: seedGroup.leader.phone,
-                    },
-                  },
-                },
-              }
-            : {
-                connect: {
-                  id: seedGroup.leader.id,
-                },
-              },
-        membershipRecords: {
-          create: seedGroup.members.map((member) => {
-            if (member.type === 'create') {
-              return {
-                period: seedGroup.period!,
-                affiliationDate: member.affiliationDate!,
-                isActive: member.isActive!,
-                role: member.role!,
-                functions: member.functions!,
-                member: {
-                  create: {
-                    email: member.email!,
-                    name: member.name!,
-                    identityCard: member.identityCard!,
-                    institutionalCode: member.institutionalCode!,
-                  },
-                },
-              };
-            } else if (member.type === 'connect') {
-              return {
-                period: seedGroup.period!,
-                affiliationDate: member.affiliationDate!,
-                isActive: member.isActive!,
-                role: member.role!,
-                functions: member.functions!,
-                memberId: member.memberId!,
-              };
-            }
-          }),
-        },
+        name: seedGroup.name,
+        description: seedGroup.description,
+        acronym: seedGroup.acronym,
+        creationDate: seedGroup.creationDate,
+        researchLines: seedGroup.researchLines,
         coResearcherRecords: {
-          create: seedGroup.coResearchers.map((coResearcher) => {
-            if (coResearcher.type === 'create') {
+          createMany: {
+            data: seedGroup.coResearchers.map((coResearcher) => ({
+              coResearcherId: coResearcher.id,
+            })),
+          },
+        },
+        membershipRecords: {
+          createMany: {
+            data: seedGroup.members.map((member) => {
               return {
-                coResearcher: {
-                  create: {
-                    name: coResearcher.name,
-                    email: coResearcher.email,
-                    phone: coResearcher.phone,
-                  },
-                },
+                affiliationDate: member.affiliationDate,
+                functions: member.functions,
+                isActive: member.isActive,
+                role: member.role,
+                period: seedGroup.period,
+                memberId: member.memberId,
               };
-            } else if (coResearcher.type === 'connect') {
-              return {
-                coResearcherId: coResearcher.id,
-              };
-            }
-          }),
+            }),
+          },
+        },
+        projects: {
+          createMany: {
+            data: seedGroup.projects.map((project) => ({
+              approvedAmount: project.approvedAmount,
+              certifyingOrganizationId: project.certifyingOrganizationId,
+              name: project.name,
+              startDate: project.startDate,
+              endDate: project.endDate,
+              type: project.type,
+            })),
+          },
+        },
+        researchGroup: {
+          connect: {
+            id: seedGroup.researchGroupId,
+          },
+        },
+        leaderRecords: {
+          create: {
+            leaderId: seedGroup.leader.id,
+          },
         },
         events: {
           create: seedGroup.events.map((event) => ({
@@ -207,30 +188,9 @@ export class SeedGroupRepositoryService {
             type: event.type,
           })),
         },
-        projects: {
-          create: seedGroup.projects.map((project) => ({
-            name: project.name,
-            startDate: project.startDate,
-            endDate: project.endDate,
-            approvedAmount: project.approvedAmount,
-            certifyingOrganization: {
-              connect: {
-                id: project.certifyingOrganizationId,
-              },
-            },
-            type: project.type,
-            members: null,
-            products: {
-              create: project.products.map((product) => ({
-                name: product.name,
-                description: product.description,
-                date: product.date,
-                type: product.type,
-              })),
-            },
-          })),
-        },
       },
     });
+
+    return id;
   }
 }

@@ -1,8 +1,6 @@
 import { z } from 'zod';
 
 const ZodId = z.number().min(1);
-const CreateLiteral = z.literal('create');
-const ConnectLiteral = z.literal('connect');
 
 export const createSeedGroupSchema = z.object({
   name: z.string().min(1),
@@ -14,49 +12,16 @@ export const createSeedGroupSchema = z.object({
   programId: ZodId,
   period: z.string().regex(/^\d{4}-\d$/),
   members: z.array(
-    z.discriminatedUnion('type', [
-      z.object({
-        type: CreateLiteral,
-        name: z.string().min(1),
-        identityCard: z.string(),
-        institutionalCode: z.string(),
-        email: z.string().email(),
-        affiliationDate: z.date(),
-        functions: z.string().array(),
-        isActive: z.boolean(),
-        role: z.enum(['Student', 'Professor']),
-      }),
-      z.object({
-        type: ConnectLiteral,
-        affiliationDate: z.date(),
-        functions: z.string().array(),
-        isActive: z.boolean(),
-        role: z.enum(['Student', 'Professor']),
-        memberId: ZodId,
-      }),
-    ]),
-  ),
-  leader: z.discriminatedUnion('type', [
     z.object({
-      type: CreateLiteral,
-      name: z.string().min(1),
-      email: z.string().email(),
-      phone: z.string(),
+      affiliationDate: z.date(),
+      functions: z.string().array(),
+      isActive: z.boolean(),
+      role: z.enum(['Student', 'Professor']),
+      memberId: ZodId,
     }),
-    z.object({ type: ConnectLiteral, id: ZodId }),
-  ]),
-  coResearchers: z.array(
-    z.discriminatedUnion('type', [
-      z.object({
-        type: CreateLiteral,
-        name: z.string().min(1),
-        email: z.string().email(),
-        phone: z.string(),
-        programId: ZodId,
-      }),
-      z.object({ type: ConnectLiteral, id: ZodId }),
-    ]),
   ),
+  leader: z.object({ id: ZodId }),
+  coResearchers: z.array(z.object({ id: ZodId })),
   events: z
     .object({
       description: z.string().min(1),
@@ -73,12 +38,7 @@ export const createSeedGroupSchema = z.object({
       approvedAmount: z.number().min(1),
       certifyingOrganizationId: ZodId,
       type: z.enum(['Finished', 'InProgress']),
-      members: z.array(
-        z.discriminatedUnion('type', [
-          z.object({ type: CreateLiteral, name: z.string().min(1) }),
-          z.object({ type: ConnectLiteral, id: ZodId }),
-        ]),
-      ),
+      members: z.array(z.object({ id: ZodId })),
       products: z
         .object({
           name: z.string().min(1),
