@@ -1,3 +1,4 @@
+/*
 import { faker } from '@faker-js/faker';
 import { Prisma, PrismaClient } from '@prisma/client';
 
@@ -56,12 +57,14 @@ async function main() {
     { id: id6 },
     { id: id7 },
   ] = await Promise.all([
-    prismaClient.member.create({
+    prismaClient.person.create({
       data: {
         name: 'Ricardo Andrés Solano Pizarro',
         email: faker.internet.email(),
         identityCard: faker.number.int().toString(),
         institutionalCode: faker.number.int().toString(),
+        phone: faker.phone.number(),
+        
       },
     }),
     prismaClient.member.create({
@@ -411,3 +414,5 @@ main()
   .finally(async () => {
     await prismaClient.$disconnect();
   });
+
+  */

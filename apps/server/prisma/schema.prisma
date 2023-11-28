@@ -31,86 +31,77 @@ model SeedGroup {
 }
 
 model LeaderRecord {
-  id          Int        @id @default(autoincrement())
-  seedGroup   SeedGroup? @relation(fields: [seedGroupId], references: [id])
-  seedGroupId Int?       @map("seed_group_id")
-  leader      Leader?    @relation(fields: [leaderId], references: [id])
-  leaderId    Int?       @map("leader_id")
+  id          Int       @id @default(autoincrement())
+  seedGroup   SeedGroup @relation(fields: [seedGroupId], references: [id])
+  seedGroupId Int       @map("seed_group_id")
+  leader      Person    @relation(fields: [leaderId], references: [id])
+  leaderId    Int       @map("leader_id")
+  period      String
 
   @@map("leader_record")
 }
 
-model Leader {
-  id            Int            @id @default(autoincrement())
-  name          String
-  email         String         @unique
-  phone         String         @unique
-  leaderRecords LeaderRecord[]
-
-  @@map("leaders")
-}
-
 model CoResearcherRecord {
-  id             Int           @id @default(autoincrement())
-  seedGroup      SeedGroup?    @relation(fields: [seedGroupId], references: [id])
-  seedGroupId    Int?          @map("seed_group_id")
-  coResearcher   CoResearcher? @relation(fields: [coResearcherId], references: [id])
-  coResearcherId Int?          @map("co_researcher_id")
+  id             Int       @id @default(autoincrement())
+  seedGroup      SeedGroup @relation(fields: [seedGroupId], references: [id])
+  seedGroupId    Int       @map("seed_group_id")
+  coResearcher   Person    @relation(fields: [coResearcherId], references: [id])
+  coResearcherId Int       @map("co_researcher_id")
+  period         String
 
   @@map("co_researcher_record")
 }
 
-model CoResearcher {
-  id                  Int                  @id @default(autoincrement())
-  name                String
-  email               String               @unique
-  phone               String               @unique
-  program             Program              @relation(fields: [programId], references: [id])
-  programId           Int                  @map("program_id")
-  coResearcherRecords CoResearcherRecord[]
-
-  @@map("co_researchers")
-}
-
 model MembershipRecord {
-  id              Int        @id @default(autoincrement())
-  seedGroup       SeedGroup? @relation(fields: [seedGroupId], references: [id])
-  seedGroupId     Int?       @map("seed_group_id")
-  member          Member?    @relation(fields: [memberId], references: [id])
-  memberId        Int?       @map("member_id")
+  id              Int            @id @default(autoincrement())
+  seedGroup       SeedGroup?     @relation(fields: [seedGroupId], references: [id])
+  seedGroupId     Int?           @map("seed_group_id")
+  member          Person?        @relation(fields: [memberId], references: [id])
+  memberId        Int?           @map("member_id")
   period          String
-  affiliationDate DateTime   @map("affiliation_date")
+  affiliationDate DateTime       @map("affiliation_date")
   functions       String[]
-  isActive        Boolean    @default(true) @map("is_active")
-  role            Role
+  isActive        Boolean        @default(true) @map("is_active")
+  role            MembershipRole @relation(fields: [roleId], references: [id])
+  roleId          Int            @map("role_id")
 
   @@map("membership_record")
 }
 
-model Member {
-  id                Int                @id @default(autoincrement())
-  name              String
-  identityCard      String             @unique @map("identity_card")
-  institutionalCode String             @unique @map("institutional_code")
-  email             String             @unique
-  membershipRecords MembershipRecord[]
-  projects          Project[]
+model Person {
+  id                 Int                  @id @default(autoincrement())
+  name               String
+  identityCard       String               @unique @map("identity_card")
+  institutionalCode  String               @unique @map("institutional_code")
+  email              String               @unique
+  phone              String               @unique
+  program            Program              @relation(fields: [programId], references: [id])
+  programId          Int                  @map("program_id")
+  membershipRecords  MembershipRecord[]
+  projects           Project[]
+  LeaderRecord       LeaderRecord[]
+  CoResearcherRecord CoResearcherRecord[]
+  User               User[]
 
-  @@map("members")
+  @@map("directory")
 }
 
 model Program {
-  id            Int            @id @default(autoincrement())
-  name          String
-  coResearchers CoResearcher[]
-  seedGroups    SeedGroup[]
+  id   Int    @id @default(autoincrement())
+  name String
+
+  seedGroups SeedGroup[]
+  Person     Person[]
 
   @@map("programs")
 }
 
-enum Role {
-  Student
-  Professor
+model MembershipRole {
+  id               Int                @id @default(autoincrement())
+  name             String
+  MembershipRecord MembershipRecord[]
+
+  @@map("membership_roles")
 }
 
 model ResearchGroup {
@@ -124,8 +115,8 @@ model ResearchGroup {
 model Event {
   id          Int       @id @default(autoincrement())
   description String
-  startDate   DateTime?
-  endDate     DateTime?
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
   type        EventType
   seedGroup   SeedGroup @relation(fields: [seedGroupId], references: [id])
   seedGroupId Int       @map("seed_group_id")
@@ -148,7 +139,7 @@ model Project {
   certifyingOrganizationId Int                    @map("certifying_organization_id")
   approvedAmount           Float                  @map("approved_amount")
   products                 Product[]
-  members                  Member[]
+  members                  Person[]
   seedGroup                SeedGroup              @relation(fields: [seedGroupId], references: [id])
   seedGroupId              Int
 }
@@ -165,28 +156,32 @@ model CertifyingOrganization {
 }
 
 model Product {
-  id          Int         @id @default(autoincrement())
-  name        String
-  description String
-  type        ProductType
-  date        DateTime
-  project     Project?    @relation(fields: [projectId], references: [id])
-  projectId   Int?
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String
+  type          ProductType @relation(fields: [productTypeId], references: [id])
+  date          DateTime
+  project       Project?    @relation(fields: [projectId], references: [id])
+  projectId     Int?
+  productTypeId Int         @map("productTypesId")
 }
 
-enum ProductType {
-  Article
-  Thesis
-  Report
-  Poster
-  Other
+model ProductType {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  products Product[]
+
+  @@map("product_types")
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
-  name     String
+  id                 Int     @id @default(autoincrement())
+  email              String  @unique
+  password           String
+  name               String
+  associatedPersonId Int?    @map("associated_person_id")
+  associatedPerson   Person? @relation(fields: [associatedPersonId], references: [id])
 
   @@map("users")
 }

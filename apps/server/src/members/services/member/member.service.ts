@@ -5,10 +5,6 @@ import { MemberRepositoryService } from '../member-repository/member-repository.
 export class MemberService {
   constructor(private repo: MemberRepositoryService) {}
 
-  async getMemberById(id: number) {
-    return await this.repo.getMemberById(id);
-  }
-
   async getMembersSeedGroups(id: number) {
     return await this.repo.getMembersSeedGroups(id);
   }
