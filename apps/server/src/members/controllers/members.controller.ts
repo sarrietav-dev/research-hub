@@ -11,12 +11,6 @@ import { MemberService } from '../services/member/member.service';
 export class MembersController {
   constructor(private service: MemberService) {}
 
-  @Get(':id')
-  async getMemberById(@Param('id') id: string) {
-    const idNumber = this.validateIdParam(id);
-    return await this.service.getMemberById(idNumber);
-  }
-
   @Get(':id/seed-groups')
   async getMembersSeedGroups(
     @Param('id') id: string,
