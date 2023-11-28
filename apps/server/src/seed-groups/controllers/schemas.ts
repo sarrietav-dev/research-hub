@@ -16,7 +16,7 @@ export const createSeedGroupSchema = z.object({
       affiliationDate: z.date(),
       functions: z.string().array(),
       isActive: z.boolean(),
-      role: z.enum(['Student', 'Professor']),
+      roleId: ZodId,
       memberId: ZodId,
     }),
   ),
@@ -44,7 +44,7 @@ export const createSeedGroupSchema = z.object({
           name: z.string().min(1),
           description: z.string().min(1),
           date: z.date(),
-          type: z.enum(['Article', 'Thesis', 'Report', 'Poster', 'Other']),
+          productTypeId: ZodId,
         })
         .array(),
     })

@@ -141,6 +141,7 @@ export class SeedGroupRepositoryService {
           createMany: {
             data: seedGroup.coResearchers.map((coResearcher) => ({
               coResearcherId: coResearcher.id,
+              period: seedGroup.period,
             })),
           },
         },
@@ -151,7 +152,7 @@ export class SeedGroupRepositoryService {
                 affiliationDate: member.affiliationDate,
                 functions: member.functions,
                 isActive: member.isActive,
-                role: member.role,
+                roleId: member.roleId,
                 period: seedGroup.period,
                 memberId: member.memberId,
               };
@@ -159,16 +160,33 @@ export class SeedGroupRepositoryService {
           },
         },
         projects: {
-          createMany: {
-            data: seedGroup.projects.map((project) => ({
-              approvedAmount: project.approvedAmount,
-              certifyingOrganizationId: project.certifyingOrganizationId,
-              name: project.name,
-              startDate: project.startDate,
-              endDate: project.endDate,
-              type: project.type,
-            })),
-          },
+          create: seedGroup.projects.map((project) => ({
+            approvedAmount: project.approvedAmount,
+            name: project.name,
+            startDate: project.startDate,
+            endDate: project.endDate,
+            type: project.type,
+            certifyingOrganization: {
+              connect: {
+                id: project.certifyingOrganizationId,
+              },
+            },
+            members: {
+              connect: project.members.map((member) => ({
+                id: member.id,
+              })),
+            },
+            products: {
+              createMany: {
+                data: project.products.map((product) => ({
+                  name: product.name,
+                  description: product.description,
+                  date: product.date,
+                  productTypeId: product.productTypeId,
+                })),
+              },
+            },
+          })),
         },
         researchGroup: {
           connect: {
@@ -177,6 +195,7 @@ export class SeedGroupRepositoryService {
         },
         leaderRecords: {
           create: {
+            period: seedGroup.period,
             leaderId: seedGroup.leader.id,
           },
         },
