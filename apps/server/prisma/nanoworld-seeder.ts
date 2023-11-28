@@ -56,12 +56,14 @@ async function main() {
     { id: id6 },
     { id: id7 },
   ] = await Promise.all([
-    prismaClient.member.create({
+    prismaClient.person.create({
       data: {
         name: 'Ricardo Andrés Solano Pizarro',
         email: faker.internet.email(),
         identityCard: faker.number.int().toString(),
         institutionalCode: faker.number.int().toString(),
+        phone: faker.phone.number(),
+        
       },
     }),
     prismaClient.member.create({
