@@ -17,10 +17,10 @@ export const createSeedGroupSchema = z.object({
       functions: z.string().array(),
       isActive: z.boolean(),
       roleId: ZodId,
-      memberId: ZodId,
+      id: ZodId,
     }),
   ),
-  leader: z.object({ id: ZodId }),
+  leaderId: ZodId,
   coResearchers: z.array(z.object({ id: ZodId })),
   events: z
     .object({

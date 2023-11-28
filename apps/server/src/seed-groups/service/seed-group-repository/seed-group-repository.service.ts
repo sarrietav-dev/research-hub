@@ -154,7 +154,7 @@ export class SeedGroupRepositoryService {
                 isActive: member.isActive,
                 roleId: member.roleId,
                 period: seedGroup.period,
-                memberId: member.memberId,
+                memberId: member.id,
               };
             }),
           },
