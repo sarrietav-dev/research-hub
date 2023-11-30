@@ -49,14 +49,23 @@ function generateProductTypes() {
 function generateProduct(
   size: number = 1,
   opt: { typeSize: number },
-): Prisma.ProductCreateManyInput[] {
-  const products: Prisma.ProductCreateManyInput[] = [];
+): Prisma.ProductCreateInput[] {
+  const products: Prisma.ProductCreateInput[] = [];
   for (let i = 0; i < size; i++) {
     products.push({
       name: faker.lorem.sentence(),
       description: faker.lorem.paragraph(),
-      productTypeId: faker.number.int({ min: 1, max: opt.typeSize }),
+      type: {
+        connect: { id: faker.number.int({ min: 1, max: opt.typeSize }) },
+      },
       date: faker.date.past(),
+      members: {
+        connect: [
+          ...generateMemberConnection(
+            faker.number.int({ min: 1, max: PERSON_SIZE }),
+          ),
+        ],
+      },
     });
   }
   return products;
@@ -82,20 +91,9 @@ function generateProject(
         'InProgress',
       ]),
       products: {
-        createMany: {
-          data: [
-            ...generateProduct(PRODUCT_PER_PROJECT_SIZE, {
-              typeSize: TYPE_SIZE,
-            }),
-          ],
-        },
-      },
-      members: {
-        connect: [
-          ...generateMemberConnection(
-            faker.number.int({ min: 1, max: PERSON_SIZE }),
-          ),
-        ],
+        create: generateProduct(PRODUCT_PER_PROJECT_SIZE, {
+          typeSize: TYPE_SIZE,
+        }),
       },
     });
   }
