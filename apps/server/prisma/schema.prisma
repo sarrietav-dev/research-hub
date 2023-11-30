@@ -82,6 +82,7 @@ model Person {
   LeaderRecord       LeaderRecord[]
   CoResearcherRecord CoResearcherRecord[]
   User               User[]
+  products           Product[]
 
   @@map("directory")
 }
@@ -139,9 +140,10 @@ model Project {
   certifyingOrganizationId Int                    @map("certifying_organization_id")
   approvedAmount           Float                  @map("approved_amount")
   products                 Product[]
-  members                  Person[]
   seedGroup                SeedGroup              @relation(fields: [seedGroupId], references: [id])
   seedGroupId              Int
+  Person                   Person?                @relation(fields: [personId], references: [id])
+  personId                 Int?
 }
 
 enum ProjectStatus {
@@ -162,7 +164,8 @@ model Product {
   type          ProductType @relation(fields: [productTypeId], references: [id])
   date          DateTime
   project       Project?    @relation(fields: [projectId], references: [id])
-  projectId     Int?
+  projectId     Int?        @map("project_id")
+  members       Person[]
   productTypeId Int         @map("productTypesId")
 }
 
