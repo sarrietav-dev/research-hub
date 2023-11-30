@@ -13,7 +13,14 @@ export class SeedGroupRepositoryService {
         id,
       },
       include: {
-        projects: { include: { certifyingOrganization: true, products: true } },
+        projects: {
+          include: {
+            certifyingOrganization: true,
+            products: {
+              include: { members: { select: { id: true, name: true } } },
+            },
+          },
+        },
       },
     });
   }
@@ -69,7 +76,14 @@ export class SeedGroupRepositoryService {
   async getSeedGroups() {
     return await this.prisma.seedGroup.findMany({
       include: {
-        projects: { include: { certifyingOrganization: true, products: true } },
+        projects: {
+          include: {
+            certifyingOrganization: true,
+            products: {
+              include: { members: { select: { id: true, name: true } } },
+            },
+          },
+        },
       },
     });
   }
@@ -97,8 +111,9 @@ export class SeedGroupRepositoryService {
         projects: {
           include: {
             certifyingOrganization: true,
-            products: true,
-            members: { select: { id: true, name: true } },
+            products: {
+              include: { members: { select: { id: true, name: true } } },
+            },
           },
         },
       },
