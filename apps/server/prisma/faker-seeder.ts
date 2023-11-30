@@ -9,7 +9,7 @@ const CERT_ORG_SIZE = 4;
 const PROGRAM_SIZE = 5;
 const ROLE_SIZE = 2;
 const TYPE_SIZE = 4;
-const PERSON_SIZE = 400;
+const PERSON_SIZE = 300;
 const EVENT_SIZE = 10;
 const SEED_GROUP_SIZE = 50;
 const PRODUCT_PER_PROJECT_SIZE = faker.number.int({ min: 1, max: 10 });
@@ -60,11 +60,7 @@ function generateProduct(
       },
       date: faker.date.past(),
       members: {
-        connect: [
-          ...generateMemberConnection(
-            faker.number.int({ min: 1, max: PERSON_SIZE }),
-          ),
-        ],
+        connect: [...generateMemberConnection(5)],
       },
     });
   }
@@ -272,11 +268,14 @@ async function main() {
     }),
   ]);
 
-  createSeedGroup(SEED_GROUP_SIZE).forEach(async (seedGroup) => {
-    await prismaClient.seedGroup.create({
+  const sg = createSeedGroup(SEED_GROUP_SIZE);
+  const promises = sg.map((seedGroup) =>
+    prismaClient.seedGroup.create({
       data: seedGroup,
-    });
-  });
+    }),
+  );
+
+  await Promise.all(promises);
 }
 
 main()
