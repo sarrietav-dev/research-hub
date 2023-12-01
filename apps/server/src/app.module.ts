@@ -5,6 +5,7 @@ import { SharedModule } from './shared/shared.module';
 import { ProgramsModule } from './programs/programs.module';
 import { SeedGroupsModule } from './seed-groups/seed-groups.module';
 import { PersonModule } from './members/person.module';
+import { CertOrgsModule } from '@/cert-orgs/cert-orgs.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { PersonModule } from './members/person.module';
     ProgramsModule,
     SeedGroupsModule,
     PersonModule,
+    CertOrgsModule,
   ],
   providers: [PrismaService],
   exports: [PrismaService],
