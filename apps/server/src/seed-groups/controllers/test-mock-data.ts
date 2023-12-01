@@ -395,6 +395,20 @@ export const getProjectsData: Awaited<
     endDate: new Date(),
     certifyingOrganizationId: 1,
     type: 'Finished',
+    members: [
+      {
+        id: 1,
+        name: 'Member 1',
+      },
+      {
+        id: 2,
+        name: 'Member 2',
+      },
+      {
+        id: 3,
+        name: 'Member 3',
+      },
+    ],
     seedGroupId: 1,
     certifyingOrganization: {
       id: 1,
@@ -424,6 +438,20 @@ export const getProjectsData: Awaited<
       id: 2,
       name: 'Certifying Organization 2',
     },
+    members: [
+      {
+        id: 1,
+        name: 'Member 1',
+      },
+      {
+        id: 2,
+        name: 'Member 2',
+      },
+      {
+        id: 3,
+        name: 'Member 3',
+      },
+    ],
     products: [
       {
         id: 2,
@@ -444,6 +472,20 @@ export const getProjectsData: Awaited<
     certifyingOrganizationId: 3,
     type: 'Finished',
     seedGroupId: 3,
+    members: [
+      {
+        id: 1,
+        name: 'Member 1',
+      },
+      {
+        id: 2,
+        name: 'Member 2',
+      },
+      {
+        id: 3,
+        name: 'Member 3',
+      },
+    ],
     certifyingOrganization: {
       id: 3,
       name: 'Certifying Organization 3',
@@ -467,6 +509,20 @@ export const getProjectsData: Awaited<
     endDate: new Date(),
     certifyingOrganizationId: 4,
     type: 'Finished',
+    members: [
+      {
+        id: 1,
+        name: 'Member 1',
+      },
+      {
+        id: 2,
+        name: 'Member 2',
+      },
+      {
+        id: 3,
+        name: 'Member 3',
+      },
+    ],
     seedGroupId: 4,
     certifyingOrganization: {
       id: 4,

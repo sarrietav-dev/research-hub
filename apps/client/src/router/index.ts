@@ -40,6 +40,11 @@ const router = createRouter({
       path: '/form_group',
       name: 'form_group',
       component: () => import('../views/FormGroupView.vue')
+    },
+    {
+      path: '/student_list',
+      name: 'student_list',
+      component: () => import('../views/StudentListView.vue')
     }
   ]
 })

@@ -1,61 +1,81 @@
+<script setup lang = "ts">
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
+import StudentList from '../components/StudentList.vue';
+
+const seed_information = ref()
+const seed_members = ref()
+const isCharged = ref()
+let dataList = []
+
+onMounted( async () => {
+    try {
+        const url = "http://localhost:3000/api/seed-groups/" + new URL(location.href).searchParams.get('id')
+
+        isCharged.value = true
+        const responseGroups = await axios.get(url)
+        const responseMembers = await axios.get(url + "/members")
+        isCharged.value = false
+        seed_information.value = responseGroups.data
+        seed_members.value = responseMembers.data
+        console.log(seed_information.value)
+        console.log(seed_members.value)
+        dataList = seed_members.value.map((item: { period: any; member: { name: any; identityCard: any; institutionalCode: any; email: any; }; role: any; isActive: any; functions: any[]; }) => {
+          return {
+            period: item.period,
+            name: item.member.name,
+            role: item.role,
+            isActive: item.isActive,
+            identityCard: item.member.identityCard,
+            institutionalCode: item.member.institutionalCode,
+            email: item.member.email,
+            functions: item.functions.join(', '),
+          };
+        });
+
+    }catch(error){
+        console.log(error)
+    }
+}
+)
+</script>
 <template>
     <div id="app">
-        <v-container>
-            <v-layout>
-                <v-card height="80vh" min-width="30vw" class="overflow-auto">
-                    <v-card-title primary-title class="headline font-weight-bold text-xs-center">{{name}}</v-card-title>
-                    <v-card-subtitle  class="font-weight-bold subtile" v-for="(group, index) in seedGroup"
-                        :key="group.research_group">
-                        <template v-if="index === 0">Grupo de investigación:  {{ group.research_group }}</template>
+        <v-container class="flex-1-1-100 ma-2 pa-2">
+            <v-layout v-if="isCharged == false">
+                <v-card class="overflow-auto">
+                    <v-card-title primary-title class="headline font-weight-bold text-xs-center">
+                        {{ seed_information.name }} ({{ seed_information.id }})
+                    </v-card-title>
+                    <v-card-subtitle class="font-weight-bold subtile"
+                        v-for = "item in seed_information.researchLines" :key = "item">
+                        {{ item }}
                     </v-card-subtitle>
-                    <v-card-subtitle class="subtitle" v-for="(group, index) in seedGroup"
-                        :key="group.leader">
-                        <template v-if="index === 0">Líder de semillero:  {{ group.leader }}</template>
-                    </v-card-subtitle>
-                        
-                    <v-card-text >Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Enim nulla aliquet porttitor lacus. Cursus eget nunc scelerisque viverra mauris in aliquam. Sit amet nulla facilisi morbi. Sed cras ornare arcu dui vivamus arcu felis bibendum ut. Suspendisse sed nisi lacus sed viverra tellus in hac. Eleifend mi in nulla posuere. Condimentum mattis pellentesque id nibh tortor id. Non curabitur gravida arcu ac. Ultricies tristique nulla aliquet enim. Tincidunt dui ut ornare lectus sit amet est placerat in. Vel pretium lectus quam id leo. Pulvinar etiam non quam lacus. Tortor consequat id porta nibh venenatis cras sed felis eget. Lacus sed viverra tellus in hac habitasse platea dictumst vestibulum. Leo in vitae turpis massa. 
-                    </v-card-text >
-                    <v-card-title primary-title>Integrantes</v-card-title>
-                    <v-list-item
-                        v-for="group in seedGroup"
-                        :key="group.full_name"
-                        :title="' - ' + group.full_name"
-                        class="my-custom-list-item"
-                    >
+                    <v-card-text>
+                        {{ seed_information.description }}
+                    </v-card-text>
 
-                    </v-list-item>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn flat color="primary">Download info</v-btn>
-                    </v-card-actions>
-                </v-card>
+                    <v-card>
+                        <v-card-title primary-title class="headline font-weight-bold text-xs-center">Proyectos</v-card-title>
+                        <v-expansion-panels>
+                            <v-expansion-panel v-for = "item in seed_information.projects" :key = "item">
+                                <v-expansion-panel-title>{{ item.name }}</v-expansion-panel-title>
+                                <v-expansion-panel-text> 
+                                    Dinero Aprobado: <b>{{ item.approvedAmount }}</b>
+                                    <h4>Productos</h4>
+                                    <v-list>
+                                        <v-list-item-content v-for = "item2 in item.products " :key = "item2"> 
+                                            <v-list-item-title class="text-wrap"> {{ item2.name }} </v-list-item-title>
+                                            <v-list-item-subtitle class = "mb-4"> {{  item2.description }}</v-list-item-subtitle>
+                                        </v-list-item-content>
+                                    </v-list>
+                                </v-expansion-panel-text>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card>
+                    <StudentList :items="dataList"></StudentList>
+                </v-card>  
             </v-layout>
         </v-container>
     </div>
 </template>
-
-<style>
-    .my-custom-list-item {
-        margin-bottom: -20px;
-    }
-    .subtitle{
-        height: auto;
-        color: black;
-    }
-</style>
-
-
-<script setup lang="ts">
-    import { ref } from 'vue';
-    import { useRoute } from 'vue-router'
-    import { getSeedGroup } from '../lib/database.ts';
-    import { onMounted } from 'vue';
-
-    const seedGroup = ref()
-    const route = useRoute()
-    const name = ref(route.params.seed_group)
-    const seedname = name.value
-    onMounted(async () => {
-        seedGroup.value = await getSeedGroup(seedname as string)
-    })
-</script>

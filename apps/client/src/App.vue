@@ -8,6 +8,7 @@ import { Script } from 'vm';
       <v-app-bar-title>
         <v-btn variant="plain" to="/">Research Hub</v-btn>
       </v-app-bar-title>
+      <v-btn variant="plain" to="/student_list">Students List</v-btn>
       <router-link :to="{ path: '/login' }">
         <v-btn variant="tonal" prepend-icon="mdi-login">Login</v-btn>
       </router-link>
@@ -19,3 +20,15 @@ import { Script } from 'vm';
       </v-main>
   </v-app>
 </template>
+
+<script>
+  import StudentList from './components/StudentList.vue'
+
+  export default {
+    name: 'App',
+    components:{
+      StudentList
+    }
+  }
+
+</script>

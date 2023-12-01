@@ -1,73 +1,266 @@
 <template>
-    <v-sheet width="300" class="mx-auto">
-      <v-form ref="form" class="pa-4"> 
-        <v-radio-group v-model="nuevoGroup" class="mb-4" inline>
-            <v-text>Desea crear un nuevo grupo de investigación</v-text>
-            <v-radio label="Si" value="true"></v-radio>
-            <v-radio label="No" value="false"></v-radio>
-        </v-radio-group>
-  
-        <v-text-field
-          v-if="nuevoGroup === 'true'"
-          v-model="group"
-          label="Nuevo Grupo de Investigación"
-          required
-          class="mb-4"
-        ></v-text-field>
-  
-        <v-select
-          v-if="nuevoGroup === 'false'"
-          v-model="selectedGroup"
-          :items="existingGroups"
-          label="Selecciona un Grupo Existente"
-          required
-          class="mb-4"
-        ></v-select>   
+  <v-sheet width="570" class="mx-auto">
+    <v-stepper alt-labels class="text-caption"
+    :items="['Agregar Información General', 'Agregar Miembros', 'Agregar Eventos', 'Agregar Proyectos']" 
+    complete>
+      <template v-slot:item.1>
+        <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Información General</v-card-title>
+          <v-row>
+            <v-col cols="8" class="pb-0">
+              <v-text-field
+                  label="Nombre del Semillero"
+                  :hide-details="true"
+                  variant="outlined"
+                  class="mb-1 pb-0 pt-3"
+                  required
+              ></v-text-field>
+            </v-col>
+            
+            <v-col cols="4" class="pb-0">
+              <v-text-field 
+                label="Acrónimo"
+                :hide-details="true"
+                variant="outlined"
+                class="mb-1 pb-0 pt-3"
+              ></v-text-field> 
+            </v-col>
+        </v-row>
+        <v-row class="pt-0">
+          <v-col cols="6" class="pb-0">
+            <v-select 
+              v-model="programs"
+              :items="existingPrograms"
+              label="Programa"
+              class="mb-1 pb-0"
+              variant="outlined"
+              :hide-details="true"
+              required
+            ></v-select>
+          </v-col>
+
+          <v-col cols="6" class="pb-0">
+            <v-select
+              v-model="groups"
+              :items="existingGroups"
+              label="Grupo de Investigación"
+              class="mb-1 pb-0"
+              variant="outlined"
+              :hide-details="true"
+              required
+            ></v-select> 
+          </v-col>
+        </v-row>
         
-        <v-radio-group 
-          v-model="nuevoSeedGroup" 
-          class="mb-4" 
-          v-if="nuevoGroup === 'false'"
-        inline>
-            <v-text>Desea crear un nuevo semillero de investigación</v-text>
-            <v-radio label="Si" value="true"></v-radio>
-            <v-radio label="No" value="false"></v-radio>
-        </v-radio-group>
-  
+        <v-row>
+          <v-col cols="6">
+            <v-text-field 
+              type="date"
+              label="Fecha de Creación"
+              variant="outlined"
+              class="mb-4 pb-0"
+              :hide-details="true"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field 
+              label="Período Actual"
+              class="mb-4 pb-0"
+              variant="outlined"
+              :hide-details="true"
+              required
+            ></v-text-field>
+          </v-col>
+        </v-row>          
+
+        <v-textarea 
+          label="Descripción"
+          variant="outlined"
+          class="mb-4 pb-0"
+          :hide-details="true"
+          rows="3" 
+          required
+        ></v-textarea>
+
         <v-text-field
-          v-if="nuevoSeedGroup === 'true' || nuevoGroup === 'true'"
-          v-model="seedGroup"
-          label="Nuevo Semillero de Investigación"
+          label="Línea de Investigación"
+          class="mb-1 pb-0"
+          variant="outlined"
+          :hide-details="true"
           required
-          class="mb-4"
         ></v-text-field>
-  
+      </template>
+
+      <template v-slot:item.2>
+        <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Información de Miembros</v-card-title>
         <v-select
-          v-if="nuevoGroup === 'false' && nuevoSeedGroup === 'false'"
-          v-model="selectedSeedGroup"
-          :items="existingSeedGroups"
-          label="Selecciona un Semillero Existente"
+          v-model="leaders"
+          :items="existingLeaders"
+          label="Nombre del Líder"
+          class="pt-3 mb-4 pb-0"
+          :hide-details="true"
+          variant="outlined"
           required
-          class="mb-4"
-        ></v-select>  
-      </v-form>
-    </v-sheet>
-  </template>
+        ></v-select>
+
+        <v-select 
+          v-model="leaders"
+          :items="existingLeaders"
+          label="Co-Investigadores"
+          :hide-details="true"
+          class="mb-2 pb-2"
+          variant="outlined"
+          required
+        ></v-select>
+
+        <v-data-table></v-data-table>
+      </template>
+
+      <template v-slot:item.3>
+        <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Información de Eventos</v-card-title>
+        <v-text-field
+          label="Nombre del Evento"
+          class="mb-2 pb-0 pt-3"
+          :hide-details="true"
+          variant="outlined"
+          required
+        ></v-text-field>
+
+        <v-row>
+          <v-col cols="6">
+            <v-text-field 
+              type="date"
+              label="Fecha de Inicio"
+              :hide-details="true"
+              variant="outlined"
+              class="mb-2 pb-0 pt-3"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field 
+              type="date"
+              label="Fecha de Fin"
+              :hide-details="true"
+              variant="outlined"
+              class="mb-2 pb-0 pt-3"
+              required
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-radio-group inline>
+          <v-text class="w-100 pl-1 pt-2 mb-2 pb-0">Tipo de Evento</v-text>
+          <v-radio
+            label="Local"
+            value="radio-1"
+            :hide-details="true"
+          ></v-radio>
+          <v-radio
+            label="Internacional"
+            value="radio-2"
+            :hide-details="true"
+          ></v-radio>
+        </v-radio-group>
+      </template>
+
+      <template v-slot:item.4>
+        <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Nuevo Proyecto</v-card-title>
+        <v-text-field
+          label="Nombre del Proyecto"
+          variant="outlined"
+          class="mb-2 pb-0 pt-3"
+          :hide-details="true"
+          required
+        ></v-text-field>
+
+        <v-row>
+          <v-col cols="6">
+            <v-text-field 
+              type="date"
+              label="Fecha de Inicio"
+              variant="outlined"
+              class="mb-2 pb-0 pt-3"
+              :hide-details="true"
+              required
+            ></v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field 
+              type="date"
+              label="Fecha de Fin"
+              variant="outlined"
+              class="mb-2 pb-0 pt-3"
+              :hide-details="true"
+              required
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-radio-group class="mb-0 pb-0"
+         :hide-details="true"
+         inline>
+          <v-text class="w-100 pl-1 pt-2 mb-0 pb-0">Estado del Proyecto</v-text>
+          <v-radio
+            label="En ejecución"
+            value="radio-1"
+            class="mb-0 pb-0"
+          ></v-radio>
+          <v-radio
+            label="Terminado"
+            value="radio-2"
+            class="mb-0 pb-0"
+          ></v-radio>
+        </v-radio-group>
+
+        <v-text-field
+          label="Entidad que avala"
+          variant="outlined"
+          class="mb-2 pb-0 pt-2"
+          :hide-details="true"
+          required
+        ></v-text-field>
+
+        <v-text-field
+          label="Monto Aprobado"
+          variant="outlined"
+          prefix="$"
+          class="mb-1 pb-0 pt-2"
+          :hide-details="true"
+          required
+        ></v-text-field>
+      </template>
+    </v-stepper>
+  </v-sheet>
+</template>
   
-  <script lang="ts">
+<script lang="ts">
+import axios from 'axios';
+
   export default {
     data() {
       return {
-        nuevoGroup: 'false', 
-        group: "", 
-        selectedGroup: null, 
-        existingGroups: ["Grupo 1", "Grupo 2", "Grupo 3"],
-        nuevoSeedGroup: 'false', 
-        seedGroup: "", 
-        selectedSeedGroup: null, 
-        existingSeedGroups: ["Semillero 1", "Semillero 2", "Semillero 3"],
+        dataList: [],
+        date:null,
+        programs: null, 
+        startDate: null,
+        datePickerVisible: false,
+        existingPrograms: ["Programa 1", "Programa 2", "Programa 3"],
+        groups: null, 
+        existingGroups: ["Grupo 1", "Grupo 2", "Grupo 3"], 
+        leaders: null, 
+        existingLeaders: ["Líder 1", "Líder 2", "Líder 3"],
       };
     },
-    // Otros métodos y opciones de componente
+    mounted(){
+      axios.get('http://localhost:3000/api/programs')
+        .then(response => {
+          this.dataList = response.data.map(item => {
+            return {
+              
+            };
+          });
+        })
+    }
   };
-  </script>
+</script>

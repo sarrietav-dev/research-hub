@@ -42,7 +42,7 @@ import { group } from 'console';
         //for (i in range (group.length) ){  
           if(this.user === "admin@unicartagena.edu.co" && this.passw === "abc"){
             alert('Entraste yei')
-            router.push({ path: '/logged_in' })
+            router.push({ path: '/form_group' })
           }
           else {
             alert('Error, Usuario o contraseña incorrecto')

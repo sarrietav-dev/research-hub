@@ -93,7 +93,13 @@ export class SeedGroupRepositoryService {
         id: seedGroupId,
       },
       include: {
-        projects: { include: { certifyingOrganization: true, products: true } },
+        projects: {
+          include: {
+            certifyingOrganization: true,
+            products: true,
+            members: { select: { id: true, name: true } },
+          },
+        },
       },
     });
 
