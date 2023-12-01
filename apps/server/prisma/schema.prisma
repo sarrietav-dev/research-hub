@@ -89,7 +89,7 @@ model Person {
 
 model Program {
   id   Int    @id @default(autoincrement())
-  name String
+  name String @unique
 
   seedGroups SeedGroup[]
   Person     Person[]
