@@ -67,7 +67,7 @@ async function main() {
         
       },
     }),
-    prismaClient.member.create({
+    prismaClient.person.create({
       data: {
         name: 'Udualdo Herrera García',
         email: faker.internet.email(),
@@ -75,7 +75,7 @@ async function main() {
         institutionalCode: faker.number.int().toString(),
       },
     }),
-    prismaClient.member.create({
+    prismaClient.person.create({
       data: {
         name: 'Alejandra Alexandra Reinemer Caparroso',
         email: faker.internet.email(),
@@ -83,7 +83,7 @@ async function main() {
         institutionalCode: faker.number.int().toString(),
       },
     }),
-    prismaClient.member.create({
+    prismaClient.person.create({
       data: {
         name: 'Juan Camilo Monterroza Rodriguez',
         email: faker.internet.email(),
@@ -91,7 +91,7 @@ async function main() {
         institutionalCode: faker.number.int().toString(),
       },
     }),
-    prismaClient.member.create({
+    prismaClient.person.create({
       data: {
         name: 'Carlos Alberto Rivero Simancas',
         email: faker.internet.email(),
@@ -99,7 +99,7 @@ async function main() {
         institutionalCode: faker.number.int().toString(),
       },
     }),
-    prismaClient.member.create({
+    prismaClient.person.create({
       data: {
         name: 'Marcos David Mora Montes',
         email: faker.internet.email(),
@@ -107,7 +107,7 @@ async function main() {
         institutionalCode: faker.number.int().toString(),
       },
     }),
-    prismaClient.member.create({
+    prismaClient.person.create({
       data: {
         name: 'Diana Marcela Quiroz López',
         email: faker.internet.email(),
@@ -118,7 +118,7 @@ async function main() {
   ]);
 
   const [{ id: id8 }, { id: id9 }, { id: id10 }] = await Promise.all([
-    prismaClient.member.create({
+    prismaClient.person.create({
       data: {
         email: faker.internet.email(),
         identityCard: faker.number.int().toString(),
@@ -126,7 +126,7 @@ async function main() {
         name: 'Martha Cuenca',
       },
     }),
-    prismaClient.member.create({
+    prismaClient.person.create({
       data: {
         email: faker.internet.email(),
         identityCard: faker.number.int().toString(),
@@ -134,7 +134,7 @@ async function main() {
         name: 'Angel Gonzales',
       },
     }),
-    prismaClient.member.create({
+    prismaClient.person.create({
       data: {
         email: faker.internet.email(),
         identityCard: faker.number.int().toString(),
