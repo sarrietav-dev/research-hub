@@ -1,13 +1,37 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
+import { CreatePersonDto } from '@/members/controllers/schemas';
 
 @Injectable()
 export class PersonRepositoryService {
   constructor(private prisma: PrismaService) {}
 
-  async getMembersSeedGroups(memberId: number) {
-    return await this.prisma.membershipRecord.findMany({
-      where: { memberId },
+  getPersonById(id: number) {
+    return this.prisma.person.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        identityCard: true,
+        program: true,
+      },
+    });
+  }
+
+  getPersonsProducts(id: number) {
+    return this.prisma.person.findUnique({
+      where: { id },
+      select: {
+        products: true,
+      },
+    });
+  }
+
+  getPersonsSeedGroups(id: number) {
+    return this.prisma.membershipRecord.findMany({
+      where: { memberId: id },
       select: {
         affiliationDate: true,
         functions: true,
@@ -22,8 +46,9 @@ export class PersonRepositoryService {
       },
     });
   }
-  async getMemberSeedGroupHistoryRecord(id: number, seedGroupId: number) {
-    return await this.prisma.membershipRecord.findMany({
+
+  getPersonSeedGroupHistoryRecord(id: number, seedGroupId: number) {
+    return this.prisma.membershipRecord.findMany({
       where: {
         memberId: id,
         seedGroupId,
@@ -37,6 +62,23 @@ export class PersonRepositoryService {
           select: {
             id: true,
             name: true,
+          },
+        },
+      },
+    });
+  }
+
+  createPerson(personDto: CreatePersonDto) {
+    return this.prisma.person.create({
+      data: {
+        name: personDto.name,
+        email: personDto.email,
+        phone: personDto.phone,
+        identityCard: personDto.identityCard,
+        institutionalCode: personDto.institutionalCode,
+        program: {
+          connect: {
+            id: personDto.programId,
           },
         },
       },
