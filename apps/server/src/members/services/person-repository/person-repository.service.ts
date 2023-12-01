@@ -84,4 +84,48 @@ export class PersonRepositoryService {
       },
     });
   }
+
+  getPersons(query: string, take: number, skip: number) {
+    return this.prisma.person.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: query,
+            },
+          },
+          {
+            email: {
+              contains: query,
+            },
+          },
+          {
+            phone: {
+              contains: query,
+            },
+          },
+          {
+            identityCard: {
+              contains: query,
+            },
+          },
+          {
+            institutionalCode: {
+              contains: query,
+            },
+          },
+        ],
+      },
+      take,
+      skip,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        identityCard: true,
+        program: true,
+      },
+    });
+  }
 }

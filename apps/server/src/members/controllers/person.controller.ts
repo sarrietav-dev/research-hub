@@ -1,18 +1,23 @@
 import {
-  BadRequestException, Body,
+  BadRequestException,
+  Body,
   Controller,
   Get,
-  Param, Post,
-  Query, UsePipes,
+  Param,
+  Post,
+  Query,
+  UsePipes,
 } from '@nestjs/common';
-import {PersonService} from '@/members/services/person/person.service';
-import {CreatePersonDto, CreatePersonSchema} from "@/members/controllers/schemas";
-import {ValidateInputPipe} from "@/shared/validate-input/validate-input.pipe";
+import { PersonService } from '@/members/services/person/person.service';
+import {
+  CreatePersonDto,
+  CreatePersonSchema,
+} from '@/members/controllers/schemas';
+import { ValidateInputPipe } from '@/shared/validate-input/validate-input.pipe';
 
 @Controller('api/person')
 export class PersonController {
-  constructor(private service: PersonService) {
-  }
+  constructor(private service: PersonService) {}
 
   @Get(':id')
   getPersonById(@Param('id') id: string) {
@@ -34,6 +39,34 @@ export class PersonController {
   @UsePipes(new ValidateInputPipe(CreatePersonSchema))
   createPerson(@Body() personDto: CreatePersonDto) {
     return this.service.createPerson(personDto);
+  }
+
+  @Get()
+  getPersons(
+    @Query('query') query: string = '',
+    @Query('take') take: string = '10',
+    @Query('page') page: string = '1',
+  ) {
+    if (!Number.isSafeInteger(+take) || !Number.isSafeInteger(+page)) {
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'take and page must be integers',
+        error: 'Bad Request',
+      });
+    }
+
+    const takeNumber = Number(take);
+    const pageNumber = Number(page);
+
+    if (takeNumber < 1 || pageNumber < 1) {
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'take and page must be positive',
+        error: 'Bad Request',
+      });
+    }
+
+    return this.service.getPersons(query, takeNumber, pageNumber);
   }
 
   @Get(':id/products')

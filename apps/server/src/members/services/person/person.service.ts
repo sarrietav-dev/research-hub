@@ -1,11 +1,10 @@
-import {Injectable} from '@nestjs/common';
-import {PersonRepositoryService} from '@/members/services/person-repository/person-repository.service';
-import {CreatePersonDto} from "@/members/controllers/schemas";
+import { Injectable } from '@nestjs/common';
+import { PersonRepositoryService } from '@/members/services/person-repository/person-repository.service';
+import { CreatePersonDto } from '@/members/controllers/schemas';
 
 @Injectable()
 export class PersonService {
-  constructor(private repo: PersonRepositoryService) {
-  }
+  constructor(private repo: PersonRepositoryService) {}
 
   getPersonSeedGroups(id: number) {
     return this.repo.getPersonsSeedGroups(id);
@@ -25,5 +24,11 @@ export class PersonService {
 
   createPerson(personDto: CreatePersonDto) {
     return this.repo.createPerson(personDto);
+  }
+
+  getPersons(query: string, take: number, page: number) {
+    const skip = (page - 1) * take;
+
+    return this.repo.getPersons(query, take, skip);
   }
 }
