@@ -27,19 +27,18 @@
         </v-row>
         <v-row class="pt-0">
           <v-col cols="6" class="pb-0">
-            <v-select 
+            <v-autocomplete 
               v-model="programs"
-              :items="existingPrograms"
               label="Programa"
               class="mb-1 pb-0"
               variant="outlined"
               :hide-details="true"
               required
-            ></v-select>
+            ></v-autocomplete>
           </v-col>
 
           <v-col cols="6" class="pb-0">
-            <v-select
+            <v-autocomplete
               v-model="groups"
               :items="existingGroups"
               label="Grupo de Investigación"
@@ -47,7 +46,7 @@
               variant="outlined"
               :hide-details="true"
               required
-            ></v-select> 
+            ></v-autocomplete> 
           </v-col>
         </v-row>
         
@@ -82,18 +81,32 @@
           required
         ></v-textarea>
 
-        <v-text-field
-          label="Línea de Investigación"
-          class="mb-1 pb-0"
-          variant="outlined"
-          :hide-details="true"
-          required
-        ></v-text-field>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field
+              v-model="chipInput"
+              label="Líneas de Investigación"
+              @keydown.enter.prevent="addChip"
+              variant="outlined"
+              :hide-details="true"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <v-chip
+              v-for="(chip, index) in chips"
+              :key="index"
+              closable
+              @click:close="removeChip(index)"
+            >
+              {{ chip }}
+            </v-chip>
+          </v-col>
+        </v-row>
       </template>
 
       <template v-slot:item.2>
         <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Información de Miembros</v-card-title>
-        <v-select
+        <v-autocomplete
           v-model="leaders"
           :items="existingLeaders"
           label="Nombre del Líder"
@@ -101,17 +114,20 @@
           :hide-details="true"
           variant="outlined"
           required
-        ></v-select>
+        ></v-autocomplete>
 
-        <v-select 
-          v-model="leaders"
-          :items="existingLeaders"
+        <v-combobox 
+          v-model="coInvestigator"
+          :items="existingCoInvestigator"
           label="Co-Investigadores"
           :hide-details="true"
           class="mb-2 pb-2"
           variant="outlined"
+          autocomplete
+          multiple
           required
-        ></v-select>
+          chips
+        ></v-combobox>
 
         <v-data-table></v-data-table>
       </template>
@@ -213,13 +229,15 @@
           ></v-radio>
         </v-radio-group>
 
-        <v-text-field
+        <v-autocomplete
+          v-model="sponsors"
+          :items="existingSponsors"
           label="Entidad que avala"
           variant="outlined"
           class="mb-2 pb-0 pt-2"
           :hide-details="true"
           required
-        ></v-text-field>
+        ></v-autocomplete>
 
         <v-text-field
           label="Monto Aprobado"
@@ -244,23 +262,44 @@ import axios from 'axios';
         date:null,
         programs: null, 
         startDate: null,
-        datePickerVisible: false,
-        existingPrograms: ["Programa 1", "Programa 2", "Programa 3"],
         groups: null, 
         existingGroups: ["Grupo 1", "Grupo 2", "Grupo 3"], 
         leaders: null, 
         existingLeaders: ["Líder 1", "Líder 2", "Líder 3"],
+        coInvestigator: null, 
+        existingCoInvestigator: ["Co-Investigador 1", "Co-Investigador 2", "Co-Investigador 3"],
+        sponsors: null,
+        existingSponsors: ["Patrocinador 1", "Patrocinador 2", "Patrocinador 3"],
+        chipInput: '',
+        chips: [],
+        line_of_research: null,
+        existingLineOfResearch: ["Linea de Investigación 1", "Linea de Investigación 2", "Linea de Investigación 3"]
       };
     },
-    mounted(){
-      axios.get('http://localhost:3000/api/programs')
+    methods: {
+      addChip() {
+        if (this.chipInput.trim() !== '') {
+          this.chips.push(this.chipInput.trim());
+          this.chipInput = '';
+        }
+      },
+      removeChip(index: number) {
+        this.chips.splice(index, 1);
+      },
+      fetchItemData() {
+      const apiUrl = 'http://localhost:3000/api/programs';
+
+      axios.get(apiUrl)
         .then(response => {
-          this.dataList = response.data.map(item => {
-            return {
-              
-            };
-          });
+          this.programs = response.data.program;
         })
-    }
+        .catch(error => {
+          console.error('Error al obtener datos:', error);
+        });
+    },
+    },
+    mounted(){
+      this.fetchItemData();
+    },
   };
 </script>
