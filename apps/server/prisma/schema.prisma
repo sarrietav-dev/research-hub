@@ -142,8 +142,8 @@ model Project {
   products                 Product[]
   seedGroup                SeedGroup              @relation(fields: [seedGroupId], references: [id])
   seedGroupId              Int
-  Person                   Person?                @relation(fields: [personId], references: [id])
-  personId                 Int?
+  director                 Person                 @relation(fields: [directorId], references: [id])
+  directorId               Int
 }
 
 enum ProjectStatus {

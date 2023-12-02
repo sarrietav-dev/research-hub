@@ -215,7 +215,7 @@ export class SeedGroupRepositoryService {
             id: project.certifyingOrganizationId,
           },
         },
-        Person: {
+        director: {
           connect: {
             id: project.directorId,
           },
