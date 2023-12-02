@@ -85,8 +85,8 @@ export class PersonRepositoryService {
     });
   }
 
-  getPersons(query: string, take: number, skip: number) {
-    return this.prisma.person.findMany({
+  async getPersons(query: string, take: number, skip: number) {
+    const findMany = this.prisma.person.findMany({
       where: {
         OR: [
           {
@@ -127,5 +127,44 @@ export class PersonRepositoryService {
         program: true,
       },
     });
+
+    const countQuery = this.prisma.person.count({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: query,
+            },
+          },
+          {
+            email: {
+              contains: query,
+            },
+          },
+          {
+            phone: {
+              contains: query,
+            },
+          },
+          {
+            identityCard: {
+              contains: query,
+            },
+          },
+          {
+            institutionalCode: {
+              contains: query,
+            },
+          },
+        ],
+      },
+    });
+
+    const [persons, count] = await this.prisma.$transaction([
+      findMany,
+      countQuery,
+    ]);
+
+    return { persons, count };
   }
 }
