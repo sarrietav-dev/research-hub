@@ -86,6 +86,7 @@ function generateProject(
         'Finished',
         'InProgress',
       ]),
+      directorId: faker.number.int({ min: 1, max: PERSON_SIZE }),
       products: {
         create: generateProduct(PRODUCT_PER_PROJECT_SIZE, {
           typeSize: TYPE_SIZE,

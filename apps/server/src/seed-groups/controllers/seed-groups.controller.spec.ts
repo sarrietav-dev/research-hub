@@ -138,7 +138,7 @@ describe('SeedGroupsController', () => {
           approvedAmount: 1000,
           startDate: new Date(),
           endDate: new Date(),
-          personId: 1,
+          directorId: 1,
           certifyingOrganizationId: 1,
           type: 'Finished',
           seedGroupId: 1,

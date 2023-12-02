@@ -38,13 +38,14 @@ export const createSeedGroupSchema = z.object({
       approvedAmount: z.number().min(1),
       certifyingOrganizationId: ZodId,
       type: z.enum(['Finished', 'InProgress']),
-      members: z.array(z.object({ id: ZodId })),
+      directorId: ZodId,
       products: z
         .object({
           name: z.string().min(1),
           description: z.string().min(1),
           date: z.coerce.date(),
           productTypeId: ZodId,
+          members: z.object({ id: ZodId }).array(),
         })
         .array(),
     })
@@ -52,3 +53,24 @@ export const createSeedGroupSchema = z.object({
 });
 
 export type CreateSeedGroupDto = z.infer<typeof createSeedGroupSchema>;
+
+export const CreateProjectSchema = z.object({
+  name: z.string().min(1),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date().optional(),
+  approvedAmount: z.number().min(1),
+  certifyingOrganizationId: ZodId,
+  type: z.enum(['Finished', 'InProgress']),
+  directorId: ZodId,
+  products: z
+    .object({
+      name: z.string().min(1),
+      description: z.string().min(1),
+      date: z.coerce.date(),
+      productTypeId: ZodId,
+      members: z.object({ id: ZodId }).array(),
+    })
+    .array(),
+});
+
+export type CreateProjectDto = z.infer<typeof CreateProjectSchema>;

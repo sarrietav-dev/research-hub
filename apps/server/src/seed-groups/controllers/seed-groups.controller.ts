@@ -11,7 +11,12 @@ import {
 } from '@nestjs/common';
 import { SeedGroupService } from '../service/seed-group/seed-group.service';
 import { $Enums } from '@prisma/client';
-import { CreateSeedGroupDto, createSeedGroupSchema } from './schemas';
+import {
+  CreateProjectDto,
+  CreateProjectSchema,
+  CreateSeedGroupDto,
+  createSeedGroupSchema,
+} from './schemas';
 import { ValidateInputPipe } from '@/shared/validate-input/validate-input.pipe';
 @Controller('/api/seed-groups')
 export class SeedGroupsController {
@@ -143,6 +148,38 @@ export class SeedGroupsController {
     }
 
     return events;
+  }
+
+  @Post(':id/projects')
+  @UsePipes(new ValidateInputPipe(CreateProjectSchema))
+  async createProject(
+    @Body() project: CreateProjectDto,
+    @Param('id') idParam: string,
+  ) {
+    const id = this.validateIdParam(idParam);
+
+    return await this.seedGroupService.createProject(id, project);
+  }
+
+  @Get(':id/projects/:projectId')
+  async getProjectById(
+    @Param('id') idParam: string,
+    @Param('projectId') projectIdParam: string,
+  ) {
+    const id = this.validateIdParam(idParam);
+    const projectId = this.validateIdParam(projectIdParam);
+
+    const project = await this.seedGroupService.getProjectById(id, projectId);
+
+    if (!project) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: 'Project not found',
+        error: 'Not Found',
+      });
+    }
+
+    return project;
   }
 
   private validateIdParam(id: string) {

@@ -1,10 +1,10 @@
 {
   "name": "server",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.0",
+  "description": "NestJS API server for the research hub app",
+  "author": "Sebastian Arrieta Villarreal <25210925+sarrietav-dev@users.noreply.github.com>",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0-only",
   "prisma": {
     "seed": "ts-node ./prisma/faker-seeder.ts"
   },
@@ -23,6 +23,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:generate": "prisma generate",
+    "prisma:migrate:new": "dotenv -e .env.dev prisma migrate dev --name",
     "prisma:migrate": "dotenv -e .env.dev prisma migrate reset",
     "prisma:migrate:prod": "dotenv -e .env prisma migrate deploy",
     "prisma:seed": "dotenv -e .env.dev prisma db seed",
