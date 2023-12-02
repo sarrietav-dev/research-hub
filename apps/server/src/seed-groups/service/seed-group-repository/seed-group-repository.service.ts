@@ -1,5 +1,8 @@
 import { PrismaService } from '@/prisma/prisma.service';
-import { CreateSeedGroupDto } from '@/seed-groups/controllers/schemas';
+import {
+  CreateProjectDto,
+  CreateSeedGroupDto,
+} from '@/seed-groups/controllers/schemas';
 import { Injectable } from '@nestjs/common';
 import { $Enums } from '@prisma/client';
 
@@ -174,35 +177,6 @@ export class SeedGroupRepositoryService {
             }),
           },
         },
-        projects: {
-          create: seedGroup.projects.map((project) => ({
-            approvedAmount: project.approvedAmount,
-            name: project.name,
-            startDate: project.startDate,
-            endDate: project.endDate,
-            type: project.type,
-            certifyingOrganization: {
-              connect: {
-                id: project.certifyingOrganizationId,
-              },
-            },
-            members: {
-              connect: project.members.map((member) => ({
-                id: member.id,
-              })),
-            },
-            products: {
-              createMany: {
-                data: project.products.map((product) => ({
-                  name: product.name,
-                  description: product.description,
-                  date: product.date,
-                  productTypeId: product.productTypeId,
-                })),
-              },
-            },
-          })),
-        },
         researchGroup: {
           connect: {
             id: seedGroup.researchGroupId,
@@ -226,5 +200,42 @@ export class SeedGroupRepositoryService {
     });
 
     return id;
+  }
+
+  createProjectForSeedGroup(id: number, project: CreateProjectDto) {
+    return this.prisma.project.create({
+      data: {
+        approvedAmount: project.approvedAmount,
+        name: project.name,
+        startDate: project.startDate,
+        endDate: project.endDate,
+        type: project.type,
+        certifyingOrganization: {
+          connect: {
+            id: project.certifyingOrganizationId,
+          },
+        },
+        Person: {
+          connect: {
+            id: project.directorId,
+          },
+        },
+        products: {
+          createMany: {
+            data: project.products.map((product) => ({
+              name: product.name,
+              description: product.description,
+              date: product.date,
+              productTypeId: product.productTypeId,
+            })),
+          },
+        },
+        seedGroup: {
+          connect: {
+            id,
+          },
+        },
+      },
+    });
   }
 }

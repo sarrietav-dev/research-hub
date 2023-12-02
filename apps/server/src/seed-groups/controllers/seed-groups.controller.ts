@@ -11,7 +11,11 @@ import {
 } from '@nestjs/common';
 import { SeedGroupService } from '../service/seed-group/seed-group.service';
 import { $Enums } from '@prisma/client';
-import { CreateSeedGroupDto, createSeedGroupSchema } from './schemas';
+import {
+  CreateProjectDto,
+  CreateSeedGroupDto,
+  createSeedGroupSchema,
+} from './schemas';
 import { ValidateInputPipe } from '@/shared/validate-input/validate-input.pipe';
 @Controller('/api/seed-groups')
 export class SeedGroupsController {
@@ -143,6 +147,17 @@ export class SeedGroupsController {
     }
 
     return events;
+  }
+
+  @Post(':id/projects')
+  @UsePipes(new ValidateInputPipe(createSeedGroupSchema))
+  async createProject(
+    @Param('id') idParam: string,
+    @Body() project: CreateProjectDto,
+  ) {
+    const id = this.validateIdParam(idParam);
+
+    return await this.seedGroupService.createProject(id, project);
   }
 
   private validateIdParam(id: string) {
