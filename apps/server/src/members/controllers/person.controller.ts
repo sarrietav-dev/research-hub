@@ -42,7 +42,7 @@ export class PersonController {
   }
 
   @Get()
-  getPersons(
+  async getPersons(
     @Query('query') query: string = '',
     @Query('take') take: string = '10',
     @Query('page') page: string = '1',
@@ -66,7 +66,7 @@ export class PersonController {
       });
     }
 
-    return this.service.getPersons(query, takeNumber, pageNumber);
+    return await this.service.getPersons(query, takeNumber, pageNumber);
   }
 
   @Get(':id/products')

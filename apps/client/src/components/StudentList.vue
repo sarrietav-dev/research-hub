@@ -13,8 +13,8 @@
 
     <v-divider></v-divider>
 
-    <v-data-table v-model:items-per-page="itemsPerPage" :search="searchQuery" :loading="isLoading" :items="items"
-      item-key="id" @update:options="onSearch">
+    <v-data-table-server v-model:items-per-page="itemsPerPage" :search="searchQuery" :loading="isLoading" :items="items"
+      item-key="id" @update:options="onSearch" :items-length="totalItems">
       <template #headers>
         <tr>
           <th>Nombre</th>
@@ -43,7 +43,7 @@
           </td>
         </tr>
       </template>
-    </v-data-table>
+    </v-data-table-server>
   </v-card>
 </template>
 
@@ -61,15 +61,30 @@ const items = ref<Person[]>([]);
 const isLoading = ref(false);
 const searchQuery = ref('');
 const itemsPerPage = ref(10);
+const totalItems = ref(0);
 
-async function onSearch() {
+async function onSearch({
+  page,
+  itemsPerPage,
+}: {
+  page: number,
+  itemsPerPage: number
+}) {
   isLoading.value = true
-  await search();
+  await search({
+    page, itemsPerPage
+  });
   isLoading.value = false
 }
 
-const search = useDebounceFn(async () => {
-  await fetchPeople({ page: 1, query: searchQuery.value, take: itemsPerPage.value })
+const search = useDebounceFn(async ({
+  page,
+  itemsPerPage,
+}: {
+  page: number,
+  itemsPerPage: number
+}) => {
+  await fetchPeople({ page: page, query: searchQuery.value, take: itemsPerPage })
 }, 500)
 
 onMounted(async () => {
@@ -83,13 +98,14 @@ async function fetchPeople({ query = '', take = 10, page = 1 }: {
   take?: number,
   page?: number
 }) {
-  const person = await getPersons(
+  const { data, count } = await getPersons(
     page,
     take,
     query,
   )
 
-  items.value = person
+  items.value = data
+  totalItems.value = count
 }
 
 function onRowClick(id: number) {

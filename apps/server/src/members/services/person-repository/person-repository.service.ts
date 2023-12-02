@@ -160,11 +160,11 @@ export class PersonRepositoryService {
       },
     });
 
-    const [persons, count] = await this.prisma.$transaction([
+    const [data, count] = await this.prisma.$transaction([
       findMany,
       countQuery,
     ]);
 
-    return { persons, count };
+    return { data, count };
   }
 }
