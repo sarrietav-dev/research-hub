@@ -23,7 +23,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate reset",
+    "prisma:migrate": "dotenv -e .env.dev prisma migrate reset",
     "prisma:migrate:prod": "dotenv -e .env prisma migrate deploy",
     "prisma:seed": "dotenv -e .env.dev prisma db seed",
     "prisma:studio": "dotenv -e .env.dev prisma studio"
