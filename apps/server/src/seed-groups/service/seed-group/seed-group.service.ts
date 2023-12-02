@@ -3,7 +3,6 @@ import { SeedGroupRepositoryService } from '../seed-group-repository/seed-group-
 import { $Enums } from '@prisma/client';
 import {
   CreateProjectDto,
-  CreateProjectSchema,
   CreateSeedGroupDto,
 } from '@/seed-groups/controllers/schemas';
 
