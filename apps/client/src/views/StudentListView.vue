@@ -2,9 +2,10 @@
   <StudentList :items="dataList"></StudentList>
 </template>
 
-<script>
+<script lang="js">
 import axios from 'axios';
 import StudentList from '../components/StudentList.vue';
+import baseUrl from '../lib/baseUrl'
 
 export default {
   data() {
@@ -17,7 +18,7 @@ export default {
     StudentList,
   },
   mounted() {
-    axios.get('http://localhost:3000/api/seed-groups/1/members')
+    axios.get(`${baseUrl}/api/seed-groups/1/members`)
       .then(response => {
         this.dataList = response.data.map(item => {
           return {

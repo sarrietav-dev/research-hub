@@ -3,6 +3,19 @@ import faker from './faker';
 
 const prismaClient = new PrismaClient();
 
+const USER_SIZE = 10;
+const RESEARCH_GROUP_SIZE = 30;
+const CERT_ORG_SIZE = 4;
+const PROGRAM_SIZE = 5;
+const ROLE_SIZE = 2;
+const TYPE_SIZE = 4;
+const PERSON_SIZE = 300;
+const EVENT_SIZE = 10;
+const SEED_GROUP_SIZE = 50;
+const PRODUCT_PER_PROJECT_SIZE = faker.number.int({ min: 1, max: 10 });
+const CORESEARCHER_PER_SEEDGROUP_SIZE = 4;
+const MEMBERSHIP_PER_SEEDGROUP_SIZE = 15;
+
 function generateUser(
   size: number = 1,
 ): { name: string; email: string; password: string }[] {
@@ -21,20 +34,34 @@ function generateUser(
   return users;
 }
 
-function generateProduct(size: number = 1): Prisma.ProductCreateInput[] {
+function generateProductTypes() {
+  let types: Prisma.ProductTypeCreateInput[] = [];
+
+  for (let i = 0; i < 5; i++) {
+    types = ['Artículo', 'Tesis', 'Informe', 'Afiches'].map((type) => ({
+      name: type,
+    }));
+  }
+
+  return types;
+}
+
+function generateProduct(
+  size: number = 1,
+  opt: { typeSize: number },
+): Prisma.ProductCreateInput[] {
   const products: Prisma.ProductCreateInput[] = [];
   for (let i = 0; i < size; i++) {
     products.push({
       name: faker.lorem.sentence(),
       description: faker.lorem.paragraph(),
-      type: faker.helpers.arrayElement<$Enums.ProductType>([
-        'Thesis',
-        'Other',
-        'Article',
-        'Poster',
-        'Report',
-      ]),
+      type: {
+        connect: { id: faker.number.int({ min: 1, max: opt.typeSize }) },
+      },
       date: faker.date.past(),
+      members: {
+        connect: [...generateMemberConnection(5)],
+      },
     });
   }
   return products;
@@ -42,7 +69,7 @@ function generateProduct(size: number = 1): Prisma.ProductCreateInput[] {
 
 function generateProject(
   size: number = 1,
-  maxCertOrgIndex: number = 1,
+  opts: { certOrgSize: number; memberSize: number },
 ): Prisma.ProjectUncheckedCreateWithoutSeedGroupInput[] {
   const projects: Prisma.ProjectUncheckedCreateWithoutSeedGroupInput[] = [];
   for (let i = 0; i < size; i++) {
@@ -51,30 +78,30 @@ function generateProject(
       approvedAmount: faker.number.int(),
       certifyingOrganizationId: faker.number.int({
         min: 1,
-        max: maxCertOrgIndex,
+        max: opts.certOrgSize,
       }),
       startDate: faker.date.past(),
       endDate: faker.date.future(),
-      type: 'InProgress',
+      type: faker.helpers.arrayElement<$Enums.ProjectStatus>([
+        'Finished',
+        'InProgress',
+      ]),
       products: {
-        create: [...generateProduct(5)],
-      },
-      members: {
-        connect: [
-          ...generateMemberConnection(faker.number.int({ min: 1, max: 5 })),
-        ],
+        create: generateProduct(PRODUCT_PER_PROJECT_SIZE, {
+          typeSize: TYPE_SIZE,
+        }),
       },
     });
   }
   return projects;
 }
 
-function generateMemberConnection(size = 1) {
-  const connections: Prisma.MemberWhereUniqueInput[] = [];
+function generateMemberConnection(size = 1, opts?: { memberSize?: number }) {
+  const connections: Prisma.PersonWhereUniqueInput[] = [];
 
   for (let i = 0; i < size; i++) {
     connections.push({
-      id: faker.number.int({ min: 1, max: 5 }),
+      id: faker.number.int({ min: 1, max: opts?.memberSize ?? PERSON_SIZE }),
     });
   }
 
@@ -105,6 +132,15 @@ function generateCompany(
   return certOrgs;
 }
 
+function generateCertifyingOrganization(): Prisma.CertifyingOrganizationCreateInput[] {
+  return [
+    { name: 'Universidad de Cartagena' },
+    { name: 'Universidad Técnologica de Bolivar' },
+    { name: 'Universidad de San Buenaventura' },
+    { name: 'Universidad de Antioquia' },
+  ];
+}
+
 function generateEvent(
   size: number = 1,
 ): Prisma.EventCreateWithoutSeedGroupInput[] {
@@ -123,141 +159,123 @@ function generateEvent(
   return events;
 }
 
-function generateMember(size: number = 1): Prisma.MemberCreateInput[] {
-  const members: Prisma.MemberCreateInput[] = [];
+function generatePerson(
+  size: number = 1,
+  opts: { programSize?: number },
+): Prisma.PersonCreateManyInput[] {
+  const members: Prisma.PersonCreateManyInput[] = [];
   for (let i = 0; i < size; i++) {
     members.push({
       name: faker.person.fullName(),
       email: faker.internet.email(),
       identityCard: faker.number.bigInt().toString(),
       institutionalCode: faker.number.bigInt().toString(),
+      phone: faker.phone.number(),
+      programId: faker.number.int({ min: 1, max: opts.programSize }),
     });
   }
   return members;
 }
 
-async function generateMembershipRecord(
+function generateMembershipRoles(): Prisma.MembershipRoleCreateManyInput[] {
+  return [{ name: 'Estudiante' }, { name: 'Profesor' }];
+}
+
+function generateMembershipRecord(
   size: number = 1,
-): Promise<Prisma.MembershipRecordCreateManyInput[]> {
+  opts: {
+    memberSize?: number;
+    seedGroupId?: number;
+    memberId?: number;
+    roleSize?: number;
+  },
+): Prisma.MembershipRecordCreateManySeedGroupInput[] {
   const membershipRecords: Prisma.MembershipRecordCreateManyInput[] = [];
 
   for (let i = 0; i < size; i++) {
-    const { id } = await prismaClient.member.create({
-      data: generateMember()[0],
-    });
-
     membershipRecords.push({
-      memberId: id,
       affiliationDate: faker.date.past(),
       functions: ['Función 1', 'Función 2'],
-      role: faker.helpers.arrayElement<$Enums.Role>(['Professor', 'Student']),
       isActive: faker.datatype.boolean(),
       period: faker.helpers.mustache('202{{year}}-{{period}}', {
         year: faker.number.int({ min: 0, max: 9 }).toString(),
         period: faker.helpers.arrayElement(['1', '2']),
       }),
+      roleId: faker.number.int({ min: 1, max: opts.roleSize }),
+      memberId: faker.number.int({ min: 1, max: opts.memberSize }),
     });
   }
   return membershipRecords;
 }
 
-function generateCoResearcher(
+function generateCoResearcherRecord(
   size: number = 1,
-): Prisma.CoResearcherCreateManyInput[] {
-  const coResearchers: Prisma.CoResearcherCreateManyInput[] = [];
-  for (let i = 0; i < size; i++) {
-    coResearchers.push({
-      email: faker.internet.email(),
-      name: faker.person.fullName(),
-      phone: faker.phone.number(),
-      programId: faker.number.int({ min: 1, max: 5 }),
-    });
-  }
-  return coResearchers;
-}
-
-async function generateCoResearcherRecord(
-  size: number = 1,
-): Promise<Prisma.CoResearcherRecordCreateManyInput[]> {
+  opts?: { personsSize: number; seedGroupId: number },
+): Prisma.CoResearcherRecordCreateManyInput[] {
   const coResearcherRecords: Prisma.CoResearcherRecordCreateManyInput[] = [];
 
   for (let i = 0; i < size; i++) {
-    const { id } = await prismaClient.coResearcher.create({
-      data: generateCoResearcher()[0],
-    });
-
     coResearcherRecords.push({
-      coResearcherId: id,
+      coResearcherId: faker.number.int({ min: 1, max: opts?.personsSize ?? 5 }),
+      period: faker.helpers.mustache('202{{year}}-{{period}}', {
+        year: faker.number.int({ min: 0, max: 9 }).toString(),
+        period: faker.helpers.arrayElement(['1', '2']),
+      }),
+      seedGroupId: opts?.seedGroupId,
     });
   }
   return coResearcherRecords;
 }
 
-function generateLeader(): Prisma.LeaderCreateInput {
-  return {
-    email: faker.internet.email(),
-    name: faker.person.fullName(),
-    phone: faker.phone.number(),
-  };
+function generatePrograms(): Prisma.ProgramCreateInput[] {
+  return [
+    { name: 'Ingeniería de Sistemas' },
+    { name: 'Ingeniería Industrial' },
+    { name: 'Ingeniería Electrónica' },
+    { name: 'Ingeniería Mecánica' },
+    { name: 'Ingeniería Ambiental' },
+  ];
 }
 
 async function main() {
   await Promise.all([
+    prismaClient.person.createMany({
+      data: [...generatePerson(PERSON_SIZE, { programSize: 5 })],
+    }),
+
     prismaClient.user.createMany({
-      data: [...generateUser(5)],
+      data: [...generateUser(USER_SIZE)],
     }),
 
     prismaClient.researchGroup.createMany({
-      data: [...generateCompany(5)],
+      data: [...generateCompany(RESEARCH_GROUP_SIZE)],
     }),
 
     prismaClient.program.createMany({
-      data: [...generateCompany(5)],
+      data: [...generatePrograms()],
     }),
 
     prismaClient.certifyingOrganization.createMany({
-      data: [...generateCompany(5)],
+      data: [...generateCertifyingOrganization()],
+    }),
+
+    prismaClient.membershipRole.createMany({
+      data: [...generateMembershipRoles()],
+    }),
+
+    prismaClient.productType.createMany({
+      data: [...generateProductTypes()],
     }),
   ]);
 
-  await prismaClient.seedGroup.create({
-    data: {
-      name: faker.company.name(),
-      description: faker.lorem.paragraph(),
-      acronym: faker.lorem.word(),
-      creationDate: new Date(),
-      leaderRecords: {
-        create: {
-          leader: {
-            create: generateLeader(),
-          },
-        },
-      },
-      membershipRecords: {
-        create: [...(await generateMembershipRecord(5))],
-      },
-      coResearcherRecords: {
-        create: [...(await generateCoResearcherRecord(5))],
-      },
-      program: {
-        connect: {
-          id: faker.number.int({ min: 1, max: 5 }),
-        },
-      },
-      researchGroup: {
-        connect: {
-          id: faker.number.int({ min: 1, max: 5 }),
-        },
-      },
-      researchLines: ['Línea de investigación 1', 'Línea de investigación 2'],
-      projects: {
-        create: [...generateProject(5, 5)],
-      },
-      events: {
-        create: [...generateEvent(5)],
-      },
-    },
-  });
+  const sg = createSeedGroup(SEED_GROUP_SIZE);
+  const promises = sg.map((seedGroup) =>
+    prismaClient.seedGroup.create({
+      data: seedGroup,
+    }),
+  );
+
+  await Promise.all(promises);
 }
 
 main()
@@ -265,3 +283,66 @@ main()
   .finally(async () => {
     await prismaClient.$disconnect();
   });
+
+function createSeedGroup(size: number = 1) {
+  const seedGroups: Prisma.SeedGroupCreateInput[] = [];
+
+  for (let i = 0; i < size; i++) {
+    seedGroups.push({
+      name: faker.company.name(),
+      description: faker.lorem.paragraph(),
+      acronym: faker.lorem.word(),
+      creationDate: faker.date.past(),
+      leaderRecords: {
+        create: {
+          period: faker.helpers.mustache('202{{year}}-{{period}}', {
+            year: faker.number.int({ min: 0, max: 9 }).toString(),
+            period: faker.helpers.arrayElement(['1', '2']),
+          }),
+          leader: {
+            connect: {
+              id: faker.number.int({ min: 1, max: PERSON_SIZE }),
+            },
+          },
+        },
+      },
+      membershipRecords: {
+        createMany: {
+          data: generateMembershipRecord(MEMBERSHIP_PER_SEEDGROUP_SIZE, {
+            memberSize: PERSON_SIZE,
+            roleSize: ROLE_SIZE,
+          }),
+        },
+      },
+      coResearcherRecords: {
+        createMany: {
+          data: generateCoResearcherRecord(CORESEARCHER_PER_SEEDGROUP_SIZE),
+        },
+      },
+      program: {
+        connect: {
+          id: faker.number.int({ min: 1, max: PROGRAM_SIZE }),
+        },
+      },
+      researchGroup: {
+        connect: {
+          id: faker.number.int({ min: 1, max: RESEARCH_GROUP_SIZE }),
+        },
+      },
+      researchLines: ['Línea de investigación 1', 'Línea de investigación 2'],
+      projects: {
+        create: [
+          ...generateProject(5, {
+            certOrgSize: CERT_ORG_SIZE,
+            memberSize: PERSON_SIZE,
+          }),
+        ],
+      },
+      events: {
+        create: [...generateEvent(EVENT_SIZE)],
+      },
+    });
+  }
+
+  return seedGroups;
+}

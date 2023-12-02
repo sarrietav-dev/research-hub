@@ -1,11 +1,19 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
   NotFoundException,
   Param,
+  Post,
+  UsePipes,
 } from '@nestjs/common';
 import { ProgramService } from '../services/program/program.service';
+import { ValidateInputPipe } from '@/shared/validate-input/validate-input.pipe';
+import {
+  CreateProgramDto,
+  CreateProgramSchema,
+} from '@/programs/controller/schema';
 
 @Controller('/api/programs')
 export class ProgramsController {
@@ -14,6 +22,12 @@ export class ProgramsController {
   @Get()
   async getPrograms() {
     return await this.programService.getPrograms();
+  }
+
+  @Post()
+  @UsePipes(new ValidateInputPipe(CreateProgramSchema))
+  createProgram(@Body() programDto: CreateProgramDto) {
+    return this.programService.createProgram(programDto.name);
   }
 
   @Get(':id')

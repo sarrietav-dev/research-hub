@@ -4,10 +4,18 @@ import { PrismaService } from './prisma/prisma.service';
 import { SharedModule } from './shared/shared.module';
 import { ProgramsModule } from './programs/programs.module';
 import { SeedGroupsModule } from './seed-groups/seed-groups.module';
-import { MembersModule } from './members/members.module';
+import { PersonModule } from './members/person.module';
+import { CertOrgsModule } from '@/cert-orgs/cert-orgs.module';
 
 @Module({
-  imports: [AuthModule, SharedModule, ProgramsModule, SeedGroupsModule, MembersModule],
+  imports: [
+    AuthModule,
+    SharedModule,
+    ProgramsModule,
+    SeedGroupsModule,
+    PersonModule,
+    CertOrgsModule,
+  ],
   providers: [PrismaService],
   exports: [PrismaService],
 })

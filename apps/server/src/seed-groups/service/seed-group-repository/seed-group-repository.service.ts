@@ -1,4 +1,5 @@
 import { PrismaService } from '@/prisma/prisma.service';
+import { CreateSeedGroupDto } from '@/seed-groups/controllers/schemas';
 import { Injectable } from '@nestjs/common';
 import { $Enums } from '@prisma/client';
 
@@ -12,7 +13,14 @@ export class SeedGroupRepositoryService {
         id,
       },
       include: {
-        projects: { include: { certifyingOrganization: true, products: true } },
+        projects: {
+          include: {
+            certifyingOrganization: true,
+            products: {
+              include: { members: { select: { id: true, name: true } } },
+            },
+          },
+        },
       },
     });
   }
@@ -68,7 +76,14 @@ export class SeedGroupRepositoryService {
   async getSeedGroups() {
     return await this.prisma.seedGroup.findMany({
       include: {
-        projects: { include: { certifyingOrganization: true, products: true } },
+        projects: {
+          include: {
+            certifyingOrganization: true,
+            products: {
+              include: { members: { select: { id: true, name: true } } },
+            },
+          },
+        },
       },
     });
   }
@@ -96,8 +111,9 @@ export class SeedGroupRepositoryService {
         projects: {
           include: {
             certifyingOrganization: true,
-            products: true,
-            members: { select: { id: true, name: true } },
+            products: {
+              include: { members: { select: { id: true, name: true } } },
+            },
           },
         },
       },
@@ -121,5 +137,94 @@ export class SeedGroupRepositoryService {
         seedGroupId,
       },
     });
+  }
+
+  async createSeedGroup(seedGroup: CreateSeedGroupDto) {
+    const { id } = await this.prisma.seedGroup.create({
+      data: {
+        program: {
+          connect: {
+            id: seedGroup.programId,
+          },
+        },
+        name: seedGroup.name,
+        description: seedGroup.description,
+        acronym: seedGroup.acronym,
+        creationDate: seedGroup.creationDate,
+        researchLines: seedGroup.researchLines,
+        coResearcherRecords: {
+          createMany: {
+            data: seedGroup.coResearchers.map((coResearcher) => ({
+              coResearcherId: coResearcher.id,
+              period: seedGroup.period,
+            })),
+          },
+        },
+        membershipRecords: {
+          createMany: {
+            data: seedGroup.members.map((member) => {
+              return {
+                affiliationDate: member.affiliationDate,
+                functions: member.functions,
+                isActive: member.isActive,
+                roleId: member.roleId,
+                period: seedGroup.period,
+                memberId: member.id,
+              };
+            }),
+          },
+        },
+        projects: {
+          create: seedGroup.projects.map((project) => ({
+            approvedAmount: project.approvedAmount,
+            name: project.name,
+            startDate: project.startDate,
+            endDate: project.endDate,
+            type: project.type,
+            certifyingOrganization: {
+              connect: {
+                id: project.certifyingOrganizationId,
+              },
+            },
+            members: {
+              connect: project.members.map((member) => ({
+                id: member.id,
+              })),
+            },
+            products: {
+              createMany: {
+                data: project.products.map((product) => ({
+                  name: product.name,
+                  description: product.description,
+                  date: product.date,
+                  productTypeId: product.productTypeId,
+                })),
+              },
+            },
+          })),
+        },
+        researchGroup: {
+          connect: {
+            id: seedGroup.researchGroupId,
+          },
+        },
+        leaderRecords: {
+          create: {
+            period: seedGroup.period,
+            leaderId: seedGroup.leaderId,
+          },
+        },
+        events: {
+          create: seedGroup.events.map((event) => ({
+            description: event.description,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            type: event.type,
+          })),
+        },
+      },
+    });
+
+    return id;
   }
 }
