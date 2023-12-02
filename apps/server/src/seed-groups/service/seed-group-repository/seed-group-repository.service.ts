@@ -221,14 +221,17 @@ export class SeedGroupRepositoryService {
           },
         },
         products: {
-          createMany: {
-            data: project.products.map((product) => ({
-              name: product.name,
-              description: product.description,
-              date: product.date,
-              productTypeId: product.productTypeId,
-            })),
-          },
+          create: project.products.map((product) => ({
+            name: product.name,
+            description: product.description,
+            date: product.date,
+            productTypeId: product.productTypeId,
+            members: {
+              connect: product.members.map((member) => ({
+                id: member.id,
+              })),
+            },
+          })),
         },
         seedGroup: {
           connect: {
