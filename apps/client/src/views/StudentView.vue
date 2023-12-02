@@ -10,7 +10,7 @@ const isCharged = ref()
 
 onMounted(async () => {
   try {
-    const url = `${baseUrl}/api/members/` + new URL(location.href).searchParams.get('id')
+    const url = `${baseUrl}/api/person/` + new URL(location.href).searchParams.get('id')
     isCharged.value = true
     const responseMember = await axios.get(url)
     const responseHistory = await axios.get(url + "/seed-groups?seedGroupId=" + new URL(location.href).searchParams.get('id'))
