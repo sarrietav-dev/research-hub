@@ -238,4 +238,18 @@ export class SeedGroupRepositoryService {
       },
     });
   }
+
+  getProjectById(id: number, projectId: number) {
+    return this.prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+      include: {
+        certifyingOrganization: true,
+        products: {
+          include: { members: { select: { id: true, name: true } } },
+        },
+      },
+    });
+  }
 }

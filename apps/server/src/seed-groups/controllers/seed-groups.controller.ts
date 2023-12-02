@@ -13,6 +13,7 @@ import { SeedGroupService } from '../service/seed-group/seed-group.service';
 import { $Enums } from '@prisma/client';
 import {
   CreateProjectDto,
+  CreateProjectSchema,
   CreateSeedGroupDto,
   createSeedGroupSchema,
 } from './schemas';
@@ -150,14 +151,35 @@ export class SeedGroupsController {
   }
 
   @Post(':id/projects')
-  @UsePipes(new ValidateInputPipe(createSeedGroupSchema))
+  @UsePipes(new ValidateInputPipe(CreateProjectSchema))
   async createProject(
-    @Param('id') idParam: string,
     @Body() project: CreateProjectDto,
+    @Param('id') idParam: string,
   ) {
     const id = this.validateIdParam(idParam);
 
     return await this.seedGroupService.createProject(id, project);
+  }
+
+  @Get(':id/projects/:projectId')
+  async getProjectById(
+    @Param('id') idParam: string,
+    @Param('projectId') projectIdParam: string,
+  ) {
+    const id = this.validateIdParam(idParam);
+    const projectId = this.validateIdParam(projectIdParam);
+
+    const project = await this.seedGroupService.getProjectById(id, projectId);
+
+    if (!project) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: 'Project not found',
+        error: 'Not Found',
+      });
+    }
+
+    return project;
   }
 
   private validateIdParam(id: string) {

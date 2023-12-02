@@ -88,4 +88,8 @@ export class SeedGroupService {
       project,
     );
   }
+
+  getProjectById(id: number, projectId: number) {
+    return this.seedGroupRepository.getProjectById(id, projectId);
+  }
 }
