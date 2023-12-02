@@ -77,9 +77,5 @@ onMounted( async () => {
                 </v-card>  
             </v-layout>
         </v-container>
-        
-        
-
-       
     </div>
 </template>
