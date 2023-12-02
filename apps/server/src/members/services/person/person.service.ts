@@ -26,9 +26,9 @@ export class PersonService {
     return this.repo.createPerson(personDto);
   }
 
-  getPersons(query: string, take: number, page: number) {
+  async getPersons(query: string, take: number, page: number) {
     const skip = (page - 1) * take;
 
-    return this.repo.getPersons(query, take, skip);
+    return await this.repo.getPersons(query, take, skip);
   }
 }

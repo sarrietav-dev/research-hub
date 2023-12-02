@@ -85,33 +85,38 @@ export class PersonRepositoryService {
     });
   }
 
-  getPersons(query: string, take: number, skip: number) {
-    return this.prisma.person.findMany({
+  async getPersons(query: string, take: number, skip: number) {
+    const findMany = this.prisma.person.findMany({
       where: {
         OR: [
           {
             name: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             email: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             phone: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             identityCard: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             institutionalCode: {
               contains: query,
+              mode: 'insensitive',
             },
           },
         ],
@@ -127,5 +132,49 @@ export class PersonRepositoryService {
         program: true,
       },
     });
+
+    const countQuery = this.prisma.person.count({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            email: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            phone: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            identityCard: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            institutionalCode: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    });
+
+    const [data, count] = await this.prisma.$transaction([
+      findMany,
+      countQuery,
+    ]);
+
+    return { data, count };
   }
 }
