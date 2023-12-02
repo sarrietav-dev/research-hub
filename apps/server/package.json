@@ -1,10 +1,10 @@
 {
   "name": "server",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.0",
+  "description": "NestJS API server for the research hub app",
+  "author": "Sebastian Arrieta Villarreal <25210925+sarrietav-dev@users.noreply.github.com>",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0-only",
   "prisma": {
     "seed": "ts-node ./prisma/faker-seeder.ts"
   },
