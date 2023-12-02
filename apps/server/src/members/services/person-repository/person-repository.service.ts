@@ -92,26 +92,31 @@ export class PersonRepositoryService {
           {
             name: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             email: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             phone: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             identityCard: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             institutionalCode: {
               contains: query,
+              mode: 'insensitive',
             },
           },
         ],
@@ -134,26 +139,31 @@ export class PersonRepositoryService {
           {
             name: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             email: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             phone: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             identityCard: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             institutionalCode: {
               contains: query,
+              mode: 'insensitive',
             },
           },
         ],
