@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import GroupView from '../views/GroupView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -30,7 +31,15 @@ const router = createRouter({
       path: '/student_list',
       name: 'student_list',
       component: () => import('../views/StudentListView.vue')
+    },
+    { path: '/student/:name', 
+      name: 'student_detail' ,
+      component: () => import('../views/StudentView.vue')
+
     }
+ 
+      
+
   ]
 })
 export default router

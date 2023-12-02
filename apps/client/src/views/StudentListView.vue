@@ -22,9 +22,10 @@ export default {
       .then(response => {
         this.dataList = response.data.map(item => {
           return {
-            period: item.period,
+            id: item.id,
             name: item.member.name,
             role: item.role,
+            period: item.period,
             isActive: item.isActive,
             identityCard: item.member.identityCard,
             institutionalCode: item.member.institutionalCode,

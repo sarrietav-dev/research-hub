@@ -55,31 +55,27 @@ onMounted(async () => {
             {{ seed_information.description }}
           </v-card-text>
 
-          <v-card>
-            <v-card-title primary-title class="headline font-weight-bold text-xs-center">Proyectos</v-card-title>
-            <v-expansion-panels>
-              <v-expansion-panel v-for="item in seed_information.projects" :key="item">
-                <v-expansion-panel-title>{{ item.name }}</v-expansion-panel-title>
-                <v-expansion-panel-text>
-                  Dinero Aprobado: <b>{{ item.approvedAmount }}</b>
-                  <h4>Productos</h4>
-                  <v-list>
-                    <v-list-item-content v-for="item2 in item.products " :key="item2">
-                      <v-list-item-title class="text-wrap"> {{ item2.name }} </v-list-item-title>
-                      <v-list-item-subtitle class="mb-4"> {{ item2.description }}</v-list-item-subtitle>
-                    </v-list-item-content>
-                  </v-list>
-                </v-expansion-panel-text>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </v-card>
-          <StudentList :items="dataList"></StudentList>
-        </v-card>
-      </v-layout>
-    </v-container>
-
-
-
-
-  </div>
+                    <v-card>
+                        <v-card-title primary-title class="headline font-weight-bold text-xs-center">Proyectos</v-card-title>
+                        <v-expansion-panels>
+                            <v-expansion-panel v-for = "item in seed_information.projects" :key = "item">
+                                <v-expansion-panel-title>{{ item.name }}</v-expansion-panel-title>
+                                <v-expansion-panel-text> 
+                                    Dinero Aprobado: <b>{{ item.approvedAmount }}</b>
+                                    <h4>Productos</h4>
+                                    <v-list>
+                                        <v-list-item-content v-for = "item2 in item.products " :key = "item2"> 
+                                            <v-list-item-title class="text-wrap"> {{ item2.name }} </v-list-item-title>
+                                            <v-list-item-subtitle class = "mb-4"> {{  item2.description }}</v-list-item-subtitle>
+                                        </v-list-item-content>
+                                    </v-list>
+                                </v-expansion-panel-text>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card>
+                    <StudentList :items="dataList"></StudentList>
+                </v-card>  
+            </v-layout>
+        </v-container>
+    </div>
 </template>
