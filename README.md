@@ -14,7 +14,6 @@ API Endpoints: [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" 
 1. Clone the repository
 2. Run `npm install` in the server directory
 3. Run `docker-compose up db -d` in the root directory
-4. Run `npm run prisma:migrate:dev` in the server directory
-5. Run `npm run prisma:seed` in the server directory if you want to seed the database
-6. Run `docker-compose up server` in the root directory
-7. When a new change to the seeder or a new migration is added, run `npm run prisma:migrate` in the server directory.
+4. Run `npm run prisma:migrate` in the server directory
+5. Run `docker-compose up server` in the root directory
+6. When a new change to the seeder or a new migration is added, run `npm run prisma:migrate` in the server directory.
