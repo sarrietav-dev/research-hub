@@ -34,7 +34,12 @@ export class UserService {
     return user;
   }
 
-  async create(email: string, password: string, name: string): Promise<User> {
+  async create(
+    email: string,
+    password: string,
+    name: string,
+    personId?: number,
+  ): Promise<User> {
     password = await this.crypto.hash(password);
 
     try {
@@ -43,6 +48,7 @@ export class UserService {
           email,
           password,
           name,
+          associatedPerson: { connect: { id: personId } },
         },
       });
       this.logger.debug(`User created with email ${user.id}`);

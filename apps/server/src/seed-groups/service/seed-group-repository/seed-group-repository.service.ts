@@ -1,4 +1,8 @@
 import { PrismaService } from '@/prisma/prisma.service';
+import {
+  CreateProjectDto,
+  CreateSeedGroupDto,
+} from '@/seed-groups/controllers/schemas';
 import { Injectable } from '@nestjs/common';
 import { $Enums } from '@prisma/client';
 
@@ -12,7 +16,14 @@ export class SeedGroupRepositoryService {
         id,
       },
       include: {
-        projects: { include: { certifyingOrganization: true, products: true } },
+        projects: {
+          include: {
+            certifyingOrganization: true,
+            products: {
+              include: { members: { select: { id: true, name: true } } },
+            },
+          },
+        },
       },
     });
   }
@@ -68,7 +79,14 @@ export class SeedGroupRepositoryService {
   async getSeedGroups() {
     return await this.prisma.seedGroup.findMany({
       include: {
-        projects: { include: { certifyingOrganization: true, products: true } },
+        projects: {
+          include: {
+            certifyingOrganization: true,
+            products: {
+              include: { members: { select: { id: true, name: true } } },
+            },
+          },
+        },
       },
     });
   }
@@ -96,8 +114,9 @@ export class SeedGroupRepositoryService {
         projects: {
           include: {
             certifyingOrganization: true,
-            products: true,
-            members: { select: { id: true, name: true } },
+            products: {
+              include: { members: { select: { id: true, name: true } } },
+            },
           },
         },
       },
@@ -119,6 +138,120 @@ export class SeedGroupRepositoryService {
       where: {
         type,
         seedGroupId,
+      },
+    });
+  }
+
+  async createSeedGroup(seedGroup: CreateSeedGroupDto) {
+    const { id } = await this.prisma.seedGroup.create({
+      data: {
+        program: {
+          connect: {
+            id: seedGroup.programId,
+          },
+        },
+        name: seedGroup.name,
+        description: seedGroup.description,
+        acronym: seedGroup.acronym,
+        creationDate: seedGroup.creationDate,
+        researchLines: seedGroup.researchLines,
+        coResearcherRecords: {
+          createMany: {
+            data: seedGroup.coResearchers.map((coResearcher) => ({
+              coResearcherId: coResearcher.id,
+              period: seedGroup.period,
+            })),
+          },
+        },
+        membershipRecords: {
+          createMany: {
+            data: seedGroup.members.map((member) => {
+              return {
+                affiliationDate: member.affiliationDate,
+                functions: member.functions,
+                isActive: member.isActive,
+                roleId: member.roleId,
+                period: seedGroup.period,
+                memberId: member.id,
+              };
+            }),
+          },
+        },
+        researchGroup: {
+          connect: {
+            id: seedGroup.researchGroupId,
+          },
+        },
+        leaderRecords: {
+          create: {
+            period: seedGroup.period,
+            leaderId: seedGroup.leaderId,
+          },
+        },
+        events: {
+          create: seedGroup.events.map((event) => ({
+            description: event.description,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            type: event.type,
+          })),
+        },
+      },
+    });
+
+    return id;
+  }
+
+  createProjectForSeedGroup(id: number, project: CreateProjectDto) {
+    return this.prisma.project.create({
+      data: {
+        approvedAmount: project.approvedAmount,
+        name: project.name,
+        startDate: project.startDate,
+        endDate: project.endDate,
+        type: project.type,
+        certifyingOrganization: {
+          connect: {
+            id: project.certifyingOrganizationId,
+          },
+        },
+        director: {
+          connect: {
+            id: project.directorId,
+          },
+        },
+        products: {
+          create: project.products.map((product) => ({
+            name: product.name,
+            description: product.description,
+            date: product.date,
+            productTypeId: product.productTypeId,
+            members: {
+              connect: product.members.map((member) => ({
+                id: member.id,
+              })),
+            },
+          })),
+        },
+        seedGroup: {
+          connect: {
+            id,
+          },
+        },
+      },
+    });
+  }
+
+  getProjectById(id: number, projectId: number) {
+    return this.prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+      include: {
+        certifyingOrganization: true,
+        products: {
+          include: { members: { select: { id: true, name: true } } },
+        },
       },
     });
   }

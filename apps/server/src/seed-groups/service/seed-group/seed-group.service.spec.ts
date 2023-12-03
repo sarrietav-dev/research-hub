@@ -54,43 +54,44 @@ describe('SeedGroupService', () => {
 
   describe('getSeedGroupById', () => {
     it('should return seed group', async () => {
-      const seedGroup: Awaited<ReturnType<typeof repository.getSeedGroupById>> =
-        {
-          id: 1,
-          name: 'Seed Group 1',
-          programId: 1,
-          acronym: 'SG1',
-          description: 'Seed Group 1 Description',
-          researchGroupId: 1,
-          researchLines: ['Seed Group 1 Research Line 1'],
-          creationDate: new Date(),
-          projects: [
-            {
+      const seedGroup: Awaited<ReturnType<typeof service.getSeedGroupById>> = {
+        id: 1,
+        name: 'Seed Group 1',
+        programId: 1,
+        acronym: 'SG1',
+        creationDate: new Date(),
+        description: 'Seed Group 1 Description',
+        researchGroupId: 1,
+        researchLines: ['Seed Group 1 Research Line 1'],
+        projects: [
+          {
+            id: 1,
+            name: 'Project 1',
+            approvedAmount: 1000,
+            startDate: new Date(),
+            endDate: new Date(),
+            directorId: 1,
+            certifyingOrganizationId: 1,
+            type: 'Finished',
+            seedGroupId: 1,
+            certifyingOrganization: {
               id: 1,
-              name: 'Project 1',
-              approvedAmount: 1000,
-              startDate: new Date(),
-              endDate: new Date(),
-              certifyingOrganizationId: 1,
-              type: 'Finished',
-              seedGroupId: 1,
-              certifyingOrganization: {
-                id: 1,
-                name: 'Certifying Organization 1',
-              },
-              products: [
-                {
-                  id: 1,
-                  name: 'Product 1',
-                  description: 'Product 1 Description',
-                  projectId: 1,
-                  date: new Date(),
-                  type: 'Article',
-                },
-              ],
+              name: 'Certifying Organization 1',
             },
-          ],
-        };
+            products: [
+              {
+                id: 1,
+                name: 'Product 1',
+                description: 'Product 1 Description',
+                projectId: 1,
+                date: new Date(),
+                productTypeId: 1,
+                members: [],
+              },
+            ],
+          },
+        ],
+      };
 
       jest
         .spyOn(repository, 'getSeedGroupById')
