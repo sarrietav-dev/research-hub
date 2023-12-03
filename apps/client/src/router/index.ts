@@ -28,6 +28,21 @@ const router = createRouter({
       component: () => import('../views/SeedView.vue')
     },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/logged_in',
+      name: 'logged_in',
+      component: () => import('../views/LoggedInView.vue')
+    },
+    {
+      path: '/form_group',
+      name: 'form_group',
+      component: () => import('../views/FormGroupView.vue')
+    },
+    {
       path: '/student_list',
       name: 'student_list',
       component: () => import('../views/StudentListView.vue')
