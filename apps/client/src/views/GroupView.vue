@@ -33,12 +33,26 @@ onMounted(async () => {
     <v-expansion-panel v-for="item in dataListPrograms" :key="item">
       <v-expansion-panel-title>{{ item.name }}</v-expansion-panel-title>
       <v-expansion-panel-text>
-        <v-list v-for="seed in dataListSeeds" :key="seed">
-          <v-list-item @click="onClick(seed.name, seed.id)" v-if="seed.programId == item.id" :title="seed.name"
-            :value="seed.name">
-          </v-list-item>
-        </v-list>
+        <ul v-for="seed in dataListSeeds" :key="seed">
+          <li v-if="seed.programId == item.id" @click="onClick(seed.name, seed.id)" :title="seed.name" :value="seed.name">
+            {{ seed.name }}
+          </li>
+        </ul>
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
 </template>
+
+<style>
+    li {
+      list-style-type: none;
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    li:hover {
+      background-color: #f0f0f0;
+    }
+</style>
