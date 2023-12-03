@@ -199,7 +199,7 @@ function generateMembershipRecord(
       functions: ['Función 1', 'Función 2'],
       isActive: faker.datatype.boolean(),
       period: faker.helpers.mustache('202{{year}}-{{period}}', {
-        year: faker.number.int({ min: 0, max: 9 }).toString(),
+        year: faker.number.int({ min: 2, max: 3 }).toString(),
         period: faker.helpers.arrayElement(['1', '2']),
       }),
       roleId: faker.number.int({ min: 1, max: opts.roleSize }),
@@ -219,7 +219,7 @@ function generateCoResearcherRecord(
     coResearcherRecords.push({
       coResearcherId: faker.number.int({ min: 1, max: opts?.personsSize ?? 5 }),
       period: faker.helpers.mustache('202{{year}}-{{period}}', {
-        year: faker.number.int({ min: 0, max: 9 }).toString(),
+        year: faker.number.int({ min: 2, max: 3 }).toString(),
         period: faker.helpers.arrayElement(['1', '2']),
       }),
       seedGroupId: opts?.seedGroupId,
@@ -297,7 +297,7 @@ function createSeedGroup(size: number = 1) {
       leaderRecords: {
         create: {
           period: faker.helpers.mustache('202{{year}}-{{period}}', {
-            year: faker.number.int({ min: 0, max: 9 }).toString(),
+            year: faker.number.int({ min: 2, max: 3 }).toString(),
             period: faker.helpers.arrayElement(['1', '2']),
           }),
           leader: {
