@@ -24,8 +24,21 @@ export class PersonRepositoryService {
   getPersonsProducts(id: number) {
     return this.prisma.person.findUnique({
       where: { id },
-      select: {
-        products: true,
+      include: {
+        products: {
+          include: {
+            project: {
+              select: {
+                seedGroup: {
+                  select: {
+                    name: true,
+                    id: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
   }
