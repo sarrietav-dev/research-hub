@@ -291,7 +291,7 @@ import axios from 'axios';
 
       axios.get(apiUrl)
         .then(response => {
-          this.programs = response.data.program;
+          this.programs = response.data.name;
         })
         .catch(error => {
           console.error('Error al obtener datos:', error);
