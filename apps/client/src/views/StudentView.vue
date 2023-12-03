@@ -1,25 +1,29 @@
 
 <script setup lang = "ts">
 import axios from 'axios';
+import { useRoute } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import baseUrl from '@/lib/baseUrl';
 
 const memberInfo = ref()
-const memberHistory = ref()
+const memberProducts = ref()
+const router = useRoute()
 const isCharged = ref()
 
 onMounted(async () => {
   try {
-    const url = `${baseUrl}/api/person/` + new URL(location.href).searchParams.get('id')
+    const url = `${baseUrl}/api/person/` + router.params.id
     isCharged.value = true
     const responseMember = await axios.get(url)
-    const responseHistory = await axios.get(url + "/seed-groups?seedGroupId=" + new URL(location.href).searchParams.get('id'))
+    const responseProducts = await axios.get(url + '/products')
+
     isCharged.value = false
     memberInfo.value = responseMember.data
-    memberHistory.value = responseHistory.data[0]
-    Object.assign({}, memberHistory.value)
+    memberProducts.value = responseProducts.data
+
     console.log(memberInfo.value)
-    console.log(memberHistory.value)
+    console.log(memberProducts.value)
+
   } catch (error) {
     console.log(error)
   }
@@ -36,17 +40,28 @@ onMounted(async () => {
             {{ memberInfo.name }} ({{ memberInfo.id }})
           </v-card-title>
           <v-card-subtitle>
-            Código institucional: {{ memberInfo.institutionalCode }}<br>
-            Correo electrónico: {{ memberInfo.email }}
+            Código institucional: {{ memberInfo.identityCard }}<br>
             
           </v-card-subtitle>
           <v-card-text>
-            <b>Rol:</b> {{ memberHistory.role }}<br>
-            <b>Funciones</b>: {{ memberHistory.functions[0] }}<br>
-            <b>Periodo</b>: {{ memberHistory.period }}<br>
-            <b>Fecha de afiliación</b>: {{ memberHistory.affiliationDate }}<br>
-            <b>Estado actual</b>: {{ memberInfo.state }}<br>
-
+            <b>Teléfono: </b> {{ memberInfo.phone }}<br>
+            <b>Correo electrónico: </b> {{ memberInfo.email }} <br>
+            <b>Programa: </b> {{ memberInfo.program.name }} ({{ memberInfo.program.id }})<br>
+          </v-card-text>
+          <v-divider/>
+          <v-card-text>
+            <h3>Productos:</h3><br>
+            <v-list>
+                <v-list-item v-for = "item in memberProducts.products " :key = "item"> 
+                    <v-list-item-title icon="mdi-circle-medium" class="text-wrap"> 
+                      <v-icon icon="mdi-circle-medium"></v-icon>
+                      {{ item.name }}
+                    </v-list-item-title>             
+                    <v-list-item-subtitle class = "mb-4"> {{  item.date }}</v-list-item-subtitle>
+                    <v-list-item-subtitle class = "mb-4"> {{  item.description }}</v-list-item-subtitle>
+                    <v-divider/>
+                </v-list-item>
+            </v-list>
           </v-card-text>
         </v-card>
             
