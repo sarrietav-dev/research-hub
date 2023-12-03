@@ -15,6 +15,7 @@ export class PersonRepositoryService {
         email: true,
         phone: true,
         identityCard: true,
+        institutionalCode: true,
         program: true,
       },
     });
@@ -129,6 +130,7 @@ export class PersonRepositoryService {
         email: true,
         phone: true,
         identityCard: true,
+        institutionalCode: true,
         program: true,
       },
     });
