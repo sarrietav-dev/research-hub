@@ -3,7 +3,6 @@
 import axios from 'axios';
 import { onMounted, ref } from 'vue';
 import baseUrl from '@/lib/baseUrl';
-import { values } from 'lodash';
 
 const memberInfo = ref()
 const memberHistory = ref()
@@ -47,10 +46,6 @@ onMounted(async () => {
             <b>Periodo</b>: {{ memberHistory.period }}<br>
             <b>Fecha de afiliación</b>: {{ memberHistory.affiliationDate }}<br>
             <b>Estado actual</b>: {{ memberInfo.state }}<br>
-            
-            
-            
-            
 
           </v-card-text>
         </v-card>
