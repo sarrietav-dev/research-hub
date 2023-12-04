@@ -51,39 +51,48 @@
       </template>
 
       <template v-slot:item.2>
-        <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold">Información de
-          Miembros</v-card-title>
-        <v-autocomplete v-model="leaders" :items="existingLeaders" label="Nombre del Líder" class="pt-3 mb-4 pb-0"
-          :hide-details="true" variant="outlined" required></v-autocomplete>
-
-        <v-combobox v-model="coInvestigator" :items="existingCoInvestigator" label="Co-Investigadores"
-          :hide-details="true" class="mb-2 pb-2" variant="outlined" autocomplete multiple required chips></v-combobox>
-        <StudentRegistry />
-        <v-data-table></v-data-table>
+        <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold">Información de Miembros</v-card-title>
+        <PersonAutomplete class="mt-8" label="Nombre del Líder" @select="onLeaderSelect"/>   
+        <PersonMultipleAutomplete variant="outlined" label ="Co-investigadores"></PersonMultipleAutomplete>
+        <StudentRegistry/>
+        <PersonAutomplete class="mt-8" @select="onPersonSelect"/>   
+        <v-data-table-virtual :items="memberList">
+          <template #headers>
+            <tr>
+              <th>Nombre</th>
+              <th>Cedula</th>
+              <th>Correo</th>
+              <th>Teléfono</th>
+              <th>Programa</th>
+            </tr>
+          </template>
+          <template #item="{ item }">
+            <tr>
+              <td>
+                {{ item.name }}
+              </td>
+              <td>
+                {{ item.identityCard }}
+              </td>
+              <td>
+                {{ item.email }}
+              </td>
+              <td>
+                {{ item.phone }}
+              </td>
+              <td>
+                {{ item.program.name }}
+              </td>
+            </tr>
+          </template>
+        </v-data-table-virtual>
       </template>
-
+      
       <template v-slot:item.3>
-        <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Información de
-          Eventos</v-card-title>
-        <v-text-field label="Nombre del Evento" class="mb-2 pb-0 pt-3" :hide-details="true" variant="outlined"
-          required></v-text-field>
-
-        <v-row>
-          <v-col cols="6">
-            <v-text-field type="date" label="Fecha de Inicio" :hide-details="true" variant="outlined"
-              class="mb-2 pb-0 pt-3" required></v-text-field>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field type="date" label="Fecha de Fin" :hide-details="true" variant="outlined" class="mb-2 pb-0 pt-3"
-              required></v-text-field>
-          </v-col>
-        </v-row>
-
-        <v-radio-group inline>
-          <v-text class="w-100 pl-1 pt-2 mb-2 pb-0">Tipo de Evento</v-text>
-          <v-radio label="Local" value="radio-1" :hide-details="true"></v-radio>
-          <v-radio label="Internacional" value="radio-2" :hide-details="true"></v-radio>
-        </v-radio-group>
+        <AddEvents class="mb-5"/>
+        <v-data-table-virtual>
+          
+        </v-data-table-virtual>
       </template>
 
       <template v-slot:item.4>
@@ -122,13 +131,22 @@
 import axios from 'axios';
 import baseUrl from '../lib/baseUrl'
 import StudentRegistry from '@/components/StudentRegistry.vue'
-import { ref, onMounted } from 'vue'
+import {ref, onMounted} from 'vue'
+import PersonAutomplete from '@/components/PersonAutomplete.vue';
+import type Person from '@/models/Person';
+import PersonMultipleAutomplete from '@/components/PersonMultipleAutomplete.vue';
+import AddEvents from '@/components/AddEvents.vue';
+
 
 const dialog = ref()
 const dataList = ref()
 const date = ref()
 const startDate = ref()
 const programsList = ref([])
+const memberList = ref<Person[]>([])
+let newMemberList = ([])
+
+
 const selectedProgram = ref(null)
 const researchGroup = ref([])
 const groups = ref(null)
@@ -139,6 +157,15 @@ const existingCoInvestigator = ref(["Co-Investigador 1", "Co-Investigador 2", "C
 const sponsors = ref()
 const existingSponsors = ref(["Patrocinador 1", "Patrocinador 2", "Patrocinador 3"])
 const line_of_research = ref(["Linea de Investigación 1", "Linea de Investigación 2", "Linea de Investigación 3"])
+
+function onPersonSelect(person: Person){
+  memberList.value=[...memberList.value,person]
+  console.log(memberList.value)
+}
+function onLeaderSelect(person: Person){
+  leaders.value = person
+  console.log(leaders.value)
+} 
 
 
 function updateResearch(programId: any) {
@@ -158,8 +185,9 @@ function updateResearch(programId: any) {
 
 
 }
-onMounted(async () => {
-  try {
+
+onMounted(async() => {
+  try{
     const responsePrograms = await axios.get(`${baseUrl}/api/programs`)
     programsList.value = responsePrograms.data
     console.log(programsList.value)
@@ -167,6 +195,8 @@ onMounted(async () => {
   } catch (error) {
     console.log(error)
   }
+  
 
 })
+
 </script>

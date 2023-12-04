@@ -1,5 +1,5 @@
 <template>
-  <v-autocomplete v-model:search="personName" v-model:model-value="selectedPerson" :items="items" :loading="isLoading"
+  <v-autocomplete variant="outlined" v-model:search="personName" v-model:model-value="selectedPerson" :items="items" :loading="isLoading"
     label="Person" outlined dense item-title="name" item-value="id" @update:search="onSearch"
     @update:model-value="selectPerson" :custom-filter="filterByName" return-object></v-autocomplete>
 </template>
@@ -57,6 +57,8 @@ function filterByName(value: string, query: string, item?: any) {
 
 function selectPerson(person: Person) {
   selectedPerson.value = person
-  emit('select', person)
+  if (person) {
+    emit('select', person)
+  }
 }
 </script>
