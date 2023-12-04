@@ -28,16 +28,23 @@
         <v-row class="pt-0">
           <v-col cols="6" class="pb-0">
             <v-select label="Programa"
-              :items="programs"
+              v-model="selectedProgram"
+              :items="programsList"
               item-title="name"
+              item-value="id"
               class="mb-1 pb-0"
               variant="outlined"
               :hide-details="true"
               required
-            ></v-select>
+            >
+          </v-select>
           </v-col>
           <v-col cols="6" class="pb-0">
             <v-select label="Grupos de Investigación"
+              v-model="groups"
+              @click="updateResearch(selectedProgram)"
+              :items="researchGroup"
+              item-title="name"
               class="mb-1 pb-0"
               variant="outlined"
               :hide-details="true"
@@ -247,10 +254,11 @@ import {ref, onMounted} from 'vue'
 const dialog = ref()
 const dataList = ref()
 const date = ref()
-const programsList = ref([])
-const programs = ref([])
 const startDate = ref()
-const groups = ref(["Grupo 1", "Grupo 2", "Grupo 3"])
+const programsList = ref([])
+const selectedProgram = ref(null)
+const researchGroup = ref([])
+const groups = ref(null)
 const leaders = ref()
 const existingLeaders =  ref(["Líder 1", "Líder 2", "Líder 3"])
 const coInvestigator = ref()
@@ -259,15 +267,29 @@ const sponsors = ref()
 const existingSponsors = ref(["Patrocinador 1", "Patrocinador 2", "Patrocinador 3"])
 const line_of_research = ref(["Linea de Investigación 1", "Linea de Investigación 2", "Linea de Investigación 3"])
      
+
+function updateResearch(programId:any){
+    axios.get(`${baseUrl}/api/programs/${programId}/research-groups`)
+      .then (function (axiosResponse){
+        researchGroup.value = axiosResponse.data
+
+        let researchObject = null
+        for (const group of researchGroup.value){researchObject = group.researchGroup}
+        researchGroup.value = researchObject
+
+      })
+      .catch (function (error){
+        console.log(error)
+      })
+
+
+
+}
 onMounted(async() => {
   try{
     const responsePrograms = await axios.get(`${baseUrl}/api/programs`)
     programsList.value = responsePrograms.data
-    for (let index = 0; index < programsList.value.length; index++) {
-      programs.value[index] = programsList.value[index];
-    }
-
-    console.log(programs.value)
+    console.log(programsList.value)
 
   } catch (error){
     console.log(error)
