@@ -33,27 +33,26 @@
 <script lang="ts">
 import router from '@/router';
 import { group } from 'console';
-export default{
-name:'Login',
-data () {
-  return {
-    visible: false,
-    user: '',
-    passw: ''
-  }
-},
-methods: {
-  login(){
-    //for (i in range (group.length) ){  
-      if(this.user === "admin@unicartagena.edu.co" && this.passw === "abc"){
-        alert('Entraste yei')
-        router.push({ path: '/form_group' })
+  export default{
+    name:'Login',
+    data () {
+      return {
+        user: '',
+        passw: ''
       }
-      else {
-        alert('Error, Usuario o contraseña incorrecto')
+    },
+    methods: {
+      login(){
+        //for (i in range (group.length) ){  
+          if(this.user === "admin@unicartagena.edu.co" && this.passw === "abc"){
+            alert('Entraste yei')
+            router.push({ path: '/form_group' })
+          }
+          else {
+            alert('Error, Usuario o contraseña incorrecto')
+          }
+        //}
       }
-    //}
+    }
   }
-}
-}
 </script>
