@@ -19,10 +19,26 @@ export class ProgramService {
   }
 
   async updateProgram(id: number, newName: string) {
+    if (!this.programRepository.doesProgramExist(id)) {
+      return null;
+    }
+
     return await this.programRepository.updateProgram(id, newName);
   }
 
   async deleteProgram(id: number) {
+    if (!this.programRepository.doesProgramExist(id)) {
+      return null;
+    }
+
     return await this.programRepository.deleteProgram(id);
+  }
+
+  getResearchGroupsByProgramId(id: number) {
+    if (!this.programRepository.doesProgramExist(id)) {
+      return null;
+    }
+
+    return this.programRepository.getResearchGroupsByProgramId(id);
   }
 }
