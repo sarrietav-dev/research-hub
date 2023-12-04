@@ -57,6 +57,8 @@ function filterByName(value: string, query: string, item?: any) {
 
 function selectPerson(person: Person) {
   selectedPerson.value = person
-  emit('select', person)
+  if (person) {
+    emit('select', person)
+  }
 }
 </script>
