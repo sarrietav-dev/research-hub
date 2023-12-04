@@ -109,28 +109,17 @@ function generateMemberConnection(size = 1, opts?: { memberSize?: number }) {
   return connections;
 }
 
-/**
- * Generates an array of certifying organizations or research groups.
- *
- * @param size The number of organizations or groups to generate. Default is 1.
- * @returns An array of certifying organizations or research groups.
- */
-function generateCompany(
+function generateResearchGroup(
   size: number = 1,
-):
-  | Prisma.CertifyingOrganizationCreateManyInput[]
-  | Prisma.ResearchGroupCreateManyInput[]
-  | Prisma.ProgramCreateManyInput[] {
-  const certOrgs:
-    | Prisma.CertifyingOrganizationCreateManyInput[]
-    | Prisma.ResearchGroupCreateManyInput
-    | Prisma.ProductCreateManyInput = [];
+): Prisma.ResearchGroupCreateManyInput[] {
+  const researchGroups: Prisma.ResearchGroupCreateManyInput[] = [];
   for (let i = 0; i < size; i++) {
-    certOrgs.push({
+    researchGroups.push({
       name: faker.company.name(),
+      programId: faker.number.int({ min: 1, max: PROGRAM_SIZE }),
     });
   }
-  return certOrgs;
+  return researchGroups;
 }
 
 function generateCertifyingOrganization(): Prisma.CertifyingOrganizationCreateInput[] {
@@ -239,7 +228,10 @@ function generatePrograms(): Prisma.ProgramCreateInput[] {
 }
 
 async function main() {
-  await Promise.all([
+  await prismaClient.program.createMany({
+    data: [...generatePrograms()],
+  });
+  await prismaClient.$transaction([
     prismaClient.person.createMany({
       data: [...generatePerson(PERSON_SIZE, { programSize: 5 })],
     }),
@@ -249,11 +241,7 @@ async function main() {
     }),
 
     prismaClient.researchGroup.createMany({
-      data: [...generateCompany(RESEARCH_GROUP_SIZE)],
-    }),
-
-    prismaClient.program.createMany({
-      data: [...generatePrograms()],
+      data: [...generateResearchGroup(RESEARCH_GROUP_SIZE)],
     }),
 
     prismaClient.certifyingOrganization.createMany({
@@ -276,7 +264,7 @@ async function main() {
     }),
   );
 
-  await Promise.all(promises);
+  await prismaClient.$transaction(promises);
 }
 
 main()

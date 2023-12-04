@@ -52,4 +52,27 @@ export class ProgramsController {
 
     return program;
   }
+
+  @Get(':id/research-groups')
+  async getResearchGroups(@Param('id') id: string) {
+    if (isNaN(Number(id))) {
+      throw new BadRequestException({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'Id must be a number',
+      });
+    }
+
+    const result = this.programService.getResearchGroupsByProgramId(Number(id));
+
+    if (!result) {
+      throw new NotFoundException({
+        statusCode: 404,
+        error: 'Not Found',
+        message: 'Program not found',
+      });
+    }
+
+    return result;
+  }
 }
