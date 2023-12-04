@@ -27,26 +27,29 @@
         </v-row>
         <v-row class="pt-0">
           <v-col cols="6" class="pb-0">
-            <v-autocomplete 
-              v-model="programs"
-              label="Programa"
+            <v-select label="Programa"
+              v-model="selectedProgram"
+              :items="programsList"
+              item-title="name"
+              item-value="id"
               class="mb-1 pb-0"
               variant="outlined"
               :hide-details="true"
               required
-            ></v-autocomplete>
+            >
+          </v-select>
           </v-col>
-
           <v-col cols="6" class="pb-0">
-            <v-autocomplete
+            <v-select label="Grupos de Investigación"
               v-model="groups"
-              :items="existingGroups"
-              label="Grupo de Investigación"
+              @click="updateResearch(selectedProgram)"
+              :items="researchGroup"
+              item-title="name"
               class="mb-1 pb-0"
               variant="outlined"
               :hide-details="true"
               required
-            ></v-autocomplete> 
+            ></v-select> 
           </v-col>
         </v-row>
         
@@ -84,28 +87,18 @@
         <v-row>
           <v-col cols="12">
             <v-text-field
-              v-model="chipInput"
               label="Líneas de Investigación"
-              @keydown.enter.prevent="addChip"
               variant="outlined"
               :hide-details="true"
             ></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-chip
-              v-for="(chip, index) in chips"
-              :key="index"
-              closable
-              @click:close="removeChip(index)"
-            >
-              {{ chip }}
-            </v-chip>
           </v-col>
         </v-row>
       </template>
 
       <template v-slot:item.2>
-        <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Información de Miembros</v-card-title>
+        <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold">Información de Miembros</v-card-title>
         <v-autocomplete
           v-model="leaders"
           :items="existingLeaders"
@@ -128,7 +121,7 @@
           required
           chips
         ></v-combobox>
-
+        <StudentRegistry/>
         <v-data-table></v-data-table>
       </template>
 
@@ -252,54 +245,55 @@
   </v-sheet>
 </template>
   
-<script lang="ts">
+<script setup lang="ts">
 import axios from 'axios';
+import baseUrl from '../lib/baseUrl'
+import StudentRegistry from '@/components/StudentRegistry.vue'
+import {ref, onMounted} from 'vue'
 
-  export default {
-    data() {
-      return {
-        dataList: [],
-        date:null,
-        programs: null, 
-        startDate: null,
-        groups: null, 
-        existingGroups: ["Grupo 1", "Grupo 2", "Grupo 3"], 
-        leaders: null, 
-        existingLeaders: ["Líder 1", "Líder 2", "Líder 3"],
-        coInvestigator: null, 
-        existingCoInvestigator: ["Co-Investigador 1", "Co-Investigador 2", "Co-Investigador 3"],
-        sponsors: null,
-        existingSponsors: ["Patrocinador 1", "Patrocinador 2", "Patrocinador 3"],
-        chipInput: '',
-        chips: [],
-        line_of_research: null,
-        existingLineOfResearch: ["Linea de Investigación 1", "Linea de Investigación 2", "Linea de Investigación 3"]
-      };
-    },
-    methods: {
-      addChip() {
-        if (this.chipInput.trim() !== '') {
-          this.chips.push(this.chipInput.trim());
-          this.chipInput = '';
-        }
-      },
-      removeChip(index: number) {
-        this.chips.splice(index, 1);
-      },
-      fetchItemData() {
-      const apiUrl = 'http://localhost:3000/api/programs';
+const dialog = ref()
+const dataList = ref()
+const date = ref()
+const startDate = ref()
+const programsList = ref([])
+const selectedProgram = ref(null)
+const researchGroup = ref([])
+const groups = ref(null)
+const leaders = ref()
+const existingLeaders =  ref(["Líder 1", "Líder 2", "Líder 3"])
+const coInvestigator = ref()
+const existingCoInvestigator = ref(["Co-Investigador 1", "Co-Investigador 2", "Co-Investigador 3"])
+const sponsors = ref()
+const existingSponsors = ref(["Patrocinador 1", "Patrocinador 2", "Patrocinador 3"])
+const line_of_research = ref(["Linea de Investigación 1", "Linea de Investigación 2", "Linea de Investigación 3"])
+     
 
-      axios.get(apiUrl)
-        .then(response => {
-          this.programs = response.data.name;
-        })
-        .catch(error => {
-          console.error('Error al obtener datos:', error);
-        });
-    },
-    },
-    mounted(){
-      this.fetchItemData();
-    },
-  };
+function updateResearch(programId:any){
+    axios.get(`${baseUrl}/api/programs/${programId}/research-groups`)
+      .then (function (axiosResponse){
+        researchGroup.value = axiosResponse.data
+
+        let researchObject = null
+        for (const group of researchGroup.value){researchObject = group.researchGroup}
+        researchGroup.value = researchObject
+
+      })
+      .catch (function (error){
+        console.log(error)
+      })
+
+
+
+}
+onMounted(async() => {
+  try{
+    const responsePrograms = await axios.get(`${baseUrl}/api/programs`)
+    programsList.value = responsePrograms.data
+    console.log(programsList.value)
+
+  } catch (error){
+    console.log(error)
+  }
+
+})
 </script>

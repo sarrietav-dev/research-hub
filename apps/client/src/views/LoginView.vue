@@ -5,16 +5,20 @@
             <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Login</v-card-title>
             <v-form @submit.prevent="login">
               <v-text-field
+                prepend-inner-icon="mdi-email-outline"
                 v-model="user"
                 label="Email"
-                outlined
+                variant="outlined"
                 required
-                class="mb-4"
+                class="mb-2"
               ></v-text-field>
               <v-text-field
+                :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                prepend-inner-icon="mdi-lock-outline"
+                :type="visible ? 'text' : 'password'"
+                @click:append-inner="visible = !visible"
                 v-model="passw"
                 label="Password"
-                type="password"
                 outlined
                 required
                 class="mb-4"
@@ -33,6 +37,7 @@ import { group } from 'console';
     name:'Login',
     data () {
       return {
+        visible: false,
         user: '',
         passw: ''
       }
