@@ -72,12 +72,6 @@ export class SeedGroupService {
 
   async createSeedGroup(seedGroup: CreateSeedGroupDto) {
     const id = await this.seedGroupRepository.createSeedGroup(seedGroup);
-    const { projects } = seedGroup;
-    const projectPromises = projects.map((project) =>
-      this.createProject(id, project),
-    );
-
-    await Promise.all(projectPromises);
 
     return id;
   }
