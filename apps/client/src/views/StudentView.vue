@@ -27,8 +27,7 @@ onMounted(async () => {
   } catch (error) {
     console.log(error)
   }
-}
-)
+})
 </script>
 
 <template>
@@ -40,8 +39,7 @@ onMounted(async () => {
             {{ memberInfo.name }} ({{ memberInfo.id }})
           </v-card-title>
           <v-card-subtitle>
-            Código institucional: {{ memberInfo.identityCard }}<br>
-            
+            Código institucional: {{ memberInfo.institutionalCode }}<br>
           </v-card-subtitle>
           <v-card-text>
             <b>Teléfono: </b> {{ memberInfo.phone }}<br>
@@ -50,6 +48,15 @@ onMounted(async () => {
           </v-card-text>
           <v-divider/>
           <v-card-text>
+            <!-- <h3>Semilleros:</h3><br>
+            <v-list>
+                <v-list-item v-for = "item in memberProducts.products " :key = "item"> 
+                    <v-list-item-title  icon="mdi-circle-medium" class="text-wrap"> 
+                      <v-icon icon="mdi-circle-medium"></v-icon>
+                      {{ item.project.seedGroup.name}}({{ item.project.seedGroup.id }})
+                    </v-list-item-title>             
+                </v-list-item>
+            </v-list> -->
             <h3>Productos:</h3><br>
             <v-list>
                 <v-list-item v-for = "item in memberProducts.products " :key = "item"> 
@@ -58,6 +65,7 @@ onMounted(async () => {
                       {{ item.name }}
                     </v-list-item-title>             
                     <v-list-item-subtitle class = "mb-4"> {{  item.date }}</v-list-item-subtitle>
+                    <v-list-item-subtitle class = "mb-4"> <b>Semillero: </b> {{ item.project.seedGroup.name}}({{ item.project.seedGroup.id }})</v-list-item-subtitle>
                     <v-list-item-subtitle class = "mb-4"> {{  item.description }}</v-list-item-subtitle>
                     <v-divider/>
                 </v-list-item>

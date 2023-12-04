@@ -61,7 +61,7 @@ onMounted(async () => {
                             <v-expansion-panel v-for = "item in seed_information.projects" :key = "item">
                                 <v-expansion-panel-title>{{ item.name }}</v-expansion-panel-title>
                                 <v-expansion-panel-text> 
-                                    Dinero Aprobado: <b>{{ item.approvedAmount }}</b>
+                                    Monto Aprobado: <b> ${{ item.approvedAmount }}</b>
                                     <h4>Productos</h4>
                                     <v-list>
                                         <v-list-item-content v-for = "item2 in item.products " :key = "item2"> 
