@@ -46,17 +46,15 @@ export class PersonRepositoryService {
   getPersonsSeedGroups(id: number) {
     return this.prisma.membershipRecord.findMany({
       where: { memberId: id },
+      distinct: ['seedGroupId'],
       select: {
-        affiliationDate: true,
-        functions: true,
-        period: true,
-        role: true,
         seedGroup: {
           select: {
-            id: true,
             name: true,
+            id: true,
           },
         },
+        period: true,
       },
     });
   }
