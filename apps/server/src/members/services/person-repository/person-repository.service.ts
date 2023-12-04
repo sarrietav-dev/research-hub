@@ -15,6 +15,7 @@ export class PersonRepositoryService {
         email: true,
         phone: true,
         identityCard: true,
+        institutionalCode: true,
         program: true,
       },
     });
@@ -23,8 +24,21 @@ export class PersonRepositoryService {
   getPersonsProducts(id: number) {
     return this.prisma.person.findUnique({
       where: { id },
-      select: {
-        products: true,
+      include: {
+        products: {
+          include: {
+            project: {
+              select: {
+                seedGroup: {
+                  select: {
+                    name: true,
+                    id: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
   }
@@ -32,17 +46,15 @@ export class PersonRepositoryService {
   getPersonsSeedGroups(id: number) {
     return this.prisma.membershipRecord.findMany({
       where: { memberId: id },
+      distinct: ['seedGroupId'],
       select: {
-        affiliationDate: true,
-        functions: true,
-        period: true,
-        role: true,
         seedGroup: {
           select: {
-            id: true,
             name: true,
+            id: true,
           },
         },
+        period: true,
       },
     });
   }
@@ -129,6 +141,7 @@ export class PersonRepositoryService {
         email: true,
         phone: true,
         identityCard: true,
+        institutionalCode: true,
         program: true,
       },
     });

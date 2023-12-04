@@ -199,6 +199,12 @@ export class SeedGroupRepositoryService {
       },
     });
 
+    const projects = seedGroup.projects.map((project) => {
+      return this.createProjectForSeedGroup(id, project);
+    });
+
+    await this.prisma.$transaction(projects);
+
     return id;
   }
 

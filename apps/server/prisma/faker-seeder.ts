@@ -109,28 +109,17 @@ function generateMemberConnection(size = 1, opts?: { memberSize?: number }) {
   return connections;
 }
 
-/**
- * Generates an array of certifying organizations or research groups.
- *
- * @param size The number of organizations or groups to generate. Default is 1.
- * @returns An array of certifying organizations or research groups.
- */
-function generateCompany(
+function generateResearchGroup(
   size: number = 1,
-):
-  | Prisma.CertifyingOrganizationCreateManyInput[]
-  | Prisma.ResearchGroupCreateManyInput[]
-  | Prisma.ProgramCreateManyInput[] {
-  const certOrgs:
-    | Prisma.CertifyingOrganizationCreateManyInput[]
-    | Prisma.ResearchGroupCreateManyInput
-    | Prisma.ProductCreateManyInput = [];
+): Prisma.ResearchGroupCreateManyInput[] {
+  const researchGroups: Prisma.ResearchGroupCreateManyInput[] = [];
   for (let i = 0; i < size; i++) {
-    certOrgs.push({
+    researchGroups.push({
       name: faker.company.name(),
+      programId: faker.number.int({ min: 1, max: PROGRAM_SIZE }),
     });
   }
-  return certOrgs;
+  return researchGroups;
 }
 
 function generateCertifyingOrganization(): Prisma.CertifyingOrganizationCreateInput[] {
@@ -199,7 +188,7 @@ function generateMembershipRecord(
       functions: ['Función 1', 'Función 2'],
       isActive: faker.datatype.boolean(),
       period: faker.helpers.mustache('202{{year}}-{{period}}', {
-        year: faker.number.int({ min: 0, max: 9 }).toString(),
+        year: faker.number.int({ min: 2, max: 3 }).toString(),
         period: faker.helpers.arrayElement(['1', '2']),
       }),
       roleId: faker.number.int({ min: 1, max: opts.roleSize }),
@@ -219,7 +208,7 @@ function generateCoResearcherRecord(
     coResearcherRecords.push({
       coResearcherId: faker.number.int({ min: 1, max: opts?.personsSize ?? 5 }),
       period: faker.helpers.mustache('202{{year}}-{{period}}', {
-        year: faker.number.int({ min: 0, max: 9 }).toString(),
+        year: faker.number.int({ min: 2, max: 3 }).toString(),
         period: faker.helpers.arrayElement(['1', '2']),
       }),
       seedGroupId: opts?.seedGroupId,
@@ -239,7 +228,10 @@ function generatePrograms(): Prisma.ProgramCreateInput[] {
 }
 
 async function main() {
-  await Promise.all([
+  await prismaClient.program.createMany({
+    data: [...generatePrograms()],
+  });
+  await prismaClient.$transaction([
     prismaClient.person.createMany({
       data: [...generatePerson(PERSON_SIZE, { programSize: 5 })],
     }),
@@ -249,11 +241,7 @@ async function main() {
     }),
 
     prismaClient.researchGroup.createMany({
-      data: [...generateCompany(RESEARCH_GROUP_SIZE)],
-    }),
-
-    prismaClient.program.createMany({
-      data: [...generatePrograms()],
+      data: [...generateResearchGroup(RESEARCH_GROUP_SIZE)],
     }),
 
     prismaClient.certifyingOrganization.createMany({
@@ -276,7 +264,7 @@ async function main() {
     }),
   );
 
-  await Promise.all(promises);
+  await prismaClient.$transaction(promises);
 }
 
 main()
@@ -297,7 +285,7 @@ function createSeedGroup(size: number = 1) {
       leaderRecords: {
         create: {
           period: faker.helpers.mustache('202{{year}}-{{period}}', {
-            year: faker.number.int({ min: 0, max: 9 }).toString(),
+            year: faker.number.int({ min: 2, max: 3 }).toString(),
             period: faker.helpers.arrayElement(['1', '2']),
           }),
           leader: {
