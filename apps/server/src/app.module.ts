@@ -6,6 +6,7 @@ import { ProgramsModule } from './programs/programs.module';
 import { SeedGroupsModule } from './seed-groups/seed-groups.module';
 import { PersonModule } from './members/person.module';
 import { CertOrgsModule } from '@/cert-orgs/cert-orgs.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CertOrgsModule } from '@/cert-orgs/cert-orgs.module';
     SeedGroupsModule,
     PersonModule,
     CertOrgsModule,
+    ProductsModule,
   ],
   providers: [PrismaService],
   exports: [PrismaService],
