@@ -47,14 +47,16 @@ const router = createRouter({
       name: 'student_list',
       component: () => import('../views/StudentListView.vue')
     },
-    { path: '/person/:id', 
-      name: 'student_detail' ,
+    {
+      path: '/person/:id',
+      name: 'student_detail',
       component: () => import('../views/StudentView.vue')
-
+    },
+    {
+      path: '/temp',
+      name: 'temp',
+      component: () => import('../views/TempView.vue')
     }
- 
-      
-
   ]
 })
 export default router

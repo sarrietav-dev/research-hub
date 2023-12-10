@@ -1,6 +1,6 @@
 <template>
-  <v-autocomplete variant="outlined" v-model:search="personName" v-model:model-value="selectedPerson" :items="items" :loading="isLoading"
-    label="Person" outlined dense item-title="name" item-value="id" @update:search="onSearch"
+  <v-autocomplete variant="outlined" v-model:search="personName" v-model:model-value="selectedPerson" :items="items"
+    :loading="isLoading" :label="label" outlined dense item-title="name" item-value="id" @update:search="onSearch"
     @update:model-value="selectPerson" :custom-filter="filterByName" return-object></v-autocomplete>
 </template>
 
@@ -18,6 +18,10 @@ const selectedPerson = ref<Person | null>(null);
 
 const emit = defineEmits<{
   select: [value: Person]
+}>();
+
+const { label } = defineProps<{
+  label: string
 }>();
 
 onMounted(async () => {
