@@ -21,7 +21,7 @@
       <v-radio label="Terminado" value="Finished" class="mb-0 pb-0"></v-radio>
     </v-radio-group>
 
-    <person-automplete @select="onDirectorSelect"></person-automplete>
+    <person-automplete label="Director" @select="onDirectorSelect"></person-automplete>
 
     <v-autocomplete v-model="chosenSponsor" :items="sponsors" label="Entidad que avala" variant="outlined"
       class="mb-2 pb-0 pt-2" :hide-details="true" item-title="name" item-value="id" required></v-autocomplete>
@@ -60,30 +60,31 @@
               <v-card>
                 <v-card-title class="text-center">Nuevo Producto</v-card-title>
                 <v-card-text>
-                  <v-text-field label="Nombre del Producto" v-model="productName" variant="outlined" class="mb-2 pb-0 pt-3"
-                    :hide-details="true" required></v-text-field>
-
-                  <v-text-field label="Descripcion del Producto" v-model="productDescription" variant="outlined" class="mb-2 pb-0 pt-3"
-                    :hide-details="true" required></v-text-field>
-
-                  <v-text-field type="date" v-model="startDate" label="Fecha" variant="outlined"
+                  <v-text-field label="Nombre del Producto" v-model="productName" variant="outlined"
                     class="mb-2 pb-0 pt-3" :hide-details="true" required></v-text-field>
 
-                  <v-text-field label="Tipo de Producto" v-model="name" variant="outlined" class="mb-2 pb-0 pt-3"
+                  <v-text-field label="Descripcion del Producto" v-model="productDescription" variant="outlined"
+                    class="mb-2 pb-0 pt-3" :hide-details="true" required></v-text-field>
+
+                  <v-text-field type="date" v-model="productDate" label="Fecha" variant="outlined" class="mb-2 pb-0 pt-3"
                     :hide-details="true" required></v-text-field>
 
-                  <v-text-field label="Numero de Participantes" v-model="name" variant="outlined" class="mb-2 pb-0 pt-3"
-                    :hide-details="true" required></v-text-field>
+                  <v-select v-model="productType" :items="productTypes" item-title="name" item-value="id"
+                    label="Tipo de Producto" variant="outlined" class="mb-2 pb-0 pt-3" :hide-details="true"
+                    required></v-select>
+
+                  <person-multiple-automplete label="Integrantes" @select="onProductMemberSelect"
+                    v-mo></person-multiple-automplete>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="primary">Agregar</v-btn>
+                  <v-btn @click="() => onAddProduct(index)" color="primary">Agregar</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
           </v-card-title>
 
-          <v-data-table>
+          <v-data-table :items="project.products">
             <template #headers>
               <tr>
                 <th class="text-left">Nombre</th>
@@ -99,8 +100,8 @@
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.date }}</td>
-                <td>{{ item.type }}</td>
-                <td>{{ item.participants }}</td>
+                <td>{{ getProductTypeName(item.productTypeId) }}</td>
+                <td>{{ item.members.length }}</td>
               </tr>
             </template>
           </v-data-table>
@@ -119,6 +120,9 @@ import { onMounted } from 'vue';
 import { ref } from 'vue';
 import PersonAutomplete from './PersonAutomplete.vue';
 import type Person from '@/models/Person';
+import PersonMultipleAutomplete from './PersonMultipleAutomplete.vue';
+import type { ProductType } from '@/lib/api/products';
+import getProductTypes from '@/lib/api/products';
 
 const name = ref<string>("");
 const chosenSponsor = ref<number | null>();
@@ -134,15 +138,16 @@ const isFinished = computed(() => status.value === 'Finished');
 
 const productName = ref<string>("");
 const productDescription = ref<string>("");
-const productStartDate = ref<Date>();
-const productEndDate = ref<Date>();
-const productType = ref<string>("");
+const productDate = ref<Date>();
+const productType = ref<number>(1);
 const productParticipants = ref<Person[]>();
 
 const projects = ref<Project[]>([]);
+const productTypes = ref<ProductType[]>();
 
 onMounted(async () => {
   sponsors.value = await getCertOrgs();
+  productTypes.value = await getProductTypes();
 });
 
 function onDirectorSelect(person: Person) {
@@ -151,12 +156,28 @@ function onDirectorSelect(person: Person) {
 
 function onAddProduct(index: number) {
   projects.value[index].products.push({
-    name: "Producto 1",
-    description: "Descripcion 1",
-    date: new Date(),
-    type: "Tipo 1",
-    participants: 10,
+    name: productName.value,
+    description: productDescription.value,
+    date: productDate.value ?? new Date(),
+    productTypeId: productType.value,
+    members: productParticipants.value?.map(({ id }) => ({ id })) ?? [],
   });
+
+  isDialogOpen.value = false;
+
+  productName.value = "";
+  productDescription.value = "";
+  productDate.value = new Date();
+  productType.value = 1;
+  productParticipants.value = [];
+}
+
+function onProductMemberSelect(person: Person[]) {
+  productParticipants.value = person;
+}
+
+function getProductTypeName(id: number) {
+  return productTypes.value?.find(p => p.id == id)?.name ?? ''
 }
 
 function onSubmit() {
@@ -170,6 +191,14 @@ function onSubmit() {
     directorId: directorId.value!,
     products: [],
   });
+
+  name.value = "";
+  chosenSponsor.value = null;
+  approvedAmount.value = undefined;
+  startDate.value = undefined;
+  endDate.value = undefined;
+  status.value = "InProgress";
+  directorId.value = undefined;
 }
 
 

@@ -1,6 +1,6 @@
 <template>
   <v-autocomplete v-model:search="personName" v-model:model-value="selectedPerson" :items="items" :loading="isLoading"
-    label="Person" outlined dense item-title="name" item-value="id" @update:search="onSearch"
+    :label="label" outlined dense item-title="name" item-value="id" @update:search="onSearch"
     @update:model-value="selectPerson" chips multiple :custom-filter="filterByName" return-object></v-autocomplete>
 </template>
 
@@ -15,6 +15,10 @@ const items = ref<Person[]>([]);
 const isLoading = ref(false);
 const personName = ref("");
 const selectedPerson = ref<Person[] | null>(null);
+
+const { label } = defineProps<{
+  label: string
+}>();
 
 const emit = defineEmits<{
   select: [value: Person[]]

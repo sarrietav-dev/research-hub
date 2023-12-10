@@ -51,11 +51,12 @@
       </template>
 
       <template v-slot:item.2>
-        <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold">Información de Miembros</v-card-title>
-        <PersonAutomplete class="mt-8" label="Nombre del Líder" @select="onLeaderSelect"/>   
-        <PersonMultipleAutomplete variant="outlined" label ="Co-investigadores"></PersonMultipleAutomplete>
-        <StudentRegistry/>
-        <PersonAutomplete class="mt-8" @select="onPersonSelect"/>   
+        <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold">Información de
+          Miembros</v-card-title>
+        <PersonAutomplete class="mt-8" label="Nombre del Líder" @select="onLeaderSelect" />
+        <PersonMultipleAutomplete variant="outlined" label="Co-investigadores"></PersonMultipleAutomplete>
+        <StudentRegistry />
+        <PersonAutomplete label="Miembros" class="mt-8" @select="onPersonSelect" />
         <v-data-table-virtual :items="memberList">
           <template #headers>
             <tr>
@@ -87,11 +88,11 @@
           </template>
         </v-data-table-virtual>
       </template>
-      
+
       <template v-slot:item.3>
-        <AddEvents class="mb-5"/>
+        <AddEvents class="mb-5" />
         <v-data-table-virtual>
-          
+
         </v-data-table-virtual>
       </template>
 
@@ -131,7 +132,7 @@
 import axios from 'axios';
 import baseUrl from '../lib/baseUrl'
 import StudentRegistry from '@/components/StudentRegistry.vue'
-import {ref, onMounted} from 'vue'
+import { ref, onMounted } from 'vue'
 import PersonAutomplete from '@/components/PersonAutomplete.vue';
 import type Person from '@/models/Person';
 import PersonMultipleAutomplete from '@/components/PersonMultipleAutomplete.vue';
@@ -158,15 +159,15 @@ const sponsors = ref()
 const existingSponsors = ref(["Patrocinador 1", "Patrocinador 2", "Patrocinador 3"])
 const line_of_research = ref(["Linea de Investigación 1", "Linea de Investigación 2", "Linea de Investigación 3"])
 
-function onPersonSelect(person: Person){
-  memberList.value=[...memberList.value,person]
+function onPersonSelect(person: Person) {
+  memberList.value = [...memberList.value, person]
   console.log(memberList.value)
 }
-function onLeaderSelect(person: Person){
+
+function onLeaderSelect(person: Person) {
   leaders.value = person
   console.log(leaders.value)
-} 
-
+}
 
 function updateResearch(programId: any) {
   axios.get(`${baseUrl}/api/programs/${programId}/research-groups`)
@@ -186,8 +187,8 @@ function updateResearch(programId: any) {
 
 }
 
-onMounted(async() => {
-  try{
+onMounted(async () => {
+  try {
     const responsePrograms = await axios.get(`${baseUrl}/api/programs`)
     programsList.value = responsePrograms.data
     console.log(programsList.value)
@@ -195,8 +196,6 @@ onMounted(async() => {
   } catch (error) {
     console.log(error)
   }
-  
-
 })
 
 </script>
