@@ -51,11 +51,6 @@ const router = createRouter({
       path: '/person/:id',
       name: 'student_detail',
       component: () => import('../views/StudentView.vue')
-    },
-    {
-      path: '/temp',
-      name: 'temp',
-      component: () => import('../views/TempView.vue')
     }
   ]
 })
