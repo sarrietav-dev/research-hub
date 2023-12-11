@@ -225,6 +225,7 @@ import getCertOrgs from '@/lib/api/cert-orgs';
 import getProductTypes, { type ProductType } from '@/lib/api/products';
 import type { CertOrg } from '@/models/CertOrgs';
 import type { Project } from '@/models/Project';
+import { createSeedGroup } from '@/lib/api/seed-groups';
 
 
 const dialog = ref()
@@ -360,6 +361,19 @@ function onSubmit() {
   endDate.value = undefined;
   status.value = "InProgress";
   directorId.value = undefined;
+}
+
+async function onSubmit() {
+  const response = await createSeedGroup({
+    name: name.value,
+    acronym: 'acronym',
+    description: 'description',
+    researchGroupId: 1,
+    leaderId: 1,
+    members: [],
+    events: [],
+    projects: [],
+  });
 }
 
 </script>
