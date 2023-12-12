@@ -21,6 +21,6 @@ export async function getResearchGroups(programId: number) {
   const response = await axios.get<ResearchGroupResponse[]>(
     `${baseUrl}/api/programs/${programId}/research-groups`
   )
-  console.log(response.data)
+  
   return response.data[0].researchGroup
 }

@@ -62,10 +62,10 @@ onMounted(async () => {
   try {
     const responsePrograms = await axios.get(`${baseUrl}/api/programs`)
     programsList.value = responsePrograms.data
-    console.log(programsList.value)
+    
 
   } catch (error) {
-    console.log(error)
+    
   }
 
 })
@@ -81,21 +81,21 @@ function postPerson() {
   })
   try {
     const res = axios.post(`${baseUrl}/api/person`, newUser.value)
-    console.log(newUser.value)
-    console.log(res)
+    
+    
   } catch (err) {
-    console.log(newUser.value)
-    console.log(err)
+    
+    
   }
 
 }
 function onClick() {
-  console.log('Nombre:', nombre.value);
-  console.log('Cedula:', cedula.value);
-  console.log('Correo:', correo.value);
-  console.log('Correo:', phone.value);
-  console.log('Codigo institucional:', codigoInstitucional.value);
-  console.log('Programa:', selectedProgram);
+  
+  
+  
+  
+  
+  
   postPerson();
   dialog.value = false;
 }

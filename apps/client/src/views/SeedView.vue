@@ -19,8 +19,8 @@ onMounted(async () => {
     isCharged.value = false
     seed_information.value = responseGroups.data
     seed_members.value = responseMembers.data
-    console.log(seed_information.value)
-    console.log(seed_members.value)
+    
+    
     dataList = seed_members.value.map((item: { period: any; member: { name: any; identityCard: any; institutionalCode: any; email: any; }; role: any; isActive: any; functions: any[]; }) => {
       return {
         period: item.period,
@@ -35,7 +35,7 @@ onMounted(async () => {
     });
 
   } catch (error) {
-    console.log(error)
+    
   }
 }
 )

@@ -456,7 +456,7 @@ async function handleNext() {
       const { id } = await submitSeedGroup();
       router.push(`/seed_groups/${id}`);
     } catch (error) {
-      console.log(error);
+      
     } finally {
       isSubmitLoading.value = false;
     }

@@ -16,14 +16,14 @@ onMounted(async () => {
   try {
     const responseProg = await axios.get(`${baseUrl}/api/programs`)
     dataListPrograms.value = responseProg.data
-    console.log(dataListPrograms.value)
+    
 
     const responseSeed = await axios.get(`${baseUrl}/api/seed-groups`)
     dataListSeeds.value = responseSeed.data
-    console.log(dataListSeeds.value)
+    
 
   } catch (error) {
-    console.log(error)
+    
   }
 
 })

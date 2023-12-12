@@ -21,11 +21,11 @@ onMounted(async () => {
     memberInfo.value = responseMember.data
     memberProducts.value = responseProducts.data
 
-    console.log(memberInfo.value)
-    console.log(memberProducts.value)
+    
+    
 
   } catch (error) {
-    console.log(error)
+    
   }
 })
 </script>
