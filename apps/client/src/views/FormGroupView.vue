@@ -1,6 +1,6 @@
 <template>
   <v-sheet width="570" class="mx-auto">
-    <v-stepper alt-labels class="text-caption"
+    <v-stepper alt-labels class="text-caption" v-model="step"
       :items="['Agregar Información General', 'Agregar Miembros', 'Agregar Eventos', 'Agregar Proyectos']" complete>
       <template v-slot:item.1>
         <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Información General</v-card-title>
@@ -109,10 +109,10 @@
 
           <template #item="{ item }">
             <tr>
-              <td>{{ item.name }}</td>
-              <td>{{ item.initDate }}</td>
-              <td>{{ item.finDate }}</td>
-              <td>{{ item.typeEvent }}</td>
+              <td>{{ item.description }}</td>
+              <td>{{ item.startDate }}</td>
+              <td>{{ item.endDate }}</td>
+              <td>{{ item.type }}</td>
             </tr>
           </template>
         </v-data-table>
@@ -231,6 +231,20 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </template>
+
+      <template #actions>
+        <v-stepper-actions>
+          <template #prev>
+            <v-btn color="primary" @click="() => step--">Anterior</v-btn>
+          </template>
+
+          <template #next>
+            <v-btn color="primary" @click="handleNext">
+              {{ nextBtnName }}
+            </v-btn>
+          </template>
+        </v-stepper-actions>
+      </template>
     </v-stepper>
   </v-sheet>
 </template>
@@ -245,16 +259,17 @@ import AddEvents from '@/components/AddEvents.vue';
 import getCertOrgs from '@/lib/api/cert-orgs';
 import getProductTypes, { type ProductType } from '@/lib/api/products';
 import type { CertOrg } from '@/models/CertOrgs';
-import { type Product, type Project } from '@/lib/api/seed-groups';
+import { createSeedGroup, type Product, type Project, type Event as SeedGroupEvent } from '@/lib/api/seed-groups';
 import { reactive } from 'vue';
 import { getPrograms, getResearchGroups, type Program } from '@/lib/api/programs';
 import { watchEffect } from 'vue';
 
+const step = ref<number>(0)
 
 const programsList = ref<Program[]>([])
 const researchLinesInput = ref<string>('')
 const researchGroup = ref<{ id: number, name: string }[]>([])
-const events = ref<{ name: string, initDate: string, finDate: string, typeEvent: string }[]>([])
+const events = ref<SeedGroupEvent[]>([])
 
 const basicInfo = reactive<{
   name: string,
@@ -371,12 +386,7 @@ function removeChip(index: number) {
   basicInfo.researchLines.splice(index, 1);
 }
 
-function onEventCreate(event: {
-  name: string,
-  initDate: string,
-  finDate: string,
-  typeEvent: string,
-}) {
+function onEventCreate(event: SeedGroupEvent) {
   events.value = [...events.value, event];
 }
 
@@ -393,5 +403,39 @@ function onProjectSubmit() {
   projectData.endDate = "";
   projectData.type = "InProgress";
   projectData.directorId = 1;
+
 }
+
+async function submitSeedGroup() {
+  const response = await createSeedGroup({
+    acronym: basicInfo.acronym,
+    name: basicInfo.name,
+    programId: basicInfo.programId!,
+    researchGroupId: basicInfo.researchGroupId!,
+    creationDate: basicInfo.creationDate,
+    currentPeriod: basicInfo.currentPeriod,
+    description: basicInfo.description,
+    period: basicInfo.period,
+    researchLines: basicInfo.researchLines,
+    leaderId: memberInfo.leaderId,
+    coInvestigators: memberInfo.coInvestigators.map(c => c.id),
+    members: memberInfo.members,
+    events: events.value,
+    projects: projects.value,
+  });
+}
+
+function handleNext() {
+  if (step.value < 3) {
+    step.value++;
+  }
+}
+
+const nextBtnName = computed(() => {
+  if (step.value === 3) {
+    return 'Enviar';
+  }
+
+  return 'Siguiente';
+})
 </script>

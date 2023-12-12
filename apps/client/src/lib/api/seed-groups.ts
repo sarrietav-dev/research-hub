@@ -13,7 +13,7 @@ interface Member {
   id: number
 }
 
-interface Event {
+export interface Event {
   description: string
   startDate: string
   endDate: string
@@ -47,7 +47,7 @@ interface ResearchGroup {
   researchLines: string[]
   creationDate: string
   programId: number
-  period: `${number}-${number}`
+  period: string
   members: Member[]
   leaderId: number
   coResearchers: { id: number }[]

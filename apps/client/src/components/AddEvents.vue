@@ -11,21 +11,21 @@
             <v-row>
               <v-col>
                 <v-text-field label="Nombre del Evento" class="mb-2 pb-0 pt-3" :hide-details="true" variant="outlined"
-                  v-model="eventData.name" required></v-text-field>
+                  v-model="eventData.description" required></v-text-field>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="6">
                 <v-text-field type="date" label="Fecha de Inicio" :hide-details="true" variant="outlined"
-                  v-model="eventData.initDate" class="mb-2 pb-0 pt-3" required></v-text-field>
+                  v-model="eventData.startDate" class="mb-2 pb-0 pt-3" required></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field type="date" label="Fecha de Fin" :hide-details="true" variant="outlined"
-                  v-model="eventData.finDate" class="mb-2 pb-0 pt-3" required></v-text-field>
+                  v-model="eventData.endDate" class="mb-2 pb-0 pt-3" required></v-text-field>
               </v-col>
             </v-row>
-            <v-radio-group inline v-model="eventData.typeEvent">
-              <p class="w-100 pl-1 pt-2 mb-2 pb-0">Tipo de Evento</p>
+            <v-radio-group inline v-model="eventData.type">
+              P<p class="w-100 pl-1 pt-2 mb-2 pb-0">Tipo de Evento</p>
               <v-radio label="Local" value="Local" :hide-details="true"></v-radio>
               <v-radio label="Internacional" value="International" :hide-details="true"></v-radio>
             </v-radio-group>
@@ -38,28 +38,26 @@
 </template>
 
 <script setup lang="ts">
+import type { Event } from '@/lib/api/seed-groups';
 import { ref } from 'vue'
 
 const dialog = ref(false);
 
 const emit = defineEmits<{
-  click: [event: {
-    name: string,
-    initDate: string,
-    finDate: string,
-    typeEvent: string,
-  }]
+  click: [event: Event]
 }>();
 
-const eventData = ref({
-  name: '',
-  initDate: '',
-  finDate: '',
-  typeEvent: '',
+const eventData = ref<Event>({
+  description: '',
+  endDate: '',
+  startDate: '',
+  type: 'International',
 });
 
 function onClick() {
-  emit('click', { ...eventData.value });
+  emit('click', {
+    ...eventData.value,
+  });
   dialog.value = false;
 }
 </script>
