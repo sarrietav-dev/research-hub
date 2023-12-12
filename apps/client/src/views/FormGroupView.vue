@@ -240,7 +240,8 @@
 
           <template #next>
             <v-btn color="primary" @click="handleNext">
-              {{ nextBtnName }}
+              <v-progress-circular v-if="isSubmitLoading" indeterminate color="primary"></v-progress-circular>
+              <span v-else>{{ nextBtnName }}</span>
             </v-btn>
           </template>
         </v-stepper-actions>
@@ -263,6 +264,7 @@ import { createSeedGroup, type Product, type Project, type Event as SeedGroupEve
 import { reactive } from 'vue';
 import { getPrograms, getResearchGroups, type Program } from '@/lib/api/programs';
 import { watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
 
 const step = ref<number>(0)
 
@@ -270,6 +272,7 @@ const programsList = ref<Program[]>([])
 const researchLinesInput = ref<string>('')
 const researchGroup = ref<{ id: number, name: string }[]>([])
 const events = ref<SeedGroupEvent[]>([])
+const isSubmitLoading = ref<boolean>(false)
 
 const basicInfo = reactive<{
   name: string,
@@ -413,21 +416,37 @@ async function submitSeedGroup() {
     programId: basicInfo.programId!,
     researchGroupId: basicInfo.researchGroupId!,
     creationDate: basicInfo.creationDate,
-    currentPeriod: basicInfo.currentPeriod,
     description: basicInfo.description,
     period: basicInfo.period,
     researchLines: basicInfo.researchLines,
     leaderId: memberInfo.leaderId,
-    coInvestigators: memberInfo.coInvestigators.map(c => c.id),
-    members: memberInfo.members,
+    coResearchers: memberInfo.coInvestigators.map(c => ({
+      id: c.id,
+    })),
+    members: memberInfo.members.map(m => ({
+      ...m,
+      affiliationDate: new Date().toUTCString(),
+      functions: ["Miembro"],
+      isActive: true,
+      roleId: 1,
+    })),
     events: events.value,
     projects: projects.value,
   });
+
+  return response;
 }
 
-function handleNext() {
+const router = useRouter();
+
+async function handleNext() {
   if (step.value < 3) {
     step.value++;
+  } else {
+    isSubmitLoading.value = true;
+    const { id } = await submitSeedGroup();
+    isSubmitLoading.value = false;
+    router.push(`/seed_groups/${id}`);
   }
 }
 
