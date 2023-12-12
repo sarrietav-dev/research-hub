@@ -96,10 +96,26 @@
       </template>
 
       <template v-slot:item.3>
-        <AddEvents class="mb-5" />
-        <v-data-table-virtual>
+        <AddEvents class="mb-5" @click="onEventCreate" />
+        <v-data-table :items="events">
+          <template #headers>
+            <tr>
+              <th class="text-left">Nombre</th>
+              <th class="text-left">Fecha de Inicio</th>
+              <th class="text-left">Fecha de Fin</th>
+              <th class="text-left">Tipo de Evento</th>
+            </tr>
+          </template>
 
-        </v-data-table-virtual>
+          <template #item="{ item }">
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>{{ item.initDate }}</td>
+              <td>{{ item.finDate }}</td>
+              <td>{{ item.typeEvent }}</td>
+            </tr>
+          </template>
+        </v-data-table>
       </template>
 
       <template v-slot:item.4>
@@ -236,10 +252,9 @@ import { watchEffect } from 'vue';
 
 
 const programsList = ref<Program[]>([])
-
 const researchLinesInput = ref<string>('')
 const researchGroup = ref<{ id: number, name: string }[]>([])
-const leaders = ref()
+const events = ref<{ name: string, initDate: string, finDate: string, typeEvent: string }[]>([])
 
 const basicInfo = reactive<{
   name: string,
@@ -262,39 +277,6 @@ const basicInfo = reactive<{
   period: '',
   researchLines: []
 });
-
-watchEffect(async () => {
-  if (basicInfo.programId && basicInfo.programId !== 0) {
-    researchGroup.value = await getResearchGroups(basicInfo.programId!);
-  }
-})
-
-const isResearchGroupEnabled = computed(() => basicInfo.programId !== 0)
-
-const memberInfo = reactive<{
-  leaderId: number,
-  coInvestigators: Person[],
-  members: Person[]
-}>({
-  leaderId: 0,
-  coInvestigators: [],
-  members: []
-})
-
-function onPersonSelect(person: Person) {
-  memberInfo.members = [...memberInfo.members, person]
-}
-
-function onLeaderSelect(person: Person) {
-  leaders.value = person
-  console.log(leaders.value)
-}
-
-onMounted(async () => {
-  sponsors.value = await getCertOrgs();
-  productTypes.value = await getProductTypes();
-  programsList.value = await getPrograms();
-})
 
 const sponsors = ref<CertOrg[]>([]);
 const status = ref<"InProgress" | "Finished">("InProgress");
@@ -324,6 +306,39 @@ let productData = reactive<Product>({
   productTypeId: 1,
   members: [],
 });
+
+watchEffect(async () => {
+  if (basicInfo.programId && basicInfo.programId !== 0) {
+    researchGroup.value = await getResearchGroups(basicInfo.programId!);
+  }
+})
+
+const isResearchGroupEnabled = computed(() => basicInfo.programId !== 0)
+
+const memberInfo = reactive<{
+  leaderId: number,
+  coInvestigators: Person[],
+  members: Person[]
+}>({
+  leaderId: 0,
+  coInvestigators: [],
+  members: []
+})
+
+function onPersonSelect(person: Person) {
+  memberInfo.members = [...memberInfo.members, person]
+}
+
+function onLeaderSelect(person: Person) {
+  memberInfo.leaderId = person.id;
+}
+
+onMounted(async () => {
+  sponsors.value = await getCertOrgs();
+  productTypes.value = await getProductTypes();
+  programsList.value = await getPrograms();
+})
+
 
 function onDirectorSelect(person: Person) {
   projectData.directorId = person.id;
@@ -357,6 +372,15 @@ function addChip() {
 
 function removeChip(index: number) {
   basicInfo.researchLines.splice(index, 1);
+}
+
+function onEventCreate(event: {
+  name: string,
+  initDate: string,
+  finDate: string,
+  typeEvent: string,
+}) {
+  events.value = [...events.value, event];
 }
 
 function onProjectSubmit() {
