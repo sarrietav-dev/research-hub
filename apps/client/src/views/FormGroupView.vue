@@ -6,46 +6,52 @@
         <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Información General</v-card-title>
         <v-row>
           <v-col cols="8" class="pb-0">
-            <v-text-field label="Nombre del Semillero" :hide-details="true" variant="outlined" class="mb-1 pb-0 pt-3"
-              required></v-text-field>
+            <v-text-field v-model="basicInfo.name" label="Nombre del Semillero" :hide-details="true" variant="outlined"
+              class="mb-1 pb-0 pt-3" required></v-text-field>
           </v-col>
 
           <v-col cols="4" class="pb-0">
-            <v-text-field label="Acrónimo" :hide-details="true" variant="outlined" class="mb-1 pb-0 pt-3"></v-text-field>
+            <v-text-field label="Acrónimo" v-model="basicInfo.acronym" :hide-details="true" variant="outlined"
+              class="mb-1 pb-0 pt-3"></v-text-field>
           </v-col>
         </v-row>
         <v-row class="pt-0">
           <v-col cols="6" class="pb-0">
-            <v-select label="Programa" v-model="selectedProgram" :items="programsList" item-title="name" item-value="id"
-              class="mb-1 pb-0" variant="outlined" :hide-details="true" required>
+            <v-select label="Programa" v-model="basicInfo.programId" :items="programsList" item-title="name"
+              item-value="id" class="mb-1 pb-0" variant="outlined" :hide-details="true" required>
             </v-select>
           </v-col>
           <v-col cols="6" class="pb-0">
-            <v-select label="Grupos de Investigación" v-model="groups" @click="updateResearch(selectedProgram)"
-              :items="researchGroup" item-title="name" class="mb-1 pb-0" variant="outlined" :hide-details="true"
-              required></v-select>
+            <v-select label="Grupo de Investigación" v-model="basicInfo.researchGroupId" :items="researchGroup"
+              item-value="id" item-title="name" class="mb-1 pb-0" variant="outlined" :hide-details="true"
+              :disabled="!isResearchGroupEnabled" required></v-select>
           </v-col>
         </v-row>
 
         <v-row>
           <v-col cols="6">
-            <v-text-field type="date" label="Fecha de Creación" variant="outlined" class="mb-4 pb-0" :hide-details="true"
-              required></v-text-field>
+            <v-text-field type="date" label="Fecha de Creación" v-model="basicInfo.creationDate" variant="outlined"
+              class="mb-4 pb-0" :hide-details="true" required></v-text-field>
           </v-col>
           <v-col cols="6">
             <v-text-field label="Período Actual" class="mb-4 pb-0" variant="outlined" :hide-details="true"
-              required></v-text-field>
+              v-model="basicInfo.currentPeriod" required></v-text-field>
           </v-col>
         </v-row>
 
-        <v-textarea label="Descripción" variant="outlined" class="mb-4 pb-0" :hide-details="true" rows="3"
-          required></v-textarea>
+        <v-textarea label="Descripción" variant="outlined" class="mb-4 pb-0" v-model="basicInfo.description"
+          :hide-details="true" rows="3" required></v-textarea>
 
         <v-row>
           <v-col cols="12">
-            <v-text-field label="Líneas de Investigación" variant="outlined" :hide-details="true"></v-text-field>
+            <v-text-field v-model="researchLinesInput" label="Líneas de Investigación" @keydown.enter.prevent="addChip"
+              variant="outlined" :hide-details="true"></v-text-field>
           </v-col>
           <v-col cols="12">
+            <v-chip v-for="(chip, index) in basicInfo.researchLines" :key="index" closable
+              @click:close="removeChip(index)">
+              {{ chip }}
+            </v-chip>
           </v-col>
         </v-row>
       </template>
@@ -57,7 +63,7 @@
         <PersonMultipleAutomplete variant="outlined" label="Co-investigadores"></PersonMultipleAutomplete>
         <StudentRegistry />
         <PersonAutomplete label="Miembros" class="mt-8" @select="onPersonSelect" />
-        <v-data-table-virtual :items="memberList">
+        <v-data-table-virtual :items="memberInfo.members">
           <template #headers>
             <tr>
               <th>Nombre</th>
@@ -97,23 +103,23 @@
       </template>
 
       <template v-slot:item.4>
-        <v-form @submit.prevent="onSubmit">
+        <v-form @submit.prevent="onProjectSubmit">
           <v-card-title class="text-center" style="font-size: 1.5em; font-weight: bold;">Nuevo Proyecto</v-card-title>
-          <v-text-field label="Nombre del Proyecto" v-model="name" variant="outlined" class="mb-2 pb-0 pt-3"
+          <v-text-field label="Nombre del Proyecto" v-model="projectData.name" variant="outlined" class="mb-2 pb-0 pt-3"
             :hide-details="true" required></v-text-field>
 
           <v-row>
             <v-col cols="6">
-              <v-text-field type="date" v-model="startDate" label="Fecha de Inicio" variant="outlined"
+              <v-text-field type="date" v-model="projectData.startDate" label="Fecha de Inicio" variant="outlined"
                 class="mb-2 pb-0 pt-3" :hide-details="true" required></v-text-field>
             </v-col>
             <v-col cols="6">
-              <v-text-field type="date" label="Fecha de Fin" v-model="endDate" variant="outlined" class="mb-2 pb-0 pt-3"
-                :hide-details="true" v-show="isFinished"></v-text-field>
+              <v-text-field type="date" label="Fecha de Fin" v-model="projectData.endDate" variant="outlined"
+                class="mb-2 pb-0 pt-3" :hide-details="true" v-show="isFinished"></v-text-field>
             </v-col>
           </v-row>
 
-          <v-radio-group class="mb-0 pb-0" :hide-details="true" inline v-model="status">
+          <v-radio-group class="mb-0 pb-0" :hide-details="true" inline v-model="projectData.type">
             <p class="w-100 pl-1 pt-2 mb-0 pb-0">Estado del Proyecto</p>
             <v-radio label="En ejecución" value="InProgress" class="mb-0 pb-0"></v-radio>
             <v-radio label="Terminado" value="Finished" class="mb-0 pb-0"></v-radio>
@@ -121,10 +127,11 @@
 
           <person-automplete label="Director" @select="onDirectorSelect"></person-automplete>
 
-          <v-autocomplete v-model="chosenSponsor" :items="sponsors" label="Entidad que avala" variant="outlined"
-            class="mb-2 pb-0 pt-2" :hide-details="true" item-title="name" item-value="id" required></v-autocomplete>
+          <v-autocomplete v-model="projectData.certifyingOrganizationId" :items="sponsors" label="Entidad que avala"
+            variant="outlined" class="mb-2 pb-0 pt-2" :hide-details="true" item-title="name" item-value="id"
+            required></v-autocomplete>
 
-          <v-text-field label="Monto Aprobado" v-model="approvedAmount" variant="outlined" prefix="$"
+          <v-text-field label="Monto Aprobado" v-model="projectData.approvedAmount" variant="outlined" prefix="$"
             class="mb-1 pb-0 pt-2" :hide-details="true" required></v-text-field>
 
           <v-btn type="submit">Submit</v-btn>
@@ -158,18 +165,18 @@
                     <v-card>
                       <v-card-title class="text-center">Nuevo Producto</v-card-title>
                       <v-card-text>
-                        <v-text-field label="Nombre del Producto" v-model="productName" variant="outlined"
+                        <v-text-field label="Nombre del Producto" v-model="productData.name" variant="outlined"
                           class="mb-2 pb-0 pt-3" :hide-details="true" required></v-text-field>
 
-                        <v-text-field label="Descripcion del Producto" v-model="productDescription" variant="outlined"
+                        <v-text-field label="Descripcion del Producto" v-model="productData.description"
+                          variant="outlined" class="mb-2 pb-0 pt-3" :hide-details="true" required></v-text-field>
+
+                        <v-text-field type="date" v-model="productData.date" label="Fecha" variant="outlined"
                           class="mb-2 pb-0 pt-3" :hide-details="true" required></v-text-field>
 
-                        <v-text-field type="date" v-model="productDate" label="Fecha" variant="outlined"
-                          class="mb-2 pb-0 pt-3" :hide-details="true" required></v-text-field>
-
-                        <v-select v-model="productType" :items="productTypes" item-title="name" item-value="id"
-                          label="Tipo de Producto" variant="outlined" class="mb-2 pb-0 pt-3" :hide-details="true"
-                          required></v-select>
+                        <v-select v-model="productData.productTypeId" :items="productTypes" item-title="name"
+                          item-value="id" label="Tipo de Producto" variant="outlined" class="mb-2 pb-0 pt-3"
+                          :hide-details="true" required></v-select>
 
                         <person-multiple-automplete label="Integrantes" @select="onProductMemberSelect"
                           v-mo></person-multiple-automplete>
@@ -213,8 +220,6 @@
 </template>
   
 <script setup lang="ts">
-import axios from 'axios';
-import baseUrl from '../lib/baseUrl'
 import StudentRegistry from '@/components/StudentRegistry.vue'
 import { ref, onMounted, computed } from 'vue'
 import PersonAutomplete from '@/components/PersonAutomplete.vue';
@@ -224,31 +229,60 @@ import AddEvents from '@/components/AddEvents.vue';
 import getCertOrgs from '@/lib/api/cert-orgs';
 import getProductTypes, { type ProductType } from '@/lib/api/products';
 import type { CertOrg } from '@/models/CertOrgs';
-import type { Project } from '@/models/Project';
-import { createSeedGroup } from '@/lib/api/seed-groups';
+import { type Product, type Project } from '@/lib/api/seed-groups';
+import { reactive } from 'vue';
+import { getPrograms, getResearchGroups, type Program } from '@/lib/api/programs';
+import { watchEffect } from 'vue';
 
 
-const dialog = ref()
-const dataList = ref()
-const date = ref()
-const programsList = ref([])
-const memberList = ref<Person[]>([])
-let newMemberList = ([])
+const programsList = ref<Program[]>([])
 
-
-const selectedProgram = ref(null)
-const researchGroup = ref([])
-const groups = ref(null)
+const researchLinesInput = ref<string>('')
+const researchGroup = ref<{ id: number, name: string }[]>([])
 const leaders = ref()
-const existingLeaders = ref(["Líder 1", "Líder 2", "Líder 3"])
-const coInvestigator = ref()
-const existingCoInvestigator = ref(["Co-Investigador 1", "Co-Investigador 2", "Co-Investigador 3"])
-const existingSponsors = ref(["Patrocinador 1", "Patrocinador 2", "Patrocinador 3"])
-const line_of_research = ref(["Linea de Investigación 1", "Linea de Investigación 2", "Linea de Investigación 3"])
+
+const basicInfo = reactive<{
+  name: string,
+  acronym: string,
+  programId?: number,
+  researchGroupId?: number,
+  creationDate: string,
+  currentPeriod: string,
+  description: string,
+  period: string,
+  researchLines: string[]
+}>({
+  name: '',
+  acronym: '',
+  programId: undefined,
+  researchGroupId: undefined,
+  creationDate: '',
+  currentPeriod: '',
+  description: '',
+  period: '',
+  researchLines: []
+});
+
+watchEffect(async () => {
+  if (basicInfo.programId && basicInfo.programId !== 0) {
+    researchGroup.value = await getResearchGroups(basicInfo.programId!);
+  }
+})
+
+const isResearchGroupEnabled = computed(() => basicInfo.programId !== 0)
+
+const memberInfo = reactive<{
+  leaderId: number,
+  coInvestigators: Person[],
+  members: Person[]
+}>({
+  leaderId: 0,
+  coInvestigators: [],
+  members: []
+})
 
 function onPersonSelect(person: Person) {
-  memberList.value = [...memberList.value, person]
-  console.log(memberList.value)
+  memberInfo.members = [...memberInfo.members, person]
 }
 
 function onLeaderSelect(person: Person) {
@@ -256,124 +290,87 @@ function onLeaderSelect(person: Person) {
   console.log(leaders.value)
 }
 
-function updateResearch(programId: any) {
-  axios.get(`${baseUrl}/api/programs/${programId}/research-groups`)
-    .then(function (axiosResponse) {
-      researchGroup.value = axiosResponse.data
-
-      let researchObject = null
-      for (const group of researchGroup.value) { researchObject = group.researchGroup }
-      researchGroup.value = researchObject
-
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
-
-
-
-}
-
 onMounted(async () => {
-  try {
-    const responsePrograms = await axios.get(`${baseUrl}/api/programs`)
-    programsList.value = responsePrograms.data
-    console.log(programsList.value)
-
-  } catch (error) {
-    console.log(error)
-  }
+  sponsors.value = await getCertOrgs();
+  productTypes.value = await getProductTypes();
+  programsList.value = await getPrograms();
 })
 
-
-const name = ref<string>("");
-const chosenSponsor = ref<number | null>();
 const sponsors = ref<CertOrg[]>([]);
-const approvedAmount = ref<number>();
-const startDate = ref<Date>();
-const endDate = ref<Date>();
 const status = ref<"InProgress" | "Finished">("InProgress");
-const directorId = ref<number>();
 const isDialogOpen = ref<boolean>(false);
 
 const isFinished = computed(() => status.value === 'Finished');
 
-const productName = ref<string>("");
-const productDescription = ref<string>("");
-const productDate = ref<Date>();
-const productType = ref<number>(1);
-const productParticipants = ref<Person[]>();
-
-const projects = ref<Project[]>([]);
 const productTypes = ref<ProductType[]>();
 
-onMounted(async () => {
-  sponsors.value = await getCertOrgs();
-  productTypes.value = await getProductTypes();
+const projects = ref<Project[]>([]);
+
+let projectData = reactive<Project>({
+  name: "",
+  certifyingOrganizationId: 1,
+  approvedAmount: 0,
+  startDate: "",
+  endDate: "",
+  type: "InProgress",
+  directorId: 1,
+  products: [],
+});
+
+let productData = reactive<Product>({
+  name: "",
+  description: "",
+  date: "",
+  productTypeId: 1,
+  members: [],
 });
 
 function onDirectorSelect(person: Person) {
-  directorId.value = person.id;
+  projectData.directorId = person.id;
 }
 
 function onAddProduct(index: number) {
   projects.value[index].products.push({
-    name: productName.value,
-    description: productDescription.value,
-    date: productDate.value ?? new Date(),
-    productTypeId: productType.value,
-    members: productParticipants.value?.map(({ id }) => ({ id })) ?? [],
+    ...productData,
   });
 
   isDialogOpen.value = false;
 
-  productName.value = "";
-  productDescription.value = "";
-  productDate.value = new Date();
-  productType.value = 1;
-  productParticipants.value = [];
+  productData.date = "";
+  productData.description = "";
+  productData.name = "";
+  productData.productTypeId = 1;
+  productData.members = [];
 }
 
 function onProductMemberSelect(person: Person[]) {
-  productParticipants.value = person;
+  productData.members = person;
 }
 
 function getProductTypeName(id: number) {
   return productTypes.value?.find(p => p.id == id)?.name ?? ''
 }
 
-function onSubmit() {
+function addChip() {
+  basicInfo.researchLines.push(researchLinesInput.value.trim());
+}
+
+function removeChip(index: number) {
+  basicInfo.researchLines.splice(index, 1);
+}
+
+function onProjectSubmit() {
   projects.value.push({
-    name: name.value,
-    certifyingOrganizationId: chosenSponsor.value!,
-    approvedAmount: approvedAmount.value!,
-    startDate: startDate.value!,
-    endDate: endDate.value!,
-    type: status.value,
-    directorId: directorId.value!,
-    products: [],
+    ...projectData,
   });
 
-  name.value = "";
-  chosenSponsor.value = null;
-  approvedAmount.value = undefined;
-  startDate.value = undefined;
-  endDate.value = undefined;
-  status.value = "InProgress";
-  directorId.value = undefined;
+  projectData.products = [];
+  projectData.name = "";
+  projectData.certifyingOrganizationId = 1;
+  projectData.approvedAmount = 0;
+  projectData.startDate = "";
+  projectData.endDate = "";
+  projectData.type = "InProgress";
+  projectData.directorId = 1;
 }
-
-async function onSubmit() {
-  const response = await createSeedGroup({
-    name: name.value,
-    acronym: 'acronym',
-    description: 'description',
-    researchGroupId: 1,
-    leaderId: 1,
-    members: [],
-    events: [],
-    projects: [],
-  });
-}
-
 </script>
