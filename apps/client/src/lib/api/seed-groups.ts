@@ -20,7 +20,7 @@ interface Event {
   type: 'Local' | 'International'
 }
 
-interface Product {
+export interface Product {
   name: string
   description: string
   date: string
@@ -28,13 +28,13 @@ interface Product {
   members: { id: number }[]
 }
 
-interface Project {
+export interface Project {
   name: string
   startDate: string
   endDate?: string
   approvedAmount: number
   certifyingOrganizationId: number
-  type: 'Finished' | 'Inprogress'
+  type: 'Finished' | 'InProgress'
   directorId: number
   products: Product[]
 }
