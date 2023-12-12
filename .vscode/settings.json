@@ -6,7 +6,11 @@
             "port": 5432,
             "askForPassword": true,
             "driver": "PostgreSQL",
+<<<<<<< HEAD
+            "name": "datos",
+=======
             "name": "research",
+>>>>>>> master
             "database": "research-hub",
             "username": "postgres"
         }

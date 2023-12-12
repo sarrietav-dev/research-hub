@@ -15,6 +15,7 @@ export class PersonRepositoryService {
         email: true,
         phone: true,
         identityCard: true,
+        institutionalCode: true,
         program: true,
       },
     });
@@ -23,8 +24,21 @@ export class PersonRepositoryService {
   getPersonsProducts(id: number) {
     return this.prisma.person.findUnique({
       where: { id },
-      select: {
-        products: true,
+      include: {
+        products: {
+          include: {
+            project: {
+              select: {
+                seedGroup: {
+                  select: {
+                    name: true,
+                    id: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
   }
@@ -32,17 +46,15 @@ export class PersonRepositoryService {
   getPersonsSeedGroups(id: number) {
     return this.prisma.membershipRecord.findMany({
       where: { memberId: id },
+      distinct: ['seedGroupId'],
       select: {
-        affiliationDate: true,
-        functions: true,
-        period: true,
-        role: true,
         seedGroup: {
           select: {
-            id: true,
             name: true,
+            id: true,
           },
         },
+        period: true,
       },
     });
   }
@@ -85,33 +97,38 @@ export class PersonRepositoryService {
     });
   }
 
-  getPersons(query: string, take: number, skip: number) {
-    return this.prisma.person.findMany({
+  async getPersons(query: string, take: number, skip: number) {
+    const findMany = this.prisma.person.findMany({
       where: {
         OR: [
           {
             name: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             email: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             phone: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             identityCard: {
               contains: query,
+              mode: 'insensitive',
             },
           },
           {
             institutionalCode: {
               contains: query,
+              mode: 'insensitive',
             },
           },
         ],
@@ -124,8 +141,53 @@ export class PersonRepositoryService {
         email: true,
         phone: true,
         identityCard: true,
+        institutionalCode: true,
         program: true,
       },
     });
+
+    const countQuery = this.prisma.person.count({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            email: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            phone: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            identityCard: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            institutionalCode: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    });
+
+    const [data, count] = await this.prisma.$transaction([
+      findMany,
+      countQuery,
+    ]);
+
+    return { data, count };
   }
 }

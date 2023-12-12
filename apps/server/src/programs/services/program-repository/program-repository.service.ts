@@ -27,4 +27,17 @@ export class ProgramRepositoryService {
   async deleteProgram(id: number) {
     return await this.prisma.program.delete({ where: { id } });
   }
+
+  getResearchGroupsByProgramId(id: number) {
+    return this.prisma.program.findMany({
+      where: { id: Number(id) },
+      include: {
+        researchGroup: true,
+      },
+    });
+  }
+
+  doesProgramExist(id: number) {
+    return this.prisma.program.findUnique({ where: { id } });
+  }
 }

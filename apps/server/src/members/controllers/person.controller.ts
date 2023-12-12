@@ -42,7 +42,7 @@ export class PersonController {
   }
 
   @Get()
-  getPersons(
+  async getPersons(
     @Query('query') query: string = '',
     @Query('take') take: string = '10',
     @Query('page') page: string = '1',
@@ -66,7 +66,7 @@ export class PersonController {
       });
     }
 
-    return this.service.getPersons(query, takeNumber, pageNumber);
+    return await this.service.getPersons(query, takeNumber, pageNumber);
   }
 
   @Get(':id/products')
@@ -86,31 +86,33 @@ export class PersonController {
   }
 
   @Get(':id/seed-groups')
-  async getPersonsSeedGroups(
-    @Param('id') id: string,
-    @Query('seedGroupId') seedGroupId: string,
-  ) {
+  async getPersonsSeedGroups(@Param('id') id: string) {
     const idNumber = this.validateIdParam(id);
 
-    if (seedGroupId) {
-      const seedGroupIdNumber = this.validateIdParam(seedGroupId);
-      const record = await this.service.getPersonSeedGroupHistoryRecord(
-        idNumber,
-        seedGroupIdNumber,
-      );
+    return this.service.getPersonSeedGroups(idNumber);
+  }
 
-      if (record.length === 0) {
-        throw new BadRequestException({
-          statusCode: 404,
-          message: 'No records found',
-          error: 'Not found',
-        });
-      }
+  @Get(':id/seed-groups/:seedGroupId')
+  async getPersonSeedGroupHistoryRecord(
+    @Param('id') id: string,
+    @Param('seedGroupId') seedGroupId: string,
+  ) {
+    const idNumber = this.validateIdParam(id);
+    const seedGroupIdNumber = this.validateIdParam(seedGroupId);
+    const record = await this.service.getPersonSeedGroupHistoryRecord(
+      idNumber,
+      seedGroupIdNumber,
+    );
 
-      return record;
+    if (record.length === 0) {
+      throw new BadRequestException({
+        statusCode: 404,
+        message: 'No records found',
+        error: 'Not found',
+      });
     }
 
-    return this.service.getPersonSeedGroups(idNumber);
+    return record;
   }
 
   private validateIdParam(id: string) {

@@ -25,7 +25,8 @@ export class SeedGroupsController {
   @Post()
   @UsePipes(new ValidateInputPipe(createSeedGroupSchema))
   async createSeedGroup(@Body() seedGroup: CreateSeedGroupDto) {
-    return await this.seedGroupService.createSeedGroup(seedGroup);
+    const id = await this.seedGroupService.createSeedGroup(seedGroup);
+    return { id };
   }
 
   @Get(':id')
