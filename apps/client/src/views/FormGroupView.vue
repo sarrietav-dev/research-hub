@@ -279,13 +279,8 @@ const basicInfo = reactive<{
 });
 
 const sponsors = ref<CertOrg[]>([]);
-const status = ref<"InProgress" | "Finished">("InProgress");
 const isDialogOpen = ref<boolean>(false);
-
-const isFinished = computed(() => status.value === 'Finished');
-
 const productTypes = ref<ProductType[]>();
-
 const projects = ref<Project[]>([]);
 
 let projectData = reactive<Project>({
@@ -298,6 +293,8 @@ let projectData = reactive<Project>({
   directorId: 1,
   products: [],
 });
+
+const isFinished = computed(() => projectData.type === 'Finished');
 
 let productData = reactive<Product>({
   name: "",
