@@ -239,7 +239,7 @@
           </template>
 
           <template #next>
-            <v-btn color="primary" @click="handleNext">
+            <v-btn color="primary" :disabled="false" @click="handleNext">
               <v-progress-circular v-if="isSubmitLoading" indeterminate color="primary"></v-progress-circular>
               <span v-else>{{ nextBtnName }}</span>
             </v-btn>
@@ -266,7 +266,7 @@ import { getPrograms, getResearchGroups, type Program } from '@/lib/api/programs
 import { watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
-const step = ref<number>(0)
+const step = ref<number>(1)
 
 const programsList = ref<Program[]>([])
 const researchLinesInput = ref<string>('')
@@ -415,7 +415,7 @@ async function submitSeedGroup() {
     name: basicInfo.name,
     programId: basicInfo.programId!,
     researchGroupId: basicInfo.researchGroupId!,
-    creationDate: basicInfo.creationDate,
+    creationDate: new Date(Date.parse(basicInfo.creationDate)).toUTCString(),
     description: basicInfo.description,
     period: basicInfo.period,
     researchLines: basicInfo.researchLines,
@@ -431,7 +431,15 @@ async function submitSeedGroup() {
       roleId: 1,
     })),
     events: events.value,
-    projects: projects.value,
+    projects: projects.value.map(p => ({
+      ...p,
+      startDate: new Date(Date.parse(p.startDate)).toUTCString(),
+      endDate: new Date(Date.parse(p.endDate ?? '')).toUTCString(),
+      products: p.products.map(pr => ({
+        ...pr,
+        date: new Date(Date.parse(pr.date)).toUTCString(),
+      })),
+    })),
   });
 
   return response;
@@ -440,18 +448,23 @@ async function submitSeedGroup() {
 const router = useRouter();
 
 async function handleNext() {
-  if (step.value < 3) {
+  if (step.value < 4) {
     step.value++;
   } else {
-    isSubmitLoading.value = true;
-    const { id } = await submitSeedGroup();
-    isSubmitLoading.value = false;
-    router.push(`/seed_groups/${id}`);
+    try {
+      isSubmitLoading.value = true;
+      const { id } = await submitSeedGroup();
+      router.push(`/seed_groups/${id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      isSubmitLoading.value = false;
+    }
   }
 }
 
 const nextBtnName = computed(() => {
-  if (step.value === 3) {
+  if (step.value === 4) {
     return 'Enviar';
   }
 

@@ -1,7 +1,8 @@
 import axios from 'axios'
+import baseUrl from '../baseUrl'
 
 export async function createSeedGroup(seedGroup: ResearchGroup): Promise<{ id: number }> {
-  const response = await axios.post<{ id: number }>('/api/seed-groups', seedGroup)
+  const response = await axios.post<{ id: number }>(`${baseUrl}/api/seed-groups`, seedGroup)
   return response.data
 }
 
